@@ -1,35 +1,34 @@
 package edu.usfca.cs.dfs;
 
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StorageNode {
-	private ArrayList<String> activeStorageNodes;
-
-	// store chunk
-	public void storeChunk(String fileName, int chunkNum, byte[] chunkData) {
-
-    }
-
-    // get number of chunks
-    public int getChunkNum(String fileName) {
-        return -1;
-    }
-
-    // get chunk location
-    public int getChunkLocation(String fileName, int chunkNum) {
-	    return -1;
-    }
-
-    // retrieve chunk
-    public byte[] retrieveChunk(String fileName, int chunkNum) {
-	    return new byte[0];
-    }
-
-    // list chunks and file names
-    public void listChunksAndFileNames() {
-
-    }
-
-    // send heartbeat to controller
-    // default sending interval: 5 seconds
+	public String nodeId;
+	private String nodeAddress;
+	private BloomFilter bloomFilter;
+	private ConcurrentHashMap<String, Chunck> chunckMetaData; 
+	
+	public void storeChunk(String fileName, Integer chunkNumber, byte[] chunkData) {
+		
+	}
+	
+	public Integer getChunckCount(String fileName) {
+		return 0;
+	}
+	
+	public String getChunckLocation(String fileName, Integer chunckNumber) {
+		return "";
+	}
+	
+	public byte[] retreiveChunck() {
+		return null;
+	}
+	
+	public synchronized ConcurrentHashMap<String, Chunck> getChunckMetaData() {
+		return this.chunckMetaData;
+	}
+	
+	public void sendHeartBeat() {
+		
+	}
 }
