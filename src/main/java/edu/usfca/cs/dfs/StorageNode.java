@@ -6,11 +6,16 @@ public class StorageNode {
 	public String nodeId;
 	private String nodeAddress;
 	private BloomFilter bloomFilter;
-	private ConcurrentHashMap<String, Chunck> chunkMetaData;
+	private ConcurrentHashMap<String, Chunk> chunkMetaData;
 
-	// store chunk in a file
-	public void storeChunk(String fileName, Integer chunkNumber, byte[] chunkData) {
-		
+	// To store chunk in a file,
+	// 1. check Shannon Entropy of the files.
+	// If their maximum compression is greater than 0.6 (1 - (entropy bits / 8)), then the chunk should be compressed.
+	// 2. store the chunk in a file
+	// 3. do check sum if the it is corrupted or not
+	// return true if the chunk is not corrupted, else return false
+	public boolean storeChunk(String fileName, Integer chunkNumber, byte[] chunkData) {
+		return true;
 	}
 
 	// get number of chunks
@@ -34,7 +39,7 @@ public class StorageNode {
 	}
 
 	// get chunk meta data
-	public synchronized ConcurrentHashMap<String, Chunck> getChunkMetaData() {
+	public synchronized ConcurrentHashMap<String, Chunk> getChunkMetaData() {
 		return this.chunkMetaData;
 	}
 
