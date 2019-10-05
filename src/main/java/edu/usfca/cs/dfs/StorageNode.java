@@ -8,19 +8,19 @@ public class StorageNode {
 	private BloomFilter bloomFilter;
 	private ConcurrentHashMap<String, Chunck> chunckMetaData; 
 	
-	public void storeChunk(String fileName, Integer chunkNumber, byte[] chunkData) {
+	public synchronized void storeChunk(String fileName, Integer chunkNumber, byte[] chunkData) {
 		
 	}
 	
-	public Integer getChunckCount(String fileName) {
+	public synchronized Integer getChunckCount(String fileName) {
 		return 0;
 	}
 	
-	public String getChunckLocation(String fileName, Integer chunckNumber) {
+	public synchronized String getChunckLocation(String fileName, Integer chunckNumber) {
 		return "";
 	}
 	
-	public byte[] retreiveChunck() {
+	public synchronized byte[] retreiveChunck() {
 		return null;
 	}
 	
@@ -28,7 +28,7 @@ public class StorageNode {
 		return this.chunckMetaData;
 	}
 	
-	public void sendHeartBeat() {
+	public synchronized void sendHeartBeat() {
 		
 	}
 }
