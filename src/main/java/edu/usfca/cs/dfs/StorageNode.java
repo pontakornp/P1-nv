@@ -6,7 +6,19 @@ public class StorageNode {
 	public String nodeId;
 	private String nodeAddress;
 	private BloomFilter bloomFilter;
-	private ConcurrentHashMap<String, Chunk> chunkMetaData;
+	private ConcurrentHashMap<String, Chunk> chunckMetaData; 
+	
+	public synchronized Integer getChunckCount(String fileName) {
+		return 0;
+	}
+	
+	public synchronized String getChunckLocation(String fileName, Integer chunckNumber) {
+		return "";
+	}
+	
+	public synchronized byte[] retreiveChunck() {
+		return null;
+	}
 
 	// To store chunk in a file,
 	// 1. check Shannon Entropy of the files.
@@ -39,6 +51,7 @@ public class StorageNode {
 	public void listChunksAndFileNames() {
 
 	}
+	
 
 	// get chunk meta data
 	public synchronized ConcurrentHashMap<String, Chunk> getChunkMetaData() {
