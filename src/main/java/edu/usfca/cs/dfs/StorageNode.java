@@ -15,6 +15,8 @@ public class StorageNode {
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
 	public boolean storeChunk(String fileName, Integer chunkNumber, byte[] chunkData) {
+
+
 		return true;
 	}
 
