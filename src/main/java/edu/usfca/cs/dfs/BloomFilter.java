@@ -19,7 +19,6 @@ public class BloomFilter {
         long hash2 = Murmur3.hash_x86_32(data, data.length, hash1);
         for (int i = 0; i < k; i++) {
             results[i] = (hash1 + i * hash2) % m;
-//            System.out.println(results[i]);
         }
         return results;
     }

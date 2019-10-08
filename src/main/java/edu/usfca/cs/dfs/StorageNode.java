@@ -4,9 +4,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StorageNode {
 	public String nodeId;
-	private String nodeAddress;
-	private BloomFilter bloomFilter;
-	private ConcurrentHashMap<String, Chunk> chunckMetaData; 
+	private String strorageNodeAddr;
+	private Integer storageNodePort;
+	private Integer currentStorageNodeValue;
+	private String filePathLocation;
+	
+	private ConcurrentHashMap<String, Chunk> chunkMetaData; 
 	
 	public synchronized Integer getChunckCount(String fileName) {
 		return 0;

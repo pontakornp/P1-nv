@@ -1,10 +1,24 @@
 syntax = "proto3";
 option java_package = "edu.usfca.cs.dfs";
 
+message StoreChunkRequest {
+	string fileName = 1;
+	int32 chunkId = 2;
+	int32 chunkSize = 3;
+}
+
 message StoreChunk {
     string fileName = 1;
     int32 chunkId = 2;
     bytes data = 3;
+    string checksum = 4;
+}
+
+message StorageNodeInfo {
+	int32 storageNodeId = 1;
+	string strorageNodeAddr = 2;
+	int32 storageNodePort = 3;
+	int32 currentStorageNodeValue = 4;
 }
 
 message RetrieveFile {
