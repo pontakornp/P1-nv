@@ -1,8 +1,11 @@
 package edu.usfca.cs.dfs;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import edu.usfca.cs.dfs.config.Config;
@@ -20,6 +23,7 @@ public class StorageNode {
 
 	public StorageNode() {
 		Config config = new Config();
+		config.setVariables();
 		String storageDirectoryPath = config.getstorageDirectoryPath();
 		registerNode(storageDirectoryPath);
 	}
@@ -32,7 +36,7 @@ public class StorageNode {
 	public void registerNode(String storageDirectoryPath) {
 		String nodeId = "1"; // get nodeId from controller
 		this.storageNodeId = nodeId;
-		this.storageNodeAddr = storageDirectoryPath + "/" + nodeId;
+		this.storageNodeAddr = storageDirectoryPath + nodeId + '/';
 	}
 
 	public String getStorageNodeId() {
@@ -51,8 +55,7 @@ public class StorageNode {
 		
 	}
 
-	private boolean isFileCorrupted(String fileName, byte[] chunkData, String originalCheckSum) {
-		// store file
+	private boolean isFileCorrupted(byte[] chunkData, String originalCheckSum) {
 		// call checksum method
 		String currentCheckSum = CheckSum.checkSum(chunkData);
 		// return true if the checksum matches else return false
@@ -64,8 +67,8 @@ public class StorageNode {
 	}
 
 	// To store chunk in a file,
-	// 1. calculate Shannon Entropy of the files.
-	// If their maximum compression is greater than 0.6 (1 - (entropy bits / 8)), then the chunk should be compressed.
+	// 1. calculate Shannon Entropy of the files which is the maximum compression
+	// If their maximum compression is greater than (1 - (entropy bits / 8)), then the chunk should be compressed.
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
@@ -83,16 +86,33 @@ public class StorageNode {
 				return false;
 			}
 		}
+		// create directory
+		File dir = new File(this.storageNodeAddr);
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
 		// store the chunk in a file
 		try {
-			OutputStream outputStream = new FileOutputStream(this.storageNodeAddr, true);
+			OutputStream outputStream = new FileOutputStream(this.storageNodeAddr + fileName);
 			outputStream.write(data);
+			byte[] storedChunkData = Files.readAllBytes(Paths.get(this.storageNodeAddr + fileName));
+			// check sum if the file is corrupted or not
+			return !isFileCorrupted(storedChunkData, originalCheckSum);
 		} catch (IOException e) {
 			System.out.println("There is a problem when writing stream to file.");
 			return false;
 		}
-		// check sum if the file is corrupted or not
-		return isFileCorrupted(fileName, chunkData, originalCheckSum);
+	}
+	
+	public static void main(String args[]) {
+		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
+		try {
+			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
+			StorageNode sn = new StorageNode();
+			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// get number of chunks
