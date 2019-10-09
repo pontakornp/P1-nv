@@ -27,11 +27,7 @@ public class StorageNode {
 	private Integer storageNodePort;
 	private Integer currentStorageNodeValue;
 	private String fileStorageLocation;
-	private ArrayList<String> replicationStorageNodeIds;
-	
-	public String getStorageNodeId() {
-		return this.storageNodeId;
-	}
+	private ArrayList<String> replicationNodeIds;
 
 	public StorageNode() {
 		Config config = new Config();
@@ -48,6 +44,22 @@ public class StorageNode {
 		String nodeId = "1"; // get nodeId from controller
 		this.storageNodeId = nodeId;
 		this.strorageNodeAddr = storageDirectoryPath + "/" + nodeId;
+	}
+
+	public String getStorageNodeId() {
+		return this.storageNodeId;
+	}
+
+	public ArrayList<String> getReplicationNodeIds() {
+		return this.replicationNodeIds;
+	}
+	
+	public void setReplicationNodeIds(ArrayList<String> replicationNodesIdList) {
+		this.replicationNodeIds = replicationNodesIdList;
+	}
+
+	public void registerNode() {
+		
 	}
 
 	private boolean isFileCorrupted(String fileName, byte[] chunkData, String originalCheckSum) {
