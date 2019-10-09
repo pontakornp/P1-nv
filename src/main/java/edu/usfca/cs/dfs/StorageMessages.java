@@ -2939,8 +2939,6 @@ public final class StorageMessages {
      * <code>.RetrieveFile retrieveFileMsg = 2;</code>
      */
     edu.usfca.cs.dfs.StorageMessages.RetrieveFileOrBuilder getRetrieveFileMsgOrBuilder();
-
-    public edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper.MsgCase getMsgCase();
   }
   /**
    * Protobuf type {@code StorageMessageWrapper}
@@ -2989,30 +2987,28 @@ public final class StorageMessages {
               break;
             case 10: {
               edu.usfca.cs.dfs.StorageMessages.StoreChunk.Builder subBuilder = null;
-              if (msgCase_ == 1) {
-                subBuilder = ((edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_).toBuilder();
+              if (storeChunkMsg_ != null) {
+                subBuilder = storeChunkMsg_.toBuilder();
               }
-              msg_ =
-                  input.readMessage(edu.usfca.cs.dfs.StorageMessages.StoreChunk.parser(), extensionRegistry);
+              storeChunkMsg_ = input.readMessage(edu.usfca.cs.dfs.StorageMessages.StoreChunk.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_);
-                msg_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(storeChunkMsg_);
+                storeChunkMsg_ = subBuilder.buildPartial();
               }
-              msgCase_ = 1;
+
               break;
             }
             case 18: {
               edu.usfca.cs.dfs.StorageMessages.RetrieveFile.Builder subBuilder = null;
-              if (msgCase_ == 2) {
-                subBuilder = ((edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_).toBuilder();
+              if (retrieveFileMsg_ != null) {
+                subBuilder = retrieveFileMsg_.toBuilder();
               }
-              msg_ =
-                  input.readMessage(edu.usfca.cs.dfs.StorageMessages.RetrieveFile.parser(), extensionRegistry);
+              retrieveFileMsg_ = input.readMessage(edu.usfca.cs.dfs.StorageMessages.RetrieveFile.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_);
-                msg_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(retrieveFileMsg_);
+                retrieveFileMsg_ = subBuilder.buildPartial();
               }
-              msgCase_ = 2;
+
               break;
             }
             default: {
@@ -3047,101 +3043,50 @@ public final class StorageMessages {
               edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper.class, edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper.Builder.class);
     }
 
-    private int msgCase_ = 0;
-    private java.lang.Object msg_;
-    public enum MsgCase
-        implements com.google.protobuf.Internal.EnumLite,
-            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-      STORECHUNKMSG(1),
-      RETRIEVEFILEMSG(2),
-      MSG_NOT_SET(0);
-      private final int value;
-      private MsgCase(int value) {
-        this.value = value;
-      }
-      /**
-       * @param value The number of the enum to look for.
-       * @return The enum associated with the given number.
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
-      public static MsgCase valueOf(int value) {
-        return forNumber(value);
-      }
-
-      public static MsgCase forNumber(int value) {
-        switch (value) {
-          case 1: return STORECHUNKMSG;
-          case 2: return RETRIEVEFILEMSG;
-          case 0: return MSG_NOT_SET;
-          default: return null;
-        }
-      }
-      public int getNumber() {
-        return this.value;
-      }
-    };
-
-    public MsgCase
-    getMsgCase() {
-      return MsgCase.forNumber(
-          msgCase_);
-    }
-
     public static final int STORECHUNKMSG_FIELD_NUMBER = 1;
+    private edu.usfca.cs.dfs.StorageMessages.StoreChunk storeChunkMsg_;
     /**
      * <code>.StoreChunk storeChunkMsg = 1;</code>
      * @return Whether the storeChunkMsg field is set.
      */
     public boolean hasStoreChunkMsg() {
-      return msgCase_ == 1;
+      return storeChunkMsg_ != null;
     }
     /**
      * <code>.StoreChunk storeChunkMsg = 1;</code>
      * @return The storeChunkMsg.
      */
     public edu.usfca.cs.dfs.StorageMessages.StoreChunk getStoreChunkMsg() {
-      if (msgCase_ == 1) {
-         return (edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_;
-      }
-      return edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance();
+      return storeChunkMsg_ == null ? edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance() : storeChunkMsg_;
     }
     /**
      * <code>.StoreChunk storeChunkMsg = 1;</code>
      */
     public edu.usfca.cs.dfs.StorageMessages.StoreChunkOrBuilder getStoreChunkMsgOrBuilder() {
-      if (msgCase_ == 1) {
-         return (edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_;
-      }
-      return edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance();
+      return getStoreChunkMsg();
     }
 
     public static final int RETRIEVEFILEMSG_FIELD_NUMBER = 2;
+    private edu.usfca.cs.dfs.StorageMessages.RetrieveFile retrieveFileMsg_;
     /**
      * <code>.RetrieveFile retrieveFileMsg = 2;</code>
      * @return Whether the retrieveFileMsg field is set.
      */
     public boolean hasRetrieveFileMsg() {
-      return msgCase_ == 2;
+      return retrieveFileMsg_ != null;
     }
     /**
      * <code>.RetrieveFile retrieveFileMsg = 2;</code>
      * @return The retrieveFileMsg.
      */
     public edu.usfca.cs.dfs.StorageMessages.RetrieveFile getRetrieveFileMsg() {
-      if (msgCase_ == 2) {
-         return (edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_;
-      }
-      return edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance();
+      return retrieveFileMsg_ == null ? edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance() : retrieveFileMsg_;
     }
     /**
      * <code>.RetrieveFile retrieveFileMsg = 2;</code>
      */
     public edu.usfca.cs.dfs.StorageMessages.RetrieveFileOrBuilder getRetrieveFileMsgOrBuilder() {
-      if (msgCase_ == 2) {
-         return (edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_;
-      }
-      return edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance();
+      return getRetrieveFileMsg();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3158,11 +3103,11 @@ public final class StorageMessages {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (msgCase_ == 1) {
-        output.writeMessage(1, (edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_);
+      if (storeChunkMsg_ != null) {
+        output.writeMessage(1, getStoreChunkMsg());
       }
-      if (msgCase_ == 2) {
-        output.writeMessage(2, (edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_);
+      if (retrieveFileMsg_ != null) {
+        output.writeMessage(2, getRetrieveFileMsg());
       }
       unknownFields.writeTo(output);
     }
@@ -3173,13 +3118,13 @@ public final class StorageMessages {
       if (size != -1) return size;
 
       size = 0;
-      if (msgCase_ == 1) {
+      if (storeChunkMsg_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, (edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_);
+          .computeMessageSize(1, getStoreChunkMsg());
       }
-      if (msgCase_ == 2) {
+      if (retrieveFileMsg_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, (edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_);
+          .computeMessageSize(2, getRetrieveFileMsg());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3196,18 +3141,15 @@ public final class StorageMessages {
       }
       edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper other = (edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper) obj;
 
-      if (!getMsgCase().equals(other.getMsgCase())) return false;
-      switch (msgCase_) {
-        case 1:
-          if (!getStoreChunkMsg()
-              .equals(other.getStoreChunkMsg())) return false;
-          break;
-        case 2:
-          if (!getRetrieveFileMsg()
-              .equals(other.getRetrieveFileMsg())) return false;
-          break;
-        case 0:
-        default:
+      if (hasStoreChunkMsg() != other.hasStoreChunkMsg()) return false;
+      if (hasStoreChunkMsg()) {
+        if (!getStoreChunkMsg()
+            .equals(other.getStoreChunkMsg())) return false;
+      }
+      if (hasRetrieveFileMsg() != other.hasRetrieveFileMsg()) return false;
+      if (hasRetrieveFileMsg()) {
+        if (!getRetrieveFileMsg()
+            .equals(other.getRetrieveFileMsg())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -3220,17 +3162,13 @@ public final class StorageMessages {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      switch (msgCase_) {
-        case 1:
-          hash = (37 * hash) + STORECHUNKMSG_FIELD_NUMBER;
-          hash = (53 * hash) + getStoreChunkMsg().hashCode();
-          break;
-        case 2:
-          hash = (37 * hash) + RETRIEVEFILEMSG_FIELD_NUMBER;
-          hash = (53 * hash) + getRetrieveFileMsg().hashCode();
-          break;
-        case 0:
-        default:
+      if (hasStoreChunkMsg()) {
+        hash = (37 * hash) + STORECHUNKMSG_FIELD_NUMBER;
+        hash = (53 * hash) + getStoreChunkMsg().hashCode();
+      }
+      if (hasRetrieveFileMsg()) {
+        hash = (37 * hash) + RETRIEVEFILEMSG_FIELD_NUMBER;
+        hash = (53 * hash) + getRetrieveFileMsg().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -3365,8 +3303,18 @@ public final class StorageMessages {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        msgCase_ = 0;
-        msg_ = null;
+        if (storeChunkMsgBuilder_ == null) {
+          storeChunkMsg_ = null;
+        } else {
+          storeChunkMsg_ = null;
+          storeChunkMsgBuilder_ = null;
+        }
+        if (retrieveFileMsgBuilder_ == null) {
+          retrieveFileMsg_ = null;
+        } else {
+          retrieveFileMsg_ = null;
+          retrieveFileMsgBuilder_ = null;
+        }
         return this;
       }
 
@@ -3393,21 +3341,16 @@ public final class StorageMessages {
       @java.lang.Override
       public edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper buildPartial() {
         edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper result = new edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper(this);
-        if (msgCase_ == 1) {
-          if (storeChunkMsgBuilder_ == null) {
-            result.msg_ = msg_;
-          } else {
-            result.msg_ = storeChunkMsgBuilder_.build();
-          }
+        if (storeChunkMsgBuilder_ == null) {
+          result.storeChunkMsg_ = storeChunkMsg_;
+        } else {
+          result.storeChunkMsg_ = storeChunkMsgBuilder_.build();
         }
-        if (msgCase_ == 2) {
-          if (retrieveFileMsgBuilder_ == null) {
-            result.msg_ = msg_;
-          } else {
-            result.msg_ = retrieveFileMsgBuilder_.build();
-          }
+        if (retrieveFileMsgBuilder_ == null) {
+          result.retrieveFileMsg_ = retrieveFileMsg_;
+        } else {
+          result.retrieveFileMsg_ = retrieveFileMsgBuilder_.build();
         }
-        result.msgCase_ = msgCase_;
         onBuilt();
         return result;
       }
@@ -3456,18 +3399,11 @@ public final class StorageMessages {
 
       public Builder mergeFrom(edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper other) {
         if (other == edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper.getDefaultInstance()) return this;
-        switch (other.getMsgCase()) {
-          case STORECHUNKMSG: {
-            mergeStoreChunkMsg(other.getStoreChunkMsg());
-            break;
-          }
-          case RETRIEVEFILEMSG: {
-            mergeRetrieveFileMsg(other.getRetrieveFileMsg());
-            break;
-          }
-          case MSG_NOT_SET: {
-            break;
-          }
+        if (other.hasStoreChunkMsg()) {
+          mergeStoreChunkMsg(other.getStoreChunkMsg());
+        }
+        if (other.hasRetrieveFileMsg()) {
+          mergeRetrieveFileMsg(other.getRetrieveFileMsg());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3497,22 +3433,8 @@ public final class StorageMessages {
         }
         return this;
       }
-      private int msgCase_ = 0;
-      private java.lang.Object msg_;
-      public MsgCase
-          getMsgCase() {
-        return MsgCase.forNumber(
-            msgCase_);
-      }
 
-      public Builder clearMsg() {
-        msgCase_ = 0;
-        msg_ = null;
-        onChanged();
-        return this;
-      }
-
-
+      private edu.usfca.cs.dfs.StorageMessages.StoreChunk storeChunkMsg_;
       private com.google.protobuf.SingleFieldBuilderV3<
           edu.usfca.cs.dfs.StorageMessages.StoreChunk, edu.usfca.cs.dfs.StorageMessages.StoreChunk.Builder, edu.usfca.cs.dfs.StorageMessages.StoreChunkOrBuilder> storeChunkMsgBuilder_;
       /**
@@ -3520,7 +3442,7 @@ public final class StorageMessages {
        * @return Whether the storeChunkMsg field is set.
        */
       public boolean hasStoreChunkMsg() {
-        return msgCase_ == 1;
+        return storeChunkMsgBuilder_ != null || storeChunkMsg_ != null;
       }
       /**
        * <code>.StoreChunk storeChunkMsg = 1;</code>
@@ -3528,15 +3450,9 @@ public final class StorageMessages {
        */
       public edu.usfca.cs.dfs.StorageMessages.StoreChunk getStoreChunkMsg() {
         if (storeChunkMsgBuilder_ == null) {
-          if (msgCase_ == 1) {
-            return (edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_;
-          }
-          return edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance();
+          return storeChunkMsg_ == null ? edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance() : storeChunkMsg_;
         } else {
-          if (msgCase_ == 1) {
-            return storeChunkMsgBuilder_.getMessage();
-          }
-          return edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance();
+          return storeChunkMsgBuilder_.getMessage();
         }
       }
       /**
@@ -3547,12 +3463,12 @@ public final class StorageMessages {
           if (value == null) {
             throw new NullPointerException();
           }
-          msg_ = value;
+          storeChunkMsg_ = value;
           onChanged();
         } else {
           storeChunkMsgBuilder_.setMessage(value);
         }
-        msgCase_ = 1;
+
         return this;
       }
       /**
@@ -3561,12 +3477,12 @@ public final class StorageMessages {
       public Builder setStoreChunkMsg(
           edu.usfca.cs.dfs.StorageMessages.StoreChunk.Builder builderForValue) {
         if (storeChunkMsgBuilder_ == null) {
-          msg_ = builderForValue.build();
+          storeChunkMsg_ = builderForValue.build();
           onChanged();
         } else {
           storeChunkMsgBuilder_.setMessage(builderForValue.build());
         }
-        msgCase_ = 1;
+
         return this;
       }
       /**
@@ -3574,21 +3490,17 @@ public final class StorageMessages {
        */
       public Builder mergeStoreChunkMsg(edu.usfca.cs.dfs.StorageMessages.StoreChunk value) {
         if (storeChunkMsgBuilder_ == null) {
-          if (msgCase_ == 1 &&
-              msg_ != edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance()) {
-            msg_ = edu.usfca.cs.dfs.StorageMessages.StoreChunk.newBuilder((edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_)
-                .mergeFrom(value).buildPartial();
+          if (storeChunkMsg_ != null) {
+            storeChunkMsg_ =
+              edu.usfca.cs.dfs.StorageMessages.StoreChunk.newBuilder(storeChunkMsg_).mergeFrom(value).buildPartial();
           } else {
-            msg_ = value;
+            storeChunkMsg_ = value;
           }
           onChanged();
         } else {
-          if (msgCase_ == 1) {
-            storeChunkMsgBuilder_.mergeFrom(value);
-          }
-          storeChunkMsgBuilder_.setMessage(value);
+          storeChunkMsgBuilder_.mergeFrom(value);
         }
-        msgCase_ = 1;
+
         return this;
       }
       /**
@@ -3596,37 +3508,32 @@ public final class StorageMessages {
        */
       public Builder clearStoreChunkMsg() {
         if (storeChunkMsgBuilder_ == null) {
-          if (msgCase_ == 1) {
-            msgCase_ = 0;
-            msg_ = null;
-            onChanged();
-          }
+          storeChunkMsg_ = null;
+          onChanged();
         } else {
-          if (msgCase_ == 1) {
-            msgCase_ = 0;
-            msg_ = null;
-          }
-          storeChunkMsgBuilder_.clear();
+          storeChunkMsg_ = null;
+          storeChunkMsgBuilder_ = null;
         }
+
         return this;
       }
       /**
        * <code>.StoreChunk storeChunkMsg = 1;</code>
        */
       public edu.usfca.cs.dfs.StorageMessages.StoreChunk.Builder getStoreChunkMsgBuilder() {
+        
+        onChanged();
         return getStoreChunkMsgFieldBuilder().getBuilder();
       }
       /**
        * <code>.StoreChunk storeChunkMsg = 1;</code>
        */
       public edu.usfca.cs.dfs.StorageMessages.StoreChunkOrBuilder getStoreChunkMsgOrBuilder() {
-        if ((msgCase_ == 1) && (storeChunkMsgBuilder_ != null)) {
+        if (storeChunkMsgBuilder_ != null) {
           return storeChunkMsgBuilder_.getMessageOrBuilder();
         } else {
-          if (msgCase_ == 1) {
-            return (edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_;
-          }
-          return edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance();
+          return storeChunkMsg_ == null ?
+              edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance() : storeChunkMsg_;
         }
       }
       /**
@@ -3636,21 +3543,17 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StoreChunk, edu.usfca.cs.dfs.StorageMessages.StoreChunk.Builder, edu.usfca.cs.dfs.StorageMessages.StoreChunkOrBuilder> 
           getStoreChunkMsgFieldBuilder() {
         if (storeChunkMsgBuilder_ == null) {
-          if (!(msgCase_ == 1)) {
-            msg_ = edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance();
-          }
           storeChunkMsgBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               edu.usfca.cs.dfs.StorageMessages.StoreChunk, edu.usfca.cs.dfs.StorageMessages.StoreChunk.Builder, edu.usfca.cs.dfs.StorageMessages.StoreChunkOrBuilder>(
-                  (edu.usfca.cs.dfs.StorageMessages.StoreChunk) msg_,
+                  getStoreChunkMsg(),
                   getParentForChildren(),
                   isClean());
-          msg_ = null;
+          storeChunkMsg_ = null;
         }
-        msgCase_ = 1;
-        onChanged();;
         return storeChunkMsgBuilder_;
       }
 
+      private edu.usfca.cs.dfs.StorageMessages.RetrieveFile retrieveFileMsg_;
       private com.google.protobuf.SingleFieldBuilderV3<
           edu.usfca.cs.dfs.StorageMessages.RetrieveFile, edu.usfca.cs.dfs.StorageMessages.RetrieveFile.Builder, edu.usfca.cs.dfs.StorageMessages.RetrieveFileOrBuilder> retrieveFileMsgBuilder_;
       /**
@@ -3658,7 +3561,7 @@ public final class StorageMessages {
        * @return Whether the retrieveFileMsg field is set.
        */
       public boolean hasRetrieveFileMsg() {
-        return msgCase_ == 2;
+        return retrieveFileMsgBuilder_ != null || retrieveFileMsg_ != null;
       }
       /**
        * <code>.RetrieveFile retrieveFileMsg = 2;</code>
@@ -3666,15 +3569,9 @@ public final class StorageMessages {
        */
       public edu.usfca.cs.dfs.StorageMessages.RetrieveFile getRetrieveFileMsg() {
         if (retrieveFileMsgBuilder_ == null) {
-          if (msgCase_ == 2) {
-            return (edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_;
-          }
-          return edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance();
+          return retrieveFileMsg_ == null ? edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance() : retrieveFileMsg_;
         } else {
-          if (msgCase_ == 2) {
-            return retrieveFileMsgBuilder_.getMessage();
-          }
-          return edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance();
+          return retrieveFileMsgBuilder_.getMessage();
         }
       }
       /**
@@ -3685,12 +3582,12 @@ public final class StorageMessages {
           if (value == null) {
             throw new NullPointerException();
           }
-          msg_ = value;
+          retrieveFileMsg_ = value;
           onChanged();
         } else {
           retrieveFileMsgBuilder_.setMessage(value);
         }
-        msgCase_ = 2;
+
         return this;
       }
       /**
@@ -3699,12 +3596,12 @@ public final class StorageMessages {
       public Builder setRetrieveFileMsg(
           edu.usfca.cs.dfs.StorageMessages.RetrieveFile.Builder builderForValue) {
         if (retrieveFileMsgBuilder_ == null) {
-          msg_ = builderForValue.build();
+          retrieveFileMsg_ = builderForValue.build();
           onChanged();
         } else {
           retrieveFileMsgBuilder_.setMessage(builderForValue.build());
         }
-        msgCase_ = 2;
+
         return this;
       }
       /**
@@ -3712,21 +3609,17 @@ public final class StorageMessages {
        */
       public Builder mergeRetrieveFileMsg(edu.usfca.cs.dfs.StorageMessages.RetrieveFile value) {
         if (retrieveFileMsgBuilder_ == null) {
-          if (msgCase_ == 2 &&
-              msg_ != edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance()) {
-            msg_ = edu.usfca.cs.dfs.StorageMessages.RetrieveFile.newBuilder((edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_)
-                .mergeFrom(value).buildPartial();
+          if (retrieveFileMsg_ != null) {
+            retrieveFileMsg_ =
+              edu.usfca.cs.dfs.StorageMessages.RetrieveFile.newBuilder(retrieveFileMsg_).mergeFrom(value).buildPartial();
           } else {
-            msg_ = value;
+            retrieveFileMsg_ = value;
           }
           onChanged();
         } else {
-          if (msgCase_ == 2) {
-            retrieveFileMsgBuilder_.mergeFrom(value);
-          }
-          retrieveFileMsgBuilder_.setMessage(value);
+          retrieveFileMsgBuilder_.mergeFrom(value);
         }
-        msgCase_ = 2;
+
         return this;
       }
       /**
@@ -3734,37 +3627,32 @@ public final class StorageMessages {
        */
       public Builder clearRetrieveFileMsg() {
         if (retrieveFileMsgBuilder_ == null) {
-          if (msgCase_ == 2) {
-            msgCase_ = 0;
-            msg_ = null;
-            onChanged();
-          }
+          retrieveFileMsg_ = null;
+          onChanged();
         } else {
-          if (msgCase_ == 2) {
-            msgCase_ = 0;
-            msg_ = null;
-          }
-          retrieveFileMsgBuilder_.clear();
+          retrieveFileMsg_ = null;
+          retrieveFileMsgBuilder_ = null;
         }
+
         return this;
       }
       /**
        * <code>.RetrieveFile retrieveFileMsg = 2;</code>
        */
       public edu.usfca.cs.dfs.StorageMessages.RetrieveFile.Builder getRetrieveFileMsgBuilder() {
+        
+        onChanged();
         return getRetrieveFileMsgFieldBuilder().getBuilder();
       }
       /**
        * <code>.RetrieveFile retrieveFileMsg = 2;</code>
        */
       public edu.usfca.cs.dfs.StorageMessages.RetrieveFileOrBuilder getRetrieveFileMsgOrBuilder() {
-        if ((msgCase_ == 2) && (retrieveFileMsgBuilder_ != null)) {
+        if (retrieveFileMsgBuilder_ != null) {
           return retrieveFileMsgBuilder_.getMessageOrBuilder();
         } else {
-          if (msgCase_ == 2) {
-            return (edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_;
-          }
-          return edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance();
+          return retrieveFileMsg_ == null ?
+              edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance() : retrieveFileMsg_;
         }
       }
       /**
@@ -3774,18 +3662,13 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.RetrieveFile, edu.usfca.cs.dfs.StorageMessages.RetrieveFile.Builder, edu.usfca.cs.dfs.StorageMessages.RetrieveFileOrBuilder> 
           getRetrieveFileMsgFieldBuilder() {
         if (retrieveFileMsgBuilder_ == null) {
-          if (!(msgCase_ == 2)) {
-            msg_ = edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance();
-          }
           retrieveFileMsgBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               edu.usfca.cs.dfs.StorageMessages.RetrieveFile, edu.usfca.cs.dfs.StorageMessages.RetrieveFile.Builder, edu.usfca.cs.dfs.StorageMessages.RetrieveFileOrBuilder>(
-                  (edu.usfca.cs.dfs.StorageMessages.RetrieveFile) msg_,
+                  getRetrieveFileMsg(),
                   getParentForChildren(),
                   isClean());
-          msg_ = null;
+          retrieveFileMsg_ = null;
         }
-        msgCase_ = 2;
-        onChanged();;
         return retrieveFileMsgBuilder_;
       }
       @java.lang.Override
@@ -3883,10 +3766,10 @@ public final class StorageMessages {
       "\025\n\rstorageNodeId\030\001 \001(\005\022\030\n\020strorageNodeAd" +
       "dr\030\002 \001(\t\022\027\n\017storageNodePort\030\003 \001(\005\022\037\n\027cur" +
       "rentStorageNodeValue\030\004 \001(\005\" \n\014RetrieveFi" +
-      "le\022\020\n\010fileName\030\001 \001(\t\"n\n\025StorageMessageWr" +
-      "apper\022$\n\rstoreChunkMsg\030\001 \001(\0132\013.StoreChun" +
-      "kH\000\022(\n\017retrieveFileMsg\030\002 \001(\0132\r.RetrieveF" +
-      "ileH\000B\005\n\003msgB\022\n\020edu.usfca.cs.dfsb\006proto3"
+      "le\022\020\n\010fileName\030\001 \001(\t\"c\n\025StorageMessageWr" +
+      "apper\022\"\n\rstoreChunkMsg\030\001 \001(\0132\013.StoreChun" +
+      "k\022&\n\017retrieveFileMsg\030\002 \001(\0132\r.RetrieveFil" +
+      "eB\022\n\020edu.usfca.cs.dfsb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3921,7 +3804,7 @@ public final class StorageMessages {
     internal_static_StorageMessageWrapper_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_StorageMessageWrapper_descriptor,
-        new java.lang.String[] { "StoreChunkMsg", "RetrieveFileMsg", "Msg", });
+        new java.lang.String[] { "StoreChunkMsg", "RetrieveFileMsg", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

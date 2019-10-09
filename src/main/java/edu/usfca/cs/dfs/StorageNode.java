@@ -1,25 +1,14 @@
 package edu.usfca.cs.dfs;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
 
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.util.CheckSum;
 import edu.usfca.cs.dfs.util.CompressDecompress;
 import edu.usfca.cs.dfs.util.Entropy;
-
-import javax.xml.bind.DatatypeConverter;
 
 public class StorageNode {
 	private String storageNodeId;

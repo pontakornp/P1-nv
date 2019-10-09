@@ -1,11 +1,8 @@
 package edu.usfca.cs.dfs.util;
 
-import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 public class CheckSum {
     public static String checkSum(byte[] byteArray) {
@@ -13,7 +10,8 @@ public class CheckSum {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(byteArray);
             byte[] digest = md.digest();
-            String checkSum = DatatypeConverter.printHexBinary(digest).toUpperCase();
+            
+            String checkSum = Base64.getEncoder().encodeToString(digest);
             return checkSum;
         } catch (NoSuchAlgorithmException e) {
             System.out.println("Fail to do checksum.");
