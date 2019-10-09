@@ -131,14 +131,14 @@ public class StorageNode {
 	}
 	// get chunk location
 	public synchronized String getChunkLocation(String fileName, Integer chunkNumber) {
-
-		return "";
+		String filePath = storageNodeFileDirectory + fileName + '_' + chunkNumber;
+		return filePath;
 	}
 
 	// retrieve chunk from a file
 	public synchronized byte[] retrieveChunk(String fileName, Integer chunkNumber) {
-		// 1. form a file name
-		String filePath = storageNodeFileDirectory + fileName;
+		// 1. get chunk location
+		String filePath = getChunkLocation(fileName, chunkNumber);
 		// 2. check if file exist in the meta data map
 		if (!metaDataMap.containsKey(filePath)) {
 			return null;
