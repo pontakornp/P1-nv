@@ -14,10 +14,11 @@ import java.io.IOException;
  * Manages config file of non-blocking file transfer
  */
 public class Config {
-	private String clientDirectoryPath;
-	private String storageDirectoryPath;
-	private String controllerHostName;
+	private String clientAddr;
+	private String storageNodeAddr;
+	private String controllerAddr;
 	private int chunkSize;
+	private int storageNodePort;
 
 	/**
 	 * Set variables from the config.json file and assign them to variables in this class.
@@ -28,10 +29,11 @@ public class Config {
 			JsonReader jsonReader = new JsonReader(new FileReader("config.json"));
 			Gson gson = new Gson();
 			config = gson.fromJson(jsonReader, Config.class);
-			this.clientDirectoryPath = config.clientDirectoryPath;
-			this.storageDirectoryPath = config.storageDirectoryPath;
-			this.controllerHostName = config.controllerHostName;
+			this.clientAddr = config.clientAddr;
+			this.storageNodeAddr = config.storageNodeAddr;
+			this.controllerAddr = config.controllerAddr;
 			this.chunkSize = config.chunkSize;
+			this.storageNodePort = config.storageNodePort;
 		} catch(IOException ioe) {
 			System.out.println("Please try again with correct config file.");
 			return false;
@@ -39,35 +41,43 @@ public class Config {
 		return true;
 	}
 
-	public String getClientDirectoryPath() {
-		return clientDirectoryPath;
+	public String getClientAddr() {
+		return clientAddr;
 	}
 
-	public void setClientDirectoryPath(String clientDirectoryPath) {
-		this.clientDirectoryPath = clientDirectoryPath;
-	}
-	
-	public String getstorageDirectoryPath() {
-		return storageDirectoryPath;
-	}
-	
-	public void setStorageDirectoryPath(String storageDirectoryPath) {
-		this.storageDirectoryPath = storageDirectoryPath;
-	}
-	
-	public String getControllerHostName() {
-		return controllerHostName;
+	public void setClientAddr(String clientAddr) {
+		this.clientAddr = clientAddr;
 	}
 
-	public void setControllerHostName(String controllerHostName) {
-		this.controllerHostName = controllerHostName;
+	public String getStorageNodeAddr() {
+		return storageNodeAddr;
 	}
-	
+
+	public void setStorageNodeAddr(String storageNodeAddr) {
+		this.storageNodeAddr = storageNodeAddr;
+	}
+
+	public String getControllerAddr() {
+		return controllerAddr;
+	}
+
+	public void setControllerAddr(String controllerAddr) {
+		this.controllerAddr = controllerAddr;
+	}
+
 	public int getChunkSize() {
 		return chunkSize;
 	}
-	
+
 	public void setChunkSize(int chunkSize) {
 		this.chunkSize = chunkSize;
+	}
+
+	public int getStorageNodePort() {
+		return storageNodePort;
+	}
+
+	public void setStorageNodePort(int storageNodePort) {
+		this.storageNodePort = storageNodePort;
 	}
 }

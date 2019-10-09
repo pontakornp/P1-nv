@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.util.CheckSum;
@@ -16,16 +17,18 @@ import edu.usfca.cs.dfs.util.Entropy;
 public class StorageNode {
 	private String storageNodeId;
 	private String storageNodeAddr;
+	private String storageNodeFileDirectory; // storageNodeAddr + storageNodeAddr + '/'
 	private Integer storageNodePort;
 	private Integer currentStorageNodeValue;
 	private String fileStorageLocation;
 	private ArrayList<String> replicationNodeIds;
+	private HashMap<String, Chunk> metaDataMap;
 
 	public StorageNode() {
 		Config config = new Config();
 		config.setVariables();
-		String storageDirectoryPath = config.getstorageDirectoryPath();
-		registerNode(storageDirectoryPath);
+		registerNode(config.getStorageNodeAddr());
+		metaDataMap = new HashMap<String, Chunk>();
 	}
 
 	/*
@@ -33,10 +36,11 @@ public class StorageNode {
 	 * @request parameters : None
 	 * @return type: None
 	 */
-	public void registerNode(String storageDirectoryPath) {
+	public void registerNode(String storageNodeAddr) {
 		String nodeId = "1"; // get nodeId from controller
 		this.storageNodeId = nodeId;
-		this.storageNodeAddr = storageDirectoryPath + nodeId + '/';
+		this.storageNodeAddr = storageNodeAddr;
+		this.storageNodeFileDirectory = storageNodeAddr + nodeId + '/';
 	}
 
 	public String getStorageNodeId() {
@@ -49,10 +53,6 @@ public class StorageNode {
 	
 	public void setReplicationNodeIds(ArrayList<String> replicationNodesIdList) {
 		this.replicationNodeIds = replicationNodesIdList;
-	}
-
-	public void registerNode() {
-		
 	}
 
 	private boolean isFileCorrupted(byte[] chunkData, String originalCheckSum) {
@@ -72,7 +72,7 @@ public class StorageNode {
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
-	public boolean storeChunk(String fileName, Integer chunkNumber, byte[] chunkData, String originalCheckSum) {
+	public boolean storeChunk(String fileName, int chunkNumber, byte[] chunkData, String originalCheckSum) {
 		// calculate Shannon Entropy
 		double entropyBits = Entropy.calculateShannonEntropy(chunkData);
 		double maximumCompression = 1 - (entropyBits / 8);
@@ -80,30 +80,40 @@ public class StorageNode {
 		// if maximum compression is greater than 0.6, then compress the chunk data
 		// else do not compress
 		// then store the compress or uncompressed chunk data in a file
+		boolean isCompressed = false;
 		if (maximumCompression > 0.6) {
 			data = CompressDecompress.compress(chunkData);
 			if (data == null) {
 				return false;
 			}
+			isCompressed = true;
 		}
 		// create directory
-		File dir = new File(this.storageNodeAddr);
+		File dir = new File(this.storageNodeFileDirectory);
 		if (!dir.exists()) {
 			dir.mkdir();
 		}
 		// store the chunk in a file
 		try {
-			OutputStream outputStream = new FileOutputStream(this.storageNodeAddr + fileName);
+			OutputStream outputStream = new FileOutputStream(this.storageNodeFileDirectory + fileName);
 			outputStream.write(data);
-			byte[] storedChunkData = Files.readAllBytes(Paths.get(this.storageNodeAddr + fileName));
+			byte[] storedChunkData = Files.readAllBytes(Paths.get(this.storageNodeFileDirectory + fileName));
 			// check sum if the file is corrupted or not
-			return !isFileCorrupted(storedChunkData, originalCheckSum);
+			if (!isFileCorrupted(storedChunkData, originalCheckSum)) {
+				// add chunk to the meta data map
+				Chunk chunkObj = new Chunk(originalCheckSum, isCompressed, chunkNumber, chunkData.length);
+				String chunkKey = fileName + '_' + chunkNumber;
+				metaDataMap.put(chunkKey, chunkObj);
+				return true;
+			} else {
+				return false;
+			}
 		} catch (IOException e) {
 			System.out.println("There is a problem when writing stream to file.");
 			return false;
 		}
 	}
-	
+
 	public static void main(String args[]) {
 		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
 		try {
@@ -121,12 +131,31 @@ public class StorageNode {
 	}
 	// get chunk location
 	public synchronized String getChunkLocation(String fileName, Integer chunkNumber) {
+
 		return "";
 	}
 
 	// retrieve chunk from a file
 	public synchronized byte[] retrieveChunk(String fileName, Integer chunkNumber) {
-		return null;
+		// 1. form a file name
+		String filePath = storageNodeFileDirectory + fileName;
+		// 2. check if file exist in the meta data map
+		if (!metaDataMap.containsKey(filePath)) {
+			return null;
+		}
+		Chunk chunk = metaDataMap.get(filePath);
+		// 3. if chunk is compressed, need to decompress the byte array data before returning it
+		// else return the byte array data right away
+		try {
+			byte[] chunkData = Files.readAllBytes(Paths.get(filePath));
+			if (chunk.isCompressed()) {
+				chunkData = CompressDecompress.decompress(chunkData);
+			}
+			return chunkData;
+		} catch (IOException e) {
+			System.out.println("Fail to retrieve chunk.");
+			return null;
+		}
 	}
 
 	// list chunks and file names
