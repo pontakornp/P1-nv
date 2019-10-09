@@ -1,10 +1,17 @@
 package edu.usfca.cs.dfs;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Controller {
 	private ConcurrentHashMap<String, StorageNode> activeStorageNodes;
+	private ConcurrentHashMap<String, BloomFilter> bloomFilterList;
+	private static Integer BLOOM_FILTER_SIZE = 1024;
+	private static Integer BLOOM_HASH_COUNT = 3;
+	
 	
 	/*
 	 * This is called during registration of StorageNode
@@ -12,23 +19,53 @@ public class Controller {
 	 * Takes the Storage 
 	 */
 	public synchronized void  addStorageNode(StorageNode storageNode) {
-		
+		String storageNodeId = storageNode.getStorageNodeId();
+		storageNode = this.getReplicationNodes(storageNode);
+		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
+			activeStorageNodes.put(storageNodeId, storageNode);
+			bloomFilterList.put(storageNodeId, new BloomFilter(Controller.BLOOM_FILTER_SIZE, Controller.BLOOM_HASH_COUNT));
+		}
+	}
+	
+	/* This will update the replication nodes for storage nodes 
+	 * This will randomly select two other registered nodes as replicas for current node
+	 */
+	private StorageNode getReplicationNodes(StorageNode storageNode) {
+		ArrayList<String> duplicateNodeList = new ArrayList<String>(); 
+		int count = 0;
+		for (Map.Entry<String, StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
+			if(existingStorageNode.getKey() != storageNode.getStorageNodeId()){
+				duplicateNodeList.add(existingStorageNode.getKey());
+				count++;
+			}
+			if(count==2) {
+				break;
+			}
+		}
+		storageNode.setReplicationNodeIds(duplicateNodeList);
+		return storageNode;
 	}
 	
 	/*
 	 * This is called when controller deletes StorageNode when it decides it on inactive status
 	 * This will remove the node from activeStorageNodes
 	 */
-	public synchronized void deleteStorageNode(StorageNode storageNode) {
-		
+	public synchronized void deleteStorageNode(StorageNode storageNode){
+		this.activeStorageNodes.remove(storageNode.getStorageNodeId());
 	}
 	
 	/*
 	 *  This will be called by client to get the list of nodes to save a chunk
 	 *  This will randomly select three nodes from activeStorageNodes
 	 */
-	public synchronized CopyOnWriteArraySet<StorageNode> sendNodesForChunkSave() {
-		return null;
+	public synchronized ArrayList<StorageNode>getNodesForChunkSave() {
+		ArrayList<StorageNode> nodeList = new ArrayList<StorageNode>();
+		List<String> keysAsArray = new ArrayList<String>(this.activeStorageNodes.keySet());
+		for (int i = 0; i < 3; i++) {
+			Random r = new Random();
+			nodeList.add(this.activeStorageNodes.get(keysAsArray.get(r.nextInt(keysAsArray.size()))));
+		}
+		return nodeList;
 	}
 	
 	/*

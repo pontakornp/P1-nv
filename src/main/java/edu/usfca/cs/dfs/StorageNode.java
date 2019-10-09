@@ -22,10 +22,18 @@ public class StorageNode {
 	private Integer storageNodePort;
 	private Integer currentStorageNodeValue;
 	private String fileStorageLocation;
-	private ArrayList<String> replicationStorageNodeIds;
+	private ArrayList<String> replicationNodeIds;
 	
 	public String getStorageNodeId() {
 		return this.storageNodeId;
+	}
+	
+	public ArrayList<String> getReplicationNodeIds() {
+		return this.replicationNodeIds;
+	}
+	
+	public void setReplicationNodeIds(ArrayList<String> replicationNodesIdList) {
+		this.replicationNodeIds = replicationNodesIdList;
 	}
 	
 	
