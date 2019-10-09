@@ -23,7 +23,7 @@ import javax.xml.bind.DatatypeConverter;
 
 public class StorageNode {
 	private String storageNodeId;
-	private String strorageNodeAddr;
+	private String storageNodeAddr;
 	private Integer storageNodePort;
 	private Integer currentStorageNodeValue;
 	private String fileStorageLocation;
@@ -43,7 +43,7 @@ public class StorageNode {
 	public void registerNode(String storageDirectoryPath) {
 		String nodeId = "1"; // get nodeId from controller
 		this.storageNodeId = nodeId;
-		this.strorageNodeAddr = storageDirectoryPath + "/" + nodeId;
+		this.storageNodeAddr = storageDirectoryPath + "/" + nodeId;
 	}
 
 	public String getStorageNodeId() {
@@ -80,14 +80,15 @@ public class StorageNode {
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
-	public boolean storeChunk(String fileName, Integer chunkNumber, byte[] chunkData) {
+	public boolean storeChunk(String fileName, Integer chunkNumber, byte[] chunkData, String originalCheckSum) {
 		// calculate Shannon Entropy
-		double entropy = Entropy.calculateShannonEntropy(chunkData);
-		int entropyBits = chunkData.length;
-		double compressionBaseline = 0.6 * (1 - (entropyBits / 8));
+		double entropyBits = Entropy.calculateShannonEntropy(chunkData);
+		double maximumCompression = 1 - (entropyBits / 8);
 		byte[] data = chunkData;
-		if (entropy > compressionBaseline) {
-			//compress
+		// if maximum compression is greater than 0.6, then compress the chunk data
+		// else do not compress
+		// then store the compress or uncompressed chunk data in a file
+		if (maximumCompression > 0.6) {
 			data = CompressDecompress.compress(chunkData);
 			if (data == null) {
 				return false;
@@ -95,15 +96,14 @@ public class StorageNode {
 		}
 		// store the chunk in a file
 		try {
-			OutputStream outputStream = new FileOutputStream(this.strorageNodeAddr, true);
+			OutputStream outputStream = new FileOutputStream(this.storageNodeAddr, true);
 			outputStream.write(data);
 		} catch (IOException e) {
 			System.out.println("There is a problem when writing stream to file.");
 			return false;
 		}
 		// check sum if the file is corrupted or not
-
-		return true;
+		return isFileCorrupted(fileName, chunkData, originalCheckSum);
 	}
 
 	// get number of chunks
