@@ -11,15 +11,38 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-
+import edu.usfca.cs.dfs.config.ClientNodeConfig;
 import edu.usfca.cs.dfs.net.MessagePipeline;
 
 public class Client {
 
-    public Client() {
+    public Client(ClientNodeConfig clientConfig) {
 
     }
+    
+    public void sendFile(String filePath) {
+    	
+    }
+    
+    /*
+     * This sends a request to controller to get list of storage nodes
+     * to save for each chunk. Opens a channel to controller with 
+     * fileName, chunkId, chunksize
+     */
+    public void getFile(String fileName) {
+    	
+    }
+    
+    /*
+     * This sends a request to controller to get list of storage nodes
+     * to save for each chunk. Opens a channel to controller with 
+     * fileName, chunkId, chunksize
+     */
+    private void getStorageNodes(Chunk chunk) {
 
+    }
+    
+    
     public static void main(String[] args)
     throws IOException {
         EventLoopGroup workerGroup = new NioEventLoopGroup();

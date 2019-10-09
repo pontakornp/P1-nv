@@ -6,12 +6,17 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import edu.usfca.cs.dfs.config.ControllerNodeConfig;
+
 public class Controller {
 	private ConcurrentHashMap<String, StorageNode> activeStorageNodes;
 	private ConcurrentHashMap<String, BloomFilter> bloomFilterList;
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	
+	public Controller(ControllerNodeConfig controllerConfig) {
+		
+	}
 	
 	/*
 	 * This is called during registration of StorageNode
@@ -76,12 +81,6 @@ public class Controller {
 		
 	}
 	
-	/*
-	 * This will be called as response to HeartBeat send from StorageNode
-	 */
-	public synchronized void sendHeartBeatConfirmation() {
-		
-	}
 	
 	/*
 	 * This will be called repeatedly and identify the list of inactive nodes
