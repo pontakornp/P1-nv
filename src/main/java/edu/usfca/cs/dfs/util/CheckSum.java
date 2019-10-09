@@ -19,7 +19,15 @@ public class CheckSum {
         }
     }
     public static void main(String args[]) {
-        byte[] temp = {10,5,10};
-        System.out.println(checkSum(temp));
+//        byte[] temp = {10,5,10};
+//        String filename = "/Users/pontakornp/Documents/projects/bigdata/P1-nv/test_store.txt";
+//        byte[] temp = new byte[0];
+//        try {
+//            temp = Files.readAllBytes(Paths.get(filename));
+//            System.out.println(checkSum(temp));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 }
