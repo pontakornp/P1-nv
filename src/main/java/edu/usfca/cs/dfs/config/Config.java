@@ -1,16 +1,14 @@
 package edu.usfca.cs.dfs.config;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-
-import edu.usfca.cs.dfs.StorageNode;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 /**
  * @author pontakornp
@@ -52,7 +50,7 @@ public class Config {
 			JsonReader jsonReader = new JsonReader(new FileReader(fileName));
 			Gson gson = new Gson();
 			Config config = gson.fromJson(jsonReader, Config.class);
-			System.out.println(config);
+			System.out.println(config.toString());
 			this.clientAddr = config.clientAddr;
 			
 			this.controllerNodeAddr = config.controllerNodeAddr;
@@ -105,7 +103,7 @@ public class Config {
 	}
 	
 	public int getControllerNodePort() {
-		return storageNodePort;
+		return controllerNodePort;
 	}
 
 	public void setControllerNodePort(int controllerNodePort) {

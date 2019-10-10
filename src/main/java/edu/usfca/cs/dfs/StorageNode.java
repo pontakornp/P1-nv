@@ -13,8 +13,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.protobuf.ByteString;
-
 import edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper;
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
@@ -107,7 +105,9 @@ public class StorageNode {
 	            .channel(NioSocketChannel.class)
 	            .option(ChannelOption.SO_KEEPALIVE, true)
 	            .handler(pipeline);
-	
+	        
+	        System.out.println(this.controllerNodeAddr+String.valueOf(this.controllerNodePort));
+	        
 	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
 	        cf.syncUninterruptibly();
 	
@@ -122,6 +122,7 @@ public class StorageNode {
 	        System.out.println("Registration message sent to controller");
 	        workerGroup.shutdownGracefully();
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Registration of storage node failed. Controller connetion establishment failed");
 		}
 		

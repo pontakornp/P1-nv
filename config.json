@@ -1,8 +1,8 @@
 {
 	"clientDirectoryPath": "~/Documents/projects/bigdata/P1-nv/",
-	"controllerNodeAddr": "http://127.0.0.1/",
+	"controllerNodeAddr": "127.0.0.1",
 	"controllerNodePort": 8000,
-	"storageNodeAddr": "http://127.0.0.1/",
+	"storageNodeAddr": "127.0.0.1",
 	"storageNodePort": 7000,
 	"storageNodeDirectoryPath": "~/Documents/projects/bigdata/P1-nv/",
 	"maxStorageValue": 10,
