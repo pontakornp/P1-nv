@@ -17,7 +17,7 @@ message StoreChunk {
 
 message StorageNode {
 	int32 storageNodeId = 1;
-	string strorageNodeAddr = 2;
+	string storageNodeAddr = 2;
 	int32 storageNodePort = 3;
 }
 
