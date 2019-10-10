@@ -2,11 +2,9 @@ package edu.usfca.cs.dfs;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import edu.usfca.cs.dfs.config.Config;
@@ -21,15 +19,22 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 public class Controller {
 	private String controllerNodeAddr;
 	private int controllerNodePort;
-	private ConcurrentHashMap<String, StorageNode> activeStorageNodes;
-	private ConcurrentHashMap<String, BloomFilter> bloomFilterList;
+	private static ConcurrentHashMap<String, StorageNode> activeStorageNodes;
+	private static ConcurrentHashMap<String, BloomFilter> bloomFilterList;
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	
-	public Controller(String configFileName) {
-		Config config = new Config(configFileName);
-		setVariables(config);
+	private static Controller controllerInstance; 
+	
+	private Controller() {
 		
+	}
+	
+	public static Controller getInstance() {
+		if (controllerInstance == null){
+			controllerInstance = new Controller();
+		}
+		return controllerInstance;
 	}
 	
 	private void setVariables(Config config) {
@@ -160,7 +165,9 @@ public class Controller {
     		configFileName = "config.json";
     	}
 		
-		Controller controllerNode = new Controller(configFileName);
+		Config config = new Config(configFileName);
+		Controller controllerNode = Controller.getInstance();
+		controllerNode.setVariables(config);
 		
 		try {
 			controllerNode.start();
@@ -168,6 +175,5 @@ public class Controller {
 			System.out.println("Unable to start controller node");
 			e.printStackTrace();
 		}
-		
     } 
 }

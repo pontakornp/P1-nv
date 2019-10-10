@@ -34,9 +34,10 @@ message RetrieveFile {
     string fileName = 1;
 }
 
-message StorageMessageWrapper {
-	GetPrimaryStorageNode getPrimaryStorageNodeMsg = 1;
-    StoreChunk storeChunkMsg = 2;
-    StorageNode storageNodeMsg = 3;
-    RetrieveFile retrieveFileMsg = 4;
+message MessageWrapper {
+	int32 messageType = 1;
+	GetPrimaryStorageNode getPrimaryStorageNodeMsg = 2;
+    StoreChunk storeChunkMsg = 3;
+    StorageNode storageNodeMsg = 4;
+    RetrieveFile retrieveFileMsg = 5;
 }

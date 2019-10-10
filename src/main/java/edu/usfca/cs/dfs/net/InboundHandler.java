@@ -10,7 +10,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 @ChannelHandler.Sharable
 public class InboundHandler
-extends SimpleChannelInboundHandler<StorageMessages.StorageMessageWrapper> {
+extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 
     public InboundHandler() { }
 
@@ -39,7 +39,7 @@ extends SimpleChannelInboundHandler<StorageMessages.StorageMessageWrapper> {
     @Override
     public void channelRead0(
             ChannelHandlerContext ctx,
-            StorageMessages.StorageMessageWrapper msg) {
+            StorageMessages.MessageWrapper msg) {
 
         StorageMessages.StoreChunk storeChunkMsg
             = msg.getStoreChunkMsg();

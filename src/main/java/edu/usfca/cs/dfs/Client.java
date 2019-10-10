@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.ByteString;
 
-import edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper;
+import edu.usfca.cs.dfs.StorageMessages.MessageWrapper;
 import edu.usfca.cs.dfs.net.MessagePipeline;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -66,12 +66,12 @@ public class Client {
 	            byte[] arr = new byte[buffer.remaining()];
 	            buffer.get(arr);
 	            
-	            StorageMessageWrapper getPrimaryStorageNodemessage 
+	            MessageWrapper getPrimaryStorageNodemessage 
 	            	= this.constructGetPrimaryStorageNodeRequestMessage(fileName, chunkId, arr.length);
 	            
 	            StorageNode storageNode = this.getPrimaryStorageNode(bootstrap, getPrimaryStorageNodemessage);
 	            
-	            StorageMessageWrapper saveChunkMessage = 
+	            MessageWrapper saveChunkMessage = 
 	            		this.constructSaveChunkRequestMessage(fileName, chunkId, arr);
 	            this.saveChunkonPrimary(bootstrap, saveChunkMessage, storageNode);
 	            buffer.clear();
@@ -106,8 +106,8 @@ public class Client {
             	.setFileName(fileName)
             	.build();
             
-            StorageMessages.StorageMessageWrapper msgWrapper =
-                    StorageMessages.StorageMessageWrapper.newBuilder()
+            StorageMessages.MessageWrapper msgWrapper =
+                    StorageMessages.MessageWrapper.newBuilder()
                         .setRetrieveFileMsg(retreiveFileMsg)
                         .build();
             
@@ -130,7 +130,7 @@ public class Client {
      * This will be used by client to send to controller
      *  
      */
-    public StorageMessageWrapper constructGetPrimaryStorageNodeRequestMessage(String fileName, int chunkId, int chunksize) {
+    public MessageWrapper constructGetPrimaryStorageNodeRequestMessage(String fileName, int chunkId, int chunksize) {
     	StorageMessages.GetPrimaryStorageNode getPrimaryStorageNodeMsg
         = StorageMessages.GetPrimaryStorageNode.newBuilder()
             .setFileName(fileName)
@@ -138,8 +138,8 @@ public class Client {
             .setChunkSize(chunksize)
             .build();
     	
-    	StorageMessages.StorageMessageWrapper msgWrapper =
-                StorageMessages.StorageMessageWrapper.newBuilder()
+    	StorageMessages.MessageWrapper msgWrapper =
+                StorageMessages.MessageWrapper.newBuilder()
                     .setGetPrimaryStorageNodeMsg(getPrimaryStorageNodeMsg)
                     .build();
     	
@@ -151,7 +151,7 @@ public class Client {
      * This will use protobuf message to create the chunk message
      * This will be used by client to send to storageNode to save particular chunk
      */
-    public StorageMessageWrapper constructSaveChunkRequestMessage(String fileName, int chunkId, byte[] chunk) {
+    public MessageWrapper constructSaveChunkRequestMessage(String fileName, int chunkId, byte[] chunk) {
     	ByteString data = ByteString.copyFrom(chunk);
     	
     	StorageMessages.StoreChunk storeChunkRequestMessage
@@ -161,8 +161,8 @@ public class Client {
             .setData(data)
             .build();
     	
-    	StorageMessages.StorageMessageWrapper msgWrapper =
-                StorageMessages.StorageMessageWrapper.newBuilder()
+    	StorageMessages.MessageWrapper msgWrapper =
+                StorageMessages.MessageWrapper.newBuilder()
                     .setStoreChunkMsg(storeChunkRequestMessage)
                     .build();
     	
@@ -176,7 +176,7 @@ public class Client {
      * to save for each chunk. Opens a channel to controller with 
      * fileName, chunkId, chunksize
      */
-    private StorageNode getPrimaryStorageNode(Bootstrap bootstrap, StorageMessageWrapper message) {
+    private StorageNode getPrimaryStorageNode(Bootstrap bootstrap, MessageWrapper message) {
         ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
         cf.syncUninterruptibly();
         Channel chan = cf.channel();
@@ -187,7 +187,7 @@ public class Client {
         return null;
     }
     
-    private void saveChunkonPrimary(Bootstrap bootstrap, StorageMessageWrapper message, StorageNode storageNode) {
+    private void saveChunkonPrimary(Bootstrap bootstrap, MessageWrapper message, StorageNode storageNode) {
     	ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
         cf.syncUninterruptibly();
         Channel chan = cf.channel();
@@ -222,8 +222,8 @@ public class Client {
                 .setData(data)
                 .build();
 
-        StorageMessages.StorageMessageWrapper msgWrapper =
-            StorageMessages.StorageMessageWrapper.newBuilder()
+        StorageMessages.MessageWrapper msgWrapper =
+            StorageMessages.MessageWrapper.newBuilder()
                 .setStoreChunkMsg(storeChunkMsg)
                 .build();
 

@@ -12,7 +12,7 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 
 public class MessagePipeline extends ChannelInitializer<SocketChannel> {
 
-    private InboundHandler inboundHandler;
+    protected InboundHandler inboundHandler;
 
     public MessagePipeline() {
         inboundHandler = new InboundHandler();
@@ -33,7 +33,7 @@ public class MessagePipeline extends ChannelInitializer<SocketChannel> {
                 new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4));
         pipeline.addLast(
                 new ProtobufDecoder(
-                    StorageMessages.StorageMessageWrapper.getDefaultInstance()));
+                    StorageMessages.MessageWrapper.getDefaultInstance()));
         pipeline.addLast(inboundHandler);
 
         /* Outbound: */

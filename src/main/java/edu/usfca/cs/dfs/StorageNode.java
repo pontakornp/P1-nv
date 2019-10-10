@@ -13,7 +13,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper;
+import edu.usfca.cs.dfs.StorageMessages.MessageWrapper;
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
 import edu.usfca.cs.dfs.util.CheckSum;
@@ -45,11 +45,19 @@ public class StorageNode {
 	
 	private String controllerNodeAddr;
 	private int controllerNodePort;
+	
+	private static StorageNode storageNodeInstance = null; 
 
-	public StorageNode(String configFileName) {
-		Config config = new Config(configFileName);
-		setVariables(config);
+	private StorageNode() {
+		
 	}
+	
+	public static StorageNode getInstance() { 
+        if (storageNodeInstance == null) 
+        	storageNodeInstance = new StorageNode(); 
+  
+        return storageNodeInstance; 
+    } 
 	
 	private void setVariables(Config config) {
 		this.storageNodeId = UUID.randomUUID().toString();
@@ -70,7 +78,7 @@ public class StorageNode {
      * This will use protobuf message to create the chunk message
      * This will be used by client to send to storageNode to save particular chunk
      */
-    public StorageMessageWrapper constructRegisterNodeMessage() {
+    public MessageWrapper constructRegisterNodeMessage() {
     	
     	StorageMessages.StorageNode registerNodeMessage
         = StorageMessages.StorageNode.newBuilder()
@@ -81,8 +89,8 @@ public class StorageNode {
             .setMaxStorageValue(this.maxStorageValue)
             .build();
     	
-    	StorageMessages.StorageMessageWrapper msgWrapper =
-                StorageMessages.StorageMessageWrapper.newBuilder()
+    	StorageMessages.MessageWrapper msgWrapper =
+                StorageMessages.MessageWrapper.newBuilder()
                     .setStorageNodeMsg(registerNodeMessage)
                     .build();
     	
@@ -111,7 +119,7 @@ public class StorageNode {
 	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
 	        cf.syncUninterruptibly();
 	
-	        StorageMessageWrapper msgWrapper = this.constructRegisterNodeMessage();
+	        MessageWrapper msgWrapper = this.constructRegisterNodeMessage();
 	
 	        Channel chan = cf.channel();
 	        ChannelFuture write = chan.write(msgWrapper);
@@ -272,7 +280,7 @@ public class StorageNode {
               .childOption(ChannelOption.SO_KEEPALIVE, true);
  
             ChannelFuture f = b.bind(this.storageNodePort).sync();
-            System.out.print("Storage Node started at port: " + String.valueOf(this.storageNodePort));
+            System.out.println("Storage Node started at port: " + String.valueOf(this.storageNodePort));
             this.registerNode();
             f.channel().closeFuture().sync();
         } finally {
@@ -288,8 +296,9 @@ public class StorageNode {
     	}else {
     		configFileName = "config.json";
     	}
-		
-		StorageNode storageNode = new StorageNode(configFileName);
+		Config config = new Config(configFileName);
+		StorageNode storageNode = StorageNode.getInstance();
+		storageNode.setVariables(config);
 		
 		try {
 			storageNode.start();
