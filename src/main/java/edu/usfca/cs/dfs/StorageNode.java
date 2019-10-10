@@ -30,7 +30,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class StorageNode {
-	
+
 	static Logger logger = LogManager.getLogger(StorageNode.class);
 	
 	private String storageNodeId;
@@ -55,7 +55,7 @@ public class StorageNode {
 		this.storageNodeId = UUID.randomUUID().toString();
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
-		this.storageNodeDirectoryPath = config.getStorageDirectoryPath();
+		this.storageNodeDirectoryPath = storageNodeAddr + storageNodePort;
 		this.currentStorageValue = 0;
 		this.maxStorageValue = config.getMaxStorageValue();
 		this.replicationNodeIds = new ArrayList<String>();
@@ -193,6 +193,7 @@ public class StorageNode {
 		File dir = new File(this.storageNodeDirectoryPath);
 		if (!dir.exists()) {
 			dir.mkdir();
+			logger.info("Created new directory");
 		}
 		// store the chunk in a file
 		try {
@@ -205,6 +206,7 @@ public class StorageNode {
 				Chunk chunkObj = new Chunk(originalCheckSum, isCompressed, chunkNumber, chunkData.length);
 				String chunkKey = fileName + '_' + chunkNumber;
 				metaDataMap.put(chunkKey, chunkObj);
+				logger.info("add chunk");
 				return true;
 			} else {
 				return false;
@@ -284,18 +286,27 @@ public class StorageNode {
 	public static void main(String args[]) {
 		String configFileName;
 		if(args.length>0) {
-    		configFileName= args[0];
-    	}else {
-    		configFileName = "config.json";
-    	}
-		
+			configFileName= args[0];
+		}else {
+			configFileName = "config.json";
+		}
 		StorageNode storageNode = new StorageNode(configFileName);
-		
+
 		try {
 			storageNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start storage node");
 			e.printStackTrace();
 		}
+//		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
+//		try {
+//			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
+//			StorageNode sn = new StorageNode("config.json");
+//			logger.info("Info log message");
+//			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 }
