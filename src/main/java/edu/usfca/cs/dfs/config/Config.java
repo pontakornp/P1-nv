@@ -40,7 +40,7 @@ public class Config {
 	}
 
 	public String getClientDirectoryPath() {
-		return clientDirectoryPath;
+		return this.clientDirectoryPath;
 	}
 
 	public void setClientDirectoryPath(String clientDirectoryPath) {
@@ -48,7 +48,7 @@ public class Config {
 	}
 	
 	public String getstorageDirectoryPath() {
-		return storageDirectoryPath;
+		return this.storageDirectoryPath;
 	}
 	
 	public void setStorageDirectoryPath(String storageDirectoryPath) {
@@ -56,7 +56,7 @@ public class Config {
 	}
 	
 	public String getControllerHostName() {
-		return controllerHostName;
+		return this.controllerHostName;
 	}
 
 	public void setControllerHostName(String controllerHostName) {

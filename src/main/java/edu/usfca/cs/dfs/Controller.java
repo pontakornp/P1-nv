@@ -1,5 +1,6 @@
 package edu.usfca.cs.dfs;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,9 +8,20 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import edu.usfca.cs.dfs.config.ControllerNodeConfig;
+import edu.usfca.cs.dfs.net.MessagePipeline;
+import edu.usfca.cs.dfs.net.ServerMessageRouter;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class Controller {
 	private ConcurrentHashMap<String, StorageNode> activeStorageNodes;
+	private Integer controllerNodePort;
 	private ConcurrentHashMap<String, BloomFilter> bloomFilterList;
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
@@ -107,5 +119,30 @@ public class Controller {
 	public synchronized void handleInactiveNode() {
 		
 	}
-
+	
+	public void start() throws IOException, InterruptedException {
+		EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        MessagePipeline pipeline = new MessagePipeline();
+        
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+              .channel(NioServerSocketChannel.class)
+              .childHandler(pipeline)
+              .option(ChannelOption.SO_BACKLOG, 128)
+              .childOption(ChannelOption.SO_KEEPALIVE, true);
+ 
+            ChannelFuture f = b.bind(this.controllerNodePort).sync();
+            f.channel().closeFuture().sync();
+        } finally {
+            workerGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
+        }
+    }
+	
+	
+	public static void main(String[] args) throws IOException {
+		
+    } 
 }

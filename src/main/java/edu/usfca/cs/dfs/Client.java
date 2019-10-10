@@ -1,6 +1,7 @@
 package edu.usfca.cs.dfs;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -18,8 +19,12 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Client {
+	
+	static Logger logger = LogManager.getLogger(Client.class);
 	private Integer chunkSize;
 	private String controllerNodeAddr;
 	private Integer controllerNodePort;
@@ -74,12 +79,73 @@ public class Client {
 	            chunkId++;
 	        }
 	        aFile.close();
+	        workerGroup.shutdownGracefully();
     	}catch (Exception e) {
         	System.out.println("Caught exception");
             e.printStackTrace();	
         }
     }
     
+    
+    /*
+     * This sends a request to controller to get list of storage nodes
+     * to save for each chunk. Opens a channel to controller with 
+     * fileName, chunkId, chunksize
+     */
+    public void getFile(String fileName) {
+//    	try {
+//    		EventLoopGroup workerGroup = new NioEventLoopGroup();
+//            MessagePipeline pipeline = new MessagePipeline();
+//            Bootstrap bootstrap = new Bootstrap()
+//                    .group(workerGroup)
+//                    .channel(NioSocketChannel.class)
+//                    .option(ChannelOption.SO_KEEPALIVE, true)
+//                    .handler(pipeline);
+//    		
+//            StorageMessages.RetrieveFile retreiveFileMsg  
+//            	= StorageMessages.RetrieveFile.newBuilder()
+//            	.setFileName(fileName)
+//            	.build();
+//            
+//            StorageMessages.StorageMessageWrapper msgWrapper =
+//                    StorageMessages.StorageMessageWrapper.newBuilder()
+//                        .setStoreChunkMsg(storeChunkMsg)
+//                        .build();
+//            
+//            ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+//            cf.syncUninterruptibly();
+//            Channel chan = cf.channel();
+//            ChannelFuture write = chan.write(message);
+//            chan.flush();
+//            
+//            
+//	    	RandomAccessFile aFile = new RandomAccessFile(filePath, "r");
+//	        FileChannel inChannel = aFile.getChannel();
+//	        Integer bufferSize = this.chunkSize;
+//	        ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+//	        int chunkId = 1;
+//	        while(inChannel.read(buffer) > 0){
+//	            buffer.flip();
+//	            byte[] arr = new byte[buffer.remaining()];
+//	            buffer.get(arr);
+//	            
+//	            
+//	            
+//	            StorageNode storageNode = this.getPrimaryStorageNode(bootstrap, getPrimaryStorageNodemessage);
+//	            
+//	            StorageMessageWrapper saveChunkMessage = 
+//	            		this.constructSaveChunkRequestMessage(fileName, chunkId, arr);
+//	            this.saveChunkonPrimary(bootstrap, saveChunkMessage, storageNode);
+//	            buffer.clear();
+//	            chunkId++;
+//	        }
+//	        aFile.close();
+//	        workerGroup.shutdownGracefully();
+//    	}catch (Exception e) {
+//        	System.out.println("Caught exception");
+//            e.printStackTrace();	
+//        }
+    }
     
     /*
      * This will use protobuf message to create the chunk message
@@ -125,14 +191,7 @@ public class Client {
     	return msgWrapper;
     }
     	
-    /*
-     * This sends a request to controller to get list of storage nodes
-     * to save for each chunk. Opens a channel to controller with 
-     * fileName, chunkId, chunksize
-     */
-    public void getFile(String fileName) {
-    	
-    }
+    
     
     /*
      * This sends a request to controller to get list of storage nodes
