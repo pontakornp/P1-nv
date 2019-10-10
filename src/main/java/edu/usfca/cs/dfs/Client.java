@@ -1,11 +1,13 @@
 package edu.usfca.cs.dfs;
 
 import java.io.File;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.ByteString;
 
@@ -19,8 +21,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Client {
 	
@@ -93,58 +93,37 @@ public class Client {
      * fileName, chunkId, chunksize
      */
     public void getFile(String fileName) {
-//    	try {
-//    		EventLoopGroup workerGroup = new NioEventLoopGroup();
-//            MessagePipeline pipeline = new MessagePipeline();
-//            Bootstrap bootstrap = new Bootstrap()
-//                    .group(workerGroup)
-//                    .channel(NioSocketChannel.class)
-//                    .option(ChannelOption.SO_KEEPALIVE, true)
-//                    .handler(pipeline);
-//    		
-//            StorageMessages.RetrieveFile retreiveFileMsg  
-//            	= StorageMessages.RetrieveFile.newBuilder()
-//            	.setFileName(fileName)
-//            	.build();
-//            
-//            StorageMessages.StorageMessageWrapper msgWrapper =
-//                    StorageMessages.StorageMessageWrapper.newBuilder()
-//                        .setStoreChunkMsg(storeChunkMsg)
-//                        .build();
-//            
-//            ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
-//            cf.syncUninterruptibly();
-//            Channel chan = cf.channel();
-//            ChannelFuture write = chan.write(message);
-//            chan.flush();
-//            
-//            
-//	    	RandomAccessFile aFile = new RandomAccessFile(filePath, "r");
-//	        FileChannel inChannel = aFile.getChannel();
-//	        Integer bufferSize = this.chunkSize;
-//	        ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-//	        int chunkId = 1;
-//	        while(inChannel.read(buffer) > 0){
-//	            buffer.flip();
-//	            byte[] arr = new byte[buffer.remaining()];
-//	            buffer.get(arr);
-//	            
-//	            
-//	            
-//	            StorageNode storageNode = this.getPrimaryStorageNode(bootstrap, getPrimaryStorageNodemessage);
-//	            
-//	            StorageMessageWrapper saveChunkMessage = 
-//	            		this.constructSaveChunkRequestMessage(fileName, chunkId, arr);
-//	            this.saveChunkonPrimary(bootstrap, saveChunkMessage, storageNode);
-//	            buffer.clear();
-//	            chunkId++;
-//	        }
-//	        aFile.close();
-//	        workerGroup.shutdownGracefully();
-//    	}catch (Exception e) {
-//        	System.out.println("Caught exception");
-//            e.printStackTrace();	
-//        }
+    	try {
+    		EventLoopGroup workerGroup = new NioEventLoopGroup();
+            MessagePipeline pipeline = new MessagePipeline();
+            Bootstrap bootstrap = new Bootstrap()
+                    .group(workerGroup)
+                    .channel(NioSocketChannel.class)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .handler(pipeline);
+    		
+            StorageMessages.RetrieveFile retreiveFileMsg  
+            	= StorageMessages.RetrieveFile.newBuilder()
+            	.setFileName(fileName)
+            	.build();
+            
+            StorageMessages.StorageMessageWrapper msgWrapper =
+                    StorageMessages.StorageMessageWrapper.newBuilder()
+                        .setRetrieveFileMsg(retreiveFileMsg)
+                        .build();
+            
+            ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+            cf.syncUninterruptibly();
+            Channel chan = cf.channel();
+            ChannelFuture write = chan.write(msgWrapper);
+            chan.flush();
+            write.syncUninterruptibly();
+            //TODO: Need to read response from controller
+            //TODO: Need to handle response from controller
+    	}catch (Exception e) {
+        	System.out.println("Caught exception");
+          e.printStackTrace();	
+    	}
     }
     
     /*
@@ -210,7 +189,7 @@ public class Client {
     }
     
     private void saveChunkonPrimary(Bootstrap bootstrap, StorageMessageWrapper message, StorageNode storageNode) {
-    	ChannelFuture cf = bootstrap.connect("localhost", 7777);
+    	ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
         cf.syncUninterruptibly();
         Channel chan = cf.channel();
         ChannelFuture write = chan.write(message);

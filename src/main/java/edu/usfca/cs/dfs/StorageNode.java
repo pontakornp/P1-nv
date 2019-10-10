@@ -18,8 +18,9 @@ public class StorageNode {
 	private String storageNodeId;
 	private String storageNodeAddr;
 	private String storageNodeFileDirectory; // storageNodeAddr + storageNodeAddr + '/'
-	private Integer storageNodePort;
-	private Integer currentStorageNodeValue;
+	private int storageNodePort;
+	private int currentStorageNodeValue;
+	private int storageNodeValue;
 	private String fileStorageLocation;
 	private ArrayList<String> replicationNodeIds;
 	private HashMap<String, Chunk> metaDataMap;
@@ -37,14 +38,18 @@ public class StorageNode {
 	 * @return type: None
 	 */
 	public void registerNode(String storageNodeAddr) {
-		String nodeId = "1"; // get nodeId from controller
-		this.storageNodeId = nodeId;
-		this.storageNodeAddr = storageNodeAddr;
-		this.storageNodeFileDirectory = storageNodeAddr + nodeId + '/';
 	}
 
 	public String getStorageNodeId() {
 		return this.storageNodeId;
+	}
+	
+	public String getStorageNodeAddr() {
+		return this.storageNodeAddr;
+	}
+	
+	public int getStorageNodePort() {
+		return this.storageNodePort;
 	}
 
 	public ArrayList<String> getReplicationNodeIds() {

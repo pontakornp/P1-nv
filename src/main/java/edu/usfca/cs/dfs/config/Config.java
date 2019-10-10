@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * 
  * @author pontakornp
  * Manages config file of non-blocking file transfer
  */
