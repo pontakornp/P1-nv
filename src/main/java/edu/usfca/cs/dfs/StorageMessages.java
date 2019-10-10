@@ -20,25 +20,21 @@ public final class StorageMessages {
 
     /**
      * <code>string fileName = 1;</code>
-     * @return The fileName.
      */
     java.lang.String getFileName();
     /**
      * <code>string fileName = 1;</code>
-     * @return The bytes for fileName.
      */
     com.google.protobuf.ByteString
         getFileNameBytes();
 
     /**
      * <code>int32 chunkId = 2;</code>
-     * @return The chunkId.
      */
     int getChunkId();
 
     /**
      * <code>int32 chunkSize = 3;</code>
-     * @return The chunkSize.
      */
     int getChunkSize();
   }
@@ -140,7 +136,6 @@ public final class StorageMessages {
     private volatile java.lang.Object fileName_;
     /**
      * <code>string fileName = 1;</code>
-     * @return The fileName.
      */
     public java.lang.String getFileName() {
       java.lang.Object ref = fileName_;
@@ -156,7 +151,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string fileName = 1;</code>
-     * @return The bytes for fileName.
      */
     public com.google.protobuf.ByteString
         getFileNameBytes() {
@@ -176,7 +170,6 @@ public final class StorageMessages {
     private int chunkId_;
     /**
      * <code>int32 chunkId = 2;</code>
-     * @return The chunkId.
      */
     public int getChunkId() {
       return chunkId_;
@@ -186,7 +179,6 @@ public final class StorageMessages {
     private int chunkSize_;
     /**
      * <code>int32 chunkSize = 3;</code>
-     * @return The chunkSize.
      */
     public int getChunkSize() {
       return chunkSize_;
@@ -531,7 +523,6 @@ public final class StorageMessages {
       private java.lang.Object fileName_ = "";
       /**
        * <code>string fileName = 1;</code>
-       * @return The fileName.
        */
       public java.lang.String getFileName() {
         java.lang.Object ref = fileName_;
@@ -547,7 +538,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @return The bytes for fileName.
        */
       public com.google.protobuf.ByteString
           getFileNameBytes() {
@@ -564,8 +554,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @param value The fileName to set.
-       * @return This builder for chaining.
        */
       public Builder setFileName(
           java.lang.String value) {
@@ -579,7 +567,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @return This builder for chaining.
        */
       public Builder clearFileName() {
         
@@ -589,8 +576,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @param value The bytes for fileName to set.
-       * @return This builder for chaining.
        */
       public Builder setFileNameBytes(
           com.google.protobuf.ByteString value) {
@@ -607,15 +592,12 @@ public final class StorageMessages {
       private int chunkId_ ;
       /**
        * <code>int32 chunkId = 2;</code>
-       * @return The chunkId.
        */
       public int getChunkId() {
         return chunkId_;
       }
       /**
        * <code>int32 chunkId = 2;</code>
-       * @param value The chunkId to set.
-       * @return This builder for chaining.
        */
       public Builder setChunkId(int value) {
         
@@ -625,7 +607,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 chunkId = 2;</code>
-       * @return This builder for chaining.
        */
       public Builder clearChunkId() {
         
@@ -637,15 +618,12 @@ public final class StorageMessages {
       private int chunkSize_ ;
       /**
        * <code>int32 chunkSize = 3;</code>
-       * @return The chunkSize.
        */
       public int getChunkSize() {
         return chunkSize_;
       }
       /**
        * <code>int32 chunkSize = 3;</code>
-       * @param value The chunkSize to set.
-       * @return This builder for chaining.
        */
       public Builder setChunkSize(int value) {
         
@@ -655,7 +633,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 chunkSize = 3;</code>
-       * @return This builder for chaining.
        */
       public Builder clearChunkSize() {
         
@@ -722,43 +699,36 @@ public final class StorageMessages {
 
     /**
      * <code>string fileName = 1;</code>
-     * @return The fileName.
      */
     java.lang.String getFileName();
     /**
      * <code>string fileName = 1;</code>
-     * @return The bytes for fileName.
      */
     com.google.protobuf.ByteString
         getFileNameBytes();
 
     /**
      * <code>int32 chunkId = 2;</code>
-     * @return The chunkId.
      */
     int getChunkId();
 
     /**
      * <code>bytes data = 3;</code>
-     * @return The data.
      */
     com.google.protobuf.ByteString getData();
 
     /**
      * <code>string checksum = 4;</code>
-     * @return The checksum.
      */
     java.lang.String getChecksum();
     /**
      * <code>string checksum = 4;</code>
-     * @return The bytes for checksum.
      */
     com.google.protobuf.ByteString
         getChecksumBytes();
 
     /**
      * <code>bool isCompressed = 5;</code>
-     * @return The isCompressed.
      */
     boolean getIsCompressed();
   }
@@ -873,7 +843,6 @@ public final class StorageMessages {
     private volatile java.lang.Object fileName_;
     /**
      * <code>string fileName = 1;</code>
-     * @return The fileName.
      */
     public java.lang.String getFileName() {
       java.lang.Object ref = fileName_;
@@ -889,7 +858,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string fileName = 1;</code>
-     * @return The bytes for fileName.
      */
     public com.google.protobuf.ByteString
         getFileNameBytes() {
@@ -909,7 +877,6 @@ public final class StorageMessages {
     private int chunkId_;
     /**
      * <code>int32 chunkId = 2;</code>
-     * @return The chunkId.
      */
     public int getChunkId() {
       return chunkId_;
@@ -919,7 +886,6 @@ public final class StorageMessages {
     private com.google.protobuf.ByteString data_;
     /**
      * <code>bytes data = 3;</code>
-     * @return The data.
      */
     public com.google.protobuf.ByteString getData() {
       return data_;
@@ -929,7 +895,6 @@ public final class StorageMessages {
     private volatile java.lang.Object checksum_;
     /**
      * <code>string checksum = 4;</code>
-     * @return The checksum.
      */
     public java.lang.String getChecksum() {
       java.lang.Object ref = checksum_;
@@ -945,7 +910,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string checksum = 4;</code>
-     * @return The bytes for checksum.
      */
     public com.google.protobuf.ByteString
         getChecksumBytes() {
@@ -965,7 +929,6 @@ public final class StorageMessages {
     private boolean isCompressed_;
     /**
      * <code>bool isCompressed = 5;</code>
-     * @return The isCompressed.
      */
     public boolean getIsCompressed() {
       return isCompressed_;
@@ -1345,7 +1308,6 @@ public final class StorageMessages {
       private java.lang.Object fileName_ = "";
       /**
        * <code>string fileName = 1;</code>
-       * @return The fileName.
        */
       public java.lang.String getFileName() {
         java.lang.Object ref = fileName_;
@@ -1361,7 +1323,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @return The bytes for fileName.
        */
       public com.google.protobuf.ByteString
           getFileNameBytes() {
@@ -1378,8 +1339,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @param value The fileName to set.
-       * @return This builder for chaining.
        */
       public Builder setFileName(
           java.lang.String value) {
@@ -1393,7 +1352,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @return This builder for chaining.
        */
       public Builder clearFileName() {
         
@@ -1403,8 +1361,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @param value The bytes for fileName to set.
-       * @return This builder for chaining.
        */
       public Builder setFileNameBytes(
           com.google.protobuf.ByteString value) {
@@ -1421,15 +1377,12 @@ public final class StorageMessages {
       private int chunkId_ ;
       /**
        * <code>int32 chunkId = 2;</code>
-       * @return The chunkId.
        */
       public int getChunkId() {
         return chunkId_;
       }
       /**
        * <code>int32 chunkId = 2;</code>
-       * @param value The chunkId to set.
-       * @return This builder for chaining.
        */
       public Builder setChunkId(int value) {
         
@@ -1439,7 +1392,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 chunkId = 2;</code>
-       * @return This builder for chaining.
        */
       public Builder clearChunkId() {
         
@@ -1451,15 +1403,12 @@ public final class StorageMessages {
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>bytes data = 3;</code>
-       * @return The data.
        */
       public com.google.protobuf.ByteString getData() {
         return data_;
       }
       /**
        * <code>bytes data = 3;</code>
-       * @param value The data to set.
-       * @return This builder for chaining.
        */
       public Builder setData(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -1472,7 +1421,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bytes data = 3;</code>
-       * @return This builder for chaining.
        */
       public Builder clearData() {
         
@@ -1484,7 +1432,6 @@ public final class StorageMessages {
       private java.lang.Object checksum_ = "";
       /**
        * <code>string checksum = 4;</code>
-       * @return The checksum.
        */
       public java.lang.String getChecksum() {
         java.lang.Object ref = checksum_;
@@ -1500,7 +1447,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string checksum = 4;</code>
-       * @return The bytes for checksum.
        */
       public com.google.protobuf.ByteString
           getChecksumBytes() {
@@ -1517,8 +1463,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string checksum = 4;</code>
-       * @param value The checksum to set.
-       * @return This builder for chaining.
        */
       public Builder setChecksum(
           java.lang.String value) {
@@ -1532,7 +1476,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string checksum = 4;</code>
-       * @return This builder for chaining.
        */
       public Builder clearChecksum() {
         
@@ -1542,8 +1485,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string checksum = 4;</code>
-       * @param value The bytes for checksum to set.
-       * @return This builder for chaining.
        */
       public Builder setChecksumBytes(
           com.google.protobuf.ByteString value) {
@@ -1560,15 +1501,12 @@ public final class StorageMessages {
       private boolean isCompressed_ ;
       /**
        * <code>bool isCompressed = 5;</code>
-       * @return The isCompressed.
        */
       public boolean getIsCompressed() {
         return isCompressed_;
       }
       /**
        * <code>bool isCompressed = 5;</code>
-       * @param value The isCompressed to set.
-       * @return This builder for chaining.
        */
       public Builder setIsCompressed(boolean value) {
         
@@ -1578,7 +1516,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bool isCompressed = 5;</code>
-       * @return This builder for chaining.
        */
       public Builder clearIsCompressed() {
         
@@ -1645,25 +1582,21 @@ public final class StorageMessages {
 
     /**
      * <code>int32 storageNodeId = 1;</code>
-     * @return The storageNodeId.
      */
     int getStorageNodeId();
 
     /**
      * <code>string strorageNodeAddr = 2;</code>
-     * @return The strorageNodeAddr.
      */
     java.lang.String getStrorageNodeAddr();
     /**
      * <code>string strorageNodeAddr = 2;</code>
-     * @return The bytes for strorageNodeAddr.
      */
     com.google.protobuf.ByteString
         getStrorageNodeAddrBytes();
 
     /**
      * <code>int32 storageNodePort = 3;</code>
-     * @return The storageNodePort.
      */
     int getStorageNodePort();
   }
@@ -1765,7 +1698,6 @@ public final class StorageMessages {
     private int storageNodeId_;
     /**
      * <code>int32 storageNodeId = 1;</code>
-     * @return The storageNodeId.
      */
     public int getStorageNodeId() {
       return storageNodeId_;
@@ -1775,7 +1707,6 @@ public final class StorageMessages {
     private volatile java.lang.Object strorageNodeAddr_;
     /**
      * <code>string strorageNodeAddr = 2;</code>
-     * @return The strorageNodeAddr.
      */
     public java.lang.String getStrorageNodeAddr() {
       java.lang.Object ref = strorageNodeAddr_;
@@ -1791,7 +1722,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string strorageNodeAddr = 2;</code>
-     * @return The bytes for strorageNodeAddr.
      */
     public com.google.protobuf.ByteString
         getStrorageNodeAddrBytes() {
@@ -1811,7 +1741,6 @@ public final class StorageMessages {
     private int storageNodePort_;
     /**
      * <code>int32 storageNodePort = 3;</code>
-     * @return The storageNodePort.
      */
     public int getStorageNodePort() {
       return storageNodePort_;
@@ -2156,15 +2085,12 @@ public final class StorageMessages {
       private int storageNodeId_ ;
       /**
        * <code>int32 storageNodeId = 1;</code>
-       * @return The storageNodeId.
        */
       public int getStorageNodeId() {
         return storageNodeId_;
       }
       /**
        * <code>int32 storageNodeId = 1;</code>
-       * @param value The storageNodeId to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeId(int value) {
         
@@ -2174,7 +2100,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 storageNodeId = 1;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStorageNodeId() {
         
@@ -2186,7 +2111,6 @@ public final class StorageMessages {
       private java.lang.Object strorageNodeAddr_ = "";
       /**
        * <code>string strorageNodeAddr = 2;</code>
-       * @return The strorageNodeAddr.
        */
       public java.lang.String getStrorageNodeAddr() {
         java.lang.Object ref = strorageNodeAddr_;
@@ -2202,7 +2126,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string strorageNodeAddr = 2;</code>
-       * @return The bytes for strorageNodeAddr.
        */
       public com.google.protobuf.ByteString
           getStrorageNodeAddrBytes() {
@@ -2219,8 +2142,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string strorageNodeAddr = 2;</code>
-       * @param value The strorageNodeAddr to set.
-       * @return This builder for chaining.
        */
       public Builder setStrorageNodeAddr(
           java.lang.String value) {
@@ -2234,7 +2155,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string strorageNodeAddr = 2;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStrorageNodeAddr() {
         
@@ -2244,8 +2164,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string strorageNodeAddr = 2;</code>
-       * @param value The bytes for strorageNodeAddr to set.
-       * @return This builder for chaining.
        */
       public Builder setStrorageNodeAddrBytes(
           com.google.protobuf.ByteString value) {
@@ -2262,15 +2180,12 @@ public final class StorageMessages {
       private int storageNodePort_ ;
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @return The storageNodePort.
        */
       public int getStorageNodePort() {
         return storageNodePort_;
       }
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @param value The storageNodePort to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodePort(int value) {
         
@@ -2280,7 +2195,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStorageNodePort() {
         
@@ -2347,12 +2261,10 @@ public final class StorageMessages {
 
     /**
      * <code>string fileName = 1;</code>
-     * @return The fileName.
      */
     java.lang.String getFileName();
     /**
      * <code>string fileName = 1;</code>
-     * @return The bytes for fileName.
      */
     com.google.protobuf.ByteString
         getFileNameBytes();
@@ -2445,7 +2357,6 @@ public final class StorageMessages {
     private volatile java.lang.Object fileName_;
     /**
      * <code>string fileName = 1;</code>
-     * @return The fileName.
      */
     public java.lang.String getFileName() {
       java.lang.Object ref = fileName_;
@@ -2461,7 +2372,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string fileName = 1;</code>
-     * @return The bytes for fileName.
      */
     public com.google.protobuf.ByteString
         getFileNameBytes() {
@@ -2782,7 +2692,6 @@ public final class StorageMessages {
       private java.lang.Object fileName_ = "";
       /**
        * <code>string fileName = 1;</code>
-       * @return The fileName.
        */
       public java.lang.String getFileName() {
         java.lang.Object ref = fileName_;
@@ -2798,7 +2707,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @return The bytes for fileName.
        */
       public com.google.protobuf.ByteString
           getFileNameBytes() {
@@ -2815,8 +2723,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @param value The fileName to set.
-       * @return This builder for chaining.
        */
       public Builder setFileName(
           java.lang.String value) {
@@ -2830,7 +2736,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @return This builder for chaining.
        */
       public Builder clearFileName() {
         
@@ -2840,8 +2745,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @param value The bytes for fileName to set.
-       * @return This builder for chaining.
        */
       public Builder setFileNameBytes(
           com.google.protobuf.ByteString value) {
@@ -2913,12 +2816,10 @@ public final class StorageMessages {
 
     /**
      * <code>.GetPrimaryStorageNode getPrimaryStorageNodeMsg = 1;</code>
-     * @return Whether the getPrimaryStorageNodeMsg field is set.
      */
     boolean hasGetPrimaryStorageNodeMsg();
     /**
      * <code>.GetPrimaryStorageNode getPrimaryStorageNodeMsg = 1;</code>
-     * @return The getPrimaryStorageNodeMsg.
      */
     edu.usfca.cs.dfs.StorageMessages.GetPrimaryStorageNode getGetPrimaryStorageNodeMsg();
     /**
@@ -2928,12 +2829,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StoreChunk storeChunkMsg = 2;</code>
-     * @return Whether the storeChunkMsg field is set.
      */
     boolean hasStoreChunkMsg();
     /**
      * <code>.StoreChunk storeChunkMsg = 2;</code>
-     * @return The storeChunkMsg.
      */
     edu.usfca.cs.dfs.StorageMessages.StoreChunk getStoreChunkMsg();
     /**
@@ -2943,12 +2842,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNode storageNodeMsg = 3;</code>
-     * @return Whether the storageNodeMsg field is set.
      */
     boolean hasStorageNodeMsg();
     /**
      * <code>.StorageNode storageNodeMsg = 3;</code>
-     * @return The storageNodeMsg.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNodeMsg();
     /**
@@ -2958,12 +2855,10 @@ public final class StorageMessages {
 
     /**
      * <code>.RetrieveFile retrieveFileMsg = 4;</code>
-     * @return Whether the retrieveFileMsg field is set.
      */
     boolean hasRetrieveFileMsg();
     /**
      * <code>.RetrieveFile retrieveFileMsg = 4;</code>
-     * @return The retrieveFileMsg.
      */
     edu.usfca.cs.dfs.StorageMessages.RetrieveFile getRetrieveFileMsg();
     /**
@@ -3104,14 +2999,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.GetPrimaryStorageNode getPrimaryStorageNodeMsg_;
     /**
      * <code>.GetPrimaryStorageNode getPrimaryStorageNodeMsg = 1;</code>
-     * @return Whether the getPrimaryStorageNodeMsg field is set.
      */
     public boolean hasGetPrimaryStorageNodeMsg() {
       return getPrimaryStorageNodeMsg_ != null;
     }
     /**
      * <code>.GetPrimaryStorageNode getPrimaryStorageNodeMsg = 1;</code>
-     * @return The getPrimaryStorageNodeMsg.
      */
     public edu.usfca.cs.dfs.StorageMessages.GetPrimaryStorageNode getGetPrimaryStorageNodeMsg() {
       return getPrimaryStorageNodeMsg_ == null ? edu.usfca.cs.dfs.StorageMessages.GetPrimaryStorageNode.getDefaultInstance() : getPrimaryStorageNodeMsg_;
@@ -3127,14 +3020,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StoreChunk storeChunkMsg_;
     /**
      * <code>.StoreChunk storeChunkMsg = 2;</code>
-     * @return Whether the storeChunkMsg field is set.
      */
     public boolean hasStoreChunkMsg() {
       return storeChunkMsg_ != null;
     }
     /**
      * <code>.StoreChunk storeChunkMsg = 2;</code>
-     * @return The storeChunkMsg.
      */
     public edu.usfca.cs.dfs.StorageMessages.StoreChunk getStoreChunkMsg() {
       return storeChunkMsg_ == null ? edu.usfca.cs.dfs.StorageMessages.StoreChunk.getDefaultInstance() : storeChunkMsg_;
@@ -3150,14 +3041,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNode storageNodeMsg_;
     /**
      * <code>.StorageNode storageNodeMsg = 3;</code>
-     * @return Whether the storageNodeMsg field is set.
      */
     public boolean hasStorageNodeMsg() {
       return storageNodeMsg_ != null;
     }
     /**
      * <code>.StorageNode storageNodeMsg = 3;</code>
-     * @return The storageNodeMsg.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNodeMsg() {
       return storageNodeMsg_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNodeMsg_;
@@ -3173,14 +3062,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.RetrieveFile retrieveFileMsg_;
     /**
      * <code>.RetrieveFile retrieveFileMsg = 4;</code>
-     * @return Whether the retrieveFileMsg field is set.
      */
     public boolean hasRetrieveFileMsg() {
       return retrieveFileMsg_ != null;
     }
     /**
      * <code>.RetrieveFile retrieveFileMsg = 4;</code>
-     * @return The retrieveFileMsg.
      */
     public edu.usfca.cs.dfs.StorageMessages.RetrieveFile getRetrieveFileMsg() {
       return retrieveFileMsg_ == null ? edu.usfca.cs.dfs.StorageMessages.RetrieveFile.getDefaultInstance() : retrieveFileMsg_;
@@ -3602,14 +3489,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.GetPrimaryStorageNode, edu.usfca.cs.dfs.StorageMessages.GetPrimaryStorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.GetPrimaryStorageNodeOrBuilder> getPrimaryStorageNodeMsgBuilder_;
       /**
        * <code>.GetPrimaryStorageNode getPrimaryStorageNodeMsg = 1;</code>
-       * @return Whether the getPrimaryStorageNodeMsg field is set.
        */
       public boolean hasGetPrimaryStorageNodeMsg() {
         return getPrimaryStorageNodeMsgBuilder_ != null || getPrimaryStorageNodeMsg_ != null;
       }
       /**
        * <code>.GetPrimaryStorageNode getPrimaryStorageNodeMsg = 1;</code>
-       * @return The getPrimaryStorageNodeMsg.
        */
       public edu.usfca.cs.dfs.StorageMessages.GetPrimaryStorageNode getGetPrimaryStorageNodeMsg() {
         if (getPrimaryStorageNodeMsgBuilder_ == null) {
@@ -3721,14 +3606,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StoreChunk, edu.usfca.cs.dfs.StorageMessages.StoreChunk.Builder, edu.usfca.cs.dfs.StorageMessages.StoreChunkOrBuilder> storeChunkMsgBuilder_;
       /**
        * <code>.StoreChunk storeChunkMsg = 2;</code>
-       * @return Whether the storeChunkMsg field is set.
        */
       public boolean hasStoreChunkMsg() {
         return storeChunkMsgBuilder_ != null || storeChunkMsg_ != null;
       }
       /**
        * <code>.StoreChunk storeChunkMsg = 2;</code>
-       * @return The storeChunkMsg.
        */
       public edu.usfca.cs.dfs.StorageMessages.StoreChunk getStoreChunkMsg() {
         if (storeChunkMsgBuilder_ == null) {
@@ -3840,14 +3723,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder> storageNodeMsgBuilder_;
       /**
        * <code>.StorageNode storageNodeMsg = 3;</code>
-       * @return Whether the storageNodeMsg field is set.
        */
       public boolean hasStorageNodeMsg() {
         return storageNodeMsgBuilder_ != null || storageNodeMsg_ != null;
       }
       /**
        * <code>.StorageNode storageNodeMsg = 3;</code>
-       * @return The storageNodeMsg.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNodeMsg() {
         if (storageNodeMsgBuilder_ == null) {
@@ -3959,14 +3840,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.RetrieveFile, edu.usfca.cs.dfs.StorageMessages.RetrieveFile.Builder, edu.usfca.cs.dfs.StorageMessages.RetrieveFileOrBuilder> retrieveFileMsgBuilder_;
       /**
        * <code>.RetrieveFile retrieveFileMsg = 4;</code>
-       * @return Whether the retrieveFileMsg field is set.
        */
       public boolean hasRetrieveFileMsg() {
         return retrieveFileMsgBuilder_ != null || retrieveFileMsg_ != null;
       }
       /**
        * <code>.RetrieveFile retrieveFileMsg = 4;</code>
-       * @return The retrieveFileMsg.
        */
       public edu.usfca.cs.dfs.StorageMessages.RetrieveFile getRetrieveFileMsg() {
         if (retrieveFileMsgBuilder_ == null) {
