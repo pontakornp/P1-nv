@@ -16,9 +16,18 @@ message StoreChunk {
 }
 
 message StorageNode {
-	int32 storageNodeId = 1;
+	string storageNodeId = 1;
 	string storageNodeAddr = 2;
 	int32 storageNodePort = 3;
+	int32 currentStorageValue = 4;
+	int32 maxStorageValue = 5;
+	repeated string replicationNodeIds = 6;
+}
+
+message ChunkMapping {
+	string fileName = 1;
+	int32 chunkId = 2;
+	repeated StorageNode storageNodeObjs = 3;
 }
 
 message RetrieveFile {

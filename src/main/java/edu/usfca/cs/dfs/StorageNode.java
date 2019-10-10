@@ -13,17 +13,23 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.protobuf.ByteString;
+
+import edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper;
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
 import edu.usfca.cs.dfs.util.CheckSum;
 import edu.usfca.cs.dfs.util.CompressDecompress;
 import edu.usfca.cs.dfs.util.Entropy;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class StorageNode {
 	
@@ -35,10 +41,12 @@ public class StorageNode {
 	private int storageNodePort;
 	private int currentStorageValue;
 	private int maxStorageValue;
-	private int 
 	
 	private ArrayList<String> replicationNodeIds;
 	private HashMap<String, Chunk> metaDataMap;
+	
+	private String controllerNodeAddr;
+	private int controllerNodePort;
 
 	public StorageNode(String configFileName) {
 		Config config = new Config(configFileName);
@@ -54,8 +62,34 @@ public class StorageNode {
 		this.maxStorageValue = config.getMaxStorageValue();
 		this.replicationNodeIds = new ArrayList<String>();
 		this.metaDataMap = new HashMap<String, Chunk>();
+		
+		this.controllerNodeAddr = config.getControllerNodeAddr();
+		this.controllerNodePort = config.getControllerNodePort();
 		System.out.println("Storage Node config updated. Storage Node Id: "+ this.storageNodeId);
 	}
+	
+	/*
+     * This will use protobuf message to create the chunk message
+     * This will be used by client to send to storageNode to save particular chunk
+     */
+    public StorageMessageWrapper constructRegisterNodeMessage() {
+    	
+    	StorageMessages.StorageNode registerNodeMessage
+        = StorageMessages.StorageNode.newBuilder()
+            .setStorageNodeId(this.storageNodeId)
+            .setStorageNodeAddr(this.storageNodeAddr)
+            .setStorageNodePort(this.storageNodePort)
+            .setCurrentStorageValue(this.currentStorageValue)
+            .setMaxStorageValue(this.maxStorageValue)
+            .build();
+    	
+    	StorageMessages.StorageMessageWrapper msgWrapper =
+                StorageMessages.StorageMessageWrapper.newBuilder()
+                    .setStorageNodeMsg(registerNodeMessage)
+                    .build();
+    	
+    	return msgWrapper;
+    }
 
 	/*
 	 * This send a request to controller to register the node onto the controller
@@ -63,8 +97,33 @@ public class StorageNode {
 	 * @return type: None
 	 */
 	public void registerNode() {
-		
-		
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+	        MessagePipeline pipeline = new MessagePipeline();
+	        
+	        System.out.println("Registration initiated to controller");
+	        Bootstrap bootstrap = new Bootstrap()
+	            .group(workerGroup)
+	            .channel(NioSocketChannel.class)
+	            .option(ChannelOption.SO_KEEPALIVE, true)
+	            .handler(pipeline);
+	
+	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+	        cf.syncUninterruptibly();
+	
+	        StorageMessageWrapper msgWrapper = this.constructRegisterNodeMessage();
+	
+	        Channel chan = cf.channel();
+	        ChannelFuture write = chan.write(msgWrapper);
+	        chan.flush();
+	        write.syncUninterruptibly();
+	
+	        /* Don't quit until we've disconnected: */
+	        System.out.println("Registration message sent to controller");
+	        workerGroup.shutdownGracefully();
+		} catch (Exception e) {
+			System.out.println("Registration of storage node failed. Controller connetion establishment failed");
+		}
 		
 	}
 

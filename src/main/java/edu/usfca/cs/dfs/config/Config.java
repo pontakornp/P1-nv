@@ -22,12 +22,15 @@ public class Config {
 	
 	private String clientAddr;
 	private String clientDirectoryPath;
+	
+	private String controllerNodeAddr;
+	private int controllerNodePort;
+	
 	private String storageNodeAddr;
 	private int storageNodePort;
 	private String storageDirectoryPath;
 	private int maxStorageValue;
-	
-	private String controllerAddr;
+
 	private int chunkSize;
 	
 	public Config(String fileName) {
@@ -51,14 +54,17 @@ public class Config {
 			Config config = gson.fromJson(jsonReader, Config.class);
 			System.out.println(config);
 			this.clientAddr = config.clientAddr;
-			this.controllerAddr = config.controllerAddr;
+			
+			this.controllerNodeAddr = config.controllerNodeAddr;
+			this.controllerNodePort = config.controllerNodePort;
 			
 			
 			this.storageNodeAddr = config.storageNodeAddr;
 			this.storageNodePort = config.storageNodePort;
 			this.storageDirectoryPath = config.storageDirectoryPath;
-			this.chunkSize = config.chunkSize;
 			this.maxStorageValue = config.maxStorageValue;
+			
+			this.chunkSize = config.chunkSize;
 		} catch(IOException ioe) {
 			System.out.println("Please try again with correct config file.");
 			return false;
@@ -90,12 +96,20 @@ public class Config {
 		this.storageNodeAddr = storageNodeAddr;
 	}
 	
-	public String getControllerAddr() {
-		return this.controllerAddr;
+	public String getControllerNodeAddr() {
+		return this.controllerNodeAddr;
 	}
 
-	public void setControllerAddr(String controllerAddr) {
-		this.controllerAddr = controllerAddr;
+	public void setControllerNodeAddr(String controllerNodeAddr) {
+		this.controllerNodeAddr = controllerNodeAddr;
+	}
+	
+	public int getControllerNodePort() {
+		return storageNodePort;
+	}
+
+	public void setControllerNodePort(int controllerNodePort) {
+		this.controllerNodePort = controllerNodePort;
 	}
 
 	public int getChunkSize() {
