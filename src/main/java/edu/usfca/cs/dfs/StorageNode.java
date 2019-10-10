@@ -8,28 +8,53 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.usfca.cs.dfs.config.Config;
+import edu.usfca.cs.dfs.net.MessagePipeline;
 import edu.usfca.cs.dfs.util.CheckSum;
 import edu.usfca.cs.dfs.util.CompressDecompress;
 import edu.usfca.cs.dfs.util.Entropy;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class StorageNode {
+	
+	static Logger logger = LogManager.getLogger(StorageNode.class);
+	
 	private String storageNodeId;
 	private String storageNodeAddr;
-	private String storageNodeFileDirectory; // storageNodeAddr + storageNodeAddr + '/'
+	private String storageNodeDirectoryPath; // storageNodeAddr + storageNodeAddr + '/'
 	private int storageNodePort;
-	private int currentStorageNodeValue;
-	private int storageNodeValue;
-	private String fileStorageLocation;
+	private int currentStorageValue;
+	private int maxStorageValue;
+	private int 
+	
 	private ArrayList<String> replicationNodeIds;
 	private HashMap<String, Chunk> metaDataMap;
 
-	public StorageNode() {
-		Config config = new Config();
-		config.setVariables();
-		registerNode(config.getStorageNodeAddr());
-		metaDataMap = new HashMap<String, Chunk>();
+	public StorageNode(String configFileName) {
+		Config config = new Config(configFileName);
+		setVariables(config);
+	}
+	
+	private void setVariables(Config config) {
+		this.storageNodeId = UUID.randomUUID().toString();
+		this.storageNodeAddr = config.getStorageNodeAddr();
+		this.storageNodePort = config.getStorageNodePort();
+		this.storageNodeDirectoryPath = config.getStorageDirectoryPath();
+		this.currentStorageValue = 0;
+		this.maxStorageValue = config.getMaxStorageValue();
+		this.replicationNodeIds = new ArrayList<String>();
+		this.metaDataMap = new HashMap<String, Chunk>();
+		System.out.println("Storage Node config updated. Storage Node Id: "+ this.storageNodeId);
 	}
 
 	/*
@@ -37,7 +62,10 @@ public class StorageNode {
 	 * @request parameters : None
 	 * @return type: None
 	 */
-	public void registerNode(String storageNodeAddr) {
+	public void registerNode() {
+		
+		
+		
 	}
 
 	public String getStorageNodeId() {
@@ -50,6 +78,14 @@ public class StorageNode {
 	
 	public int getStorageNodePort() {
 		return this.storageNodePort;
+	}
+	
+	public int getCurrentStorageValue() {
+		return this.currentStorageValue;
+	}
+	
+	public int getMaxStorageValue() {
+		return this.maxStorageValue;
 	}
 
 	public ArrayList<String> getReplicationNodeIds() {
@@ -94,15 +130,15 @@ public class StorageNode {
 			isCompressed = true;
 		}
 		// create directory
-		File dir = new File(this.storageNodeFileDirectory);
+		File dir = new File(this.storageNodeDirectoryPath);
 		if (!dir.exists()) {
 			dir.mkdir();
 		}
 		// store the chunk in a file
 		try {
-			OutputStream outputStream = new FileOutputStream(this.storageNodeFileDirectory + fileName);
+			OutputStream outputStream = new FileOutputStream(this.storageNodeDirectoryPath + fileName);
 			outputStream.write(data);
-			byte[] storedChunkData = Files.readAllBytes(Paths.get(this.storageNodeFileDirectory + fileName));
+			byte[] storedChunkData = Files.readAllBytes(Paths.get(this.storageNodeDirectoryPath + fileName));
 			// check sum if the file is corrupted or not
 			if (!isFileCorrupted(storedChunkData, originalCheckSum)) {
 				// add chunk to the meta data map
@@ -119,24 +155,13 @@ public class StorageNode {
 		}
 	}
 
-	public static void main(String args[]) {
-		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
-		try {
-			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
-			StorageNode sn = new StorageNode();
-			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	// get number of chunks
 	public synchronized Integer getChunkCount(String fileName) {
 		return 0;
 	}
 	// get chunk location
 	public synchronized String getChunkLocation(String fileName, Integer chunkNumber) {
-		String filePath = storageNodeFileDirectory + fileName + '_' + chunkNumber;
+		String filePath = this.storageNodeDirectoryPath + fileName + '_' + chunkNumber;
 		return filePath;
 	}
 
@@ -171,5 +196,46 @@ public class StorageNode {
 	// send heartbeat to controller to inform that storage node is still available
 	public void sendHeartBeat() {
 		
+	}
+	
+	public void start() throws IOException, InterruptedException {
+		EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        MessagePipeline pipeline = new MessagePipeline();
+        
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+              .channel(NioServerSocketChannel.class)
+              .childHandler(pipeline)
+              .option(ChannelOption.SO_BACKLOG, 128)
+              .childOption(ChannelOption.SO_KEEPALIVE, true);
+ 
+            ChannelFuture f = b.bind(this.storageNodePort).sync();
+            System.out.print("Storage Node started at port: " + String.valueOf(this.storageNodePort));
+            this.registerNode();
+            f.channel().closeFuture().sync();
+        } finally {
+            workerGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
+        }
+    }
+	
+	public static void main(String args[]) {
+		String configFileName;
+		if(args.length>0) {
+    		configFileName= args[0];
+    	}else {
+    		configFileName = "config.json";
+    	}
+		
+		StorageNode storageNode = new StorageNode(configFileName);
+		
+		try {
+			storageNode.start();
+		}catch (Exception e){
+			System.out.println("Unable to start storage node");
+			e.printStackTrace();
+		}
 	}
 }

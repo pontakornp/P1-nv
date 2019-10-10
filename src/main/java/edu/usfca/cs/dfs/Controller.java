@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import edu.usfca.cs.dfs.config.ControllerNodeConfig;
 import edu.usfca.cs.dfs.net.MessagePipeline;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -23,7 +22,7 @@ public class Controller {
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	
-	public Controller(ControllerNodeConfig controllerConfig) {
+	public Controller(String configFileName) {
 		
 	}
 	

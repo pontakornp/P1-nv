@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.protobuf.ByteString;
 
 import edu.usfca.cs.dfs.StorageMessages.StorageMessageWrapper;
-import edu.usfca.cs.dfs.config.ClientNodeConfig;
 import edu.usfca.cs.dfs.net.MessagePipeline;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -30,7 +29,7 @@ public class Client {
 	private Integer controllerNodePort;
 	private Integer fileDestinationPath;
 	
-    public Client(ClientNodeConfig clientConfig) {
+    public Client(String configFileName) {
 
     }
     

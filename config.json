@@ -1,6 +1,9 @@
 {
-	"clientDirectoryPath": "/Users/pontakornp/Documents/projects/bigdata/P1-nv/",
-	"storageDirectoryPath": "/Users/pontakornp/Documents/projects/bigdata/P1-nv/",
-	"controllerHostName": "/Users/pontakornp/Documents/projects/bigdata/P1-nv/",
-	"chunkSize": 0
+	"clientDirectoryPath": "~/Documents/projects/bigdata/P1-nv/",
+	"controllerHostName": "http://127.0.0.1/",
+	"storageNodeAddr": "http://127.0.0.1/",
+	"storageNodePort": 7000,
+	"storageNodeDirectoryPath": "~/Documents/projects/bigdata/P1-nv/",
+	"maxStorageValue": 10,
+	"chunkSize": 100
 }
