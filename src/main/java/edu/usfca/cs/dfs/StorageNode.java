@@ -30,7 +30,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class StorageNode {
-	
+
 	static Logger logger = LogManager.getLogger(StorageNode.class);
 	
 	private String storageNodeId;
@@ -63,7 +63,7 @@ public class StorageNode {
 		this.storageNodeId = UUID.randomUUID().toString();
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
-		this.storageNodeDirectoryPath = config.getStorageDirectoryPath();
+		this.storageNodeDirectoryPath = storageNodeAddr + storageNodePort;
 		this.currentStorageValue = 0;
 		this.maxStorageValue = config.getMaxStorageValue();
 		this.replicationNodeIds = new ArrayList<String>();
@@ -201,6 +201,7 @@ public class StorageNode {
 		File dir = new File(this.storageNodeDirectoryPath);
 		if (!dir.exists()) {
 			dir.mkdir();
+			logger.info("Created new directory");
 		}
 		// store the chunk in a file
 		try {
@@ -213,6 +214,7 @@ public class StorageNode {
 				Chunk chunkObj = new Chunk(originalCheckSum, isCompressed, chunkNumber, chunkData.length);
 				String chunkKey = fileName + '_' + chunkNumber;
 				metaDataMap.put(chunkKey, chunkObj);
+				logger.info("add chunk");
 				return true;
 			} else {
 				return false;
