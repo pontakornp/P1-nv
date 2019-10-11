@@ -42,7 +42,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     	int messageType = msg.getMessageType();
     	if (messageType == 1) {
     		StorageMessages.StorageNode storageNodeMsg = msg.getStorageNodeMsg();
-    		StorageNode storageNode = StorageNode.getInstance();
+    		StorageNode storageNode = new StorageNode();
     		storageNode.updateValuesFromProto(storageNodeMsg);
     		Controller controller = Controller.getInstance();
     		controller.addStorageNode(storageNode);

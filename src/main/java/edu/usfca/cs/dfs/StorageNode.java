@@ -48,7 +48,7 @@ public class StorageNode {
 	
 	private static StorageNode storageNodeInstance = null; 
 
-	private StorageNode() {
+	public StorageNode() {
 		
 	}
 	
