@@ -24,6 +24,10 @@ message StorageNode {
 	repeated string replicationNodeIds = 6;
 }
 
+message StorageNodeRegisterAck {
+	StorageNode storageNode = 1;
+}
+
 message ChunkMapping {
 	string fileName = 1;
 	int32 chunkId = 2;
@@ -40,4 +44,5 @@ message MessageWrapper {
     StoreChunk storeChunkMsg = 3;
     StorageNode storageNodeMsg = 4;
     RetrieveFile retrieveFileMsg = 5;
+    StorageNodeRegisterAck storageNodeRegisterAckMsg = 6;
 }

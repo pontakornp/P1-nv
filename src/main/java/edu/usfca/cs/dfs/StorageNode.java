@@ -137,6 +137,7 @@ public class StorageNode {
 	
 	        /* Don't quit until we've disconnected: */
 	        System.out.println("Registration message sent to controller");
+	        chan.closeFuture().sync();
 	        workerGroup.shutdownGracefully();
 		} catch (Exception e) {
 			e.printStackTrace();

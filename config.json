@@ -3,7 +3,7 @@
 	"controllerNodeAddr": "127.0.0.1",
 	"controllerNodePort": 8000,
 	"storageNodeAddr": "127.0.0.1",
-	"storageNodePort": 7000,
+	"storageNodePort": 7001,
 	"storageNodeDirectoryPath": "~/Documents/projects/bigdata/P1-nv/",
 	"maxStorageValue": 10,
 	"chunkSize": 100

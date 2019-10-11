@@ -19,7 +19,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 public class Controller {
 	private String controllerNodeAddr;
 	private int controllerNodePort;
-	private ConcurrentHashMap<String, StorageNode> activeStorageNodes;
+	private ConcurrentHashMap<String, StorageMessages.StorageNode> activeStorageNodes;
 	private ConcurrentHashMap<String, BloomFilter> bloomFilterList;
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
@@ -40,7 +40,7 @@ public class Controller {
 	private void setVariables(Config config) {
 		this.controllerNodeAddr = config.getControllerNodeAddr();
 		this.controllerNodePort = config.getControllerNodePort();
-		this.activeStorageNodes = new ConcurrentHashMap<String, StorageNode>();
+		this.activeStorageNodes = new ConcurrentHashMap<String, StorageMessages.StorageNode>();
 		this.bloomFilterList = new ConcurrentHashMap<String, BloomFilter>();
 		System.out.println("Controller Node config updated.");
 	}
@@ -50,7 +50,7 @@ public class Controller {
 	 * This will add the node metadata to activeStorageNodes
 	 * Takes the Storage 
 	 */
-	public synchronized void  addStorageNode(StorageNode storageNode) {
+	public synchronized void  addStorageNode(StorageMessages.StorageNode storageNode) {
 		String storageNodeId = storageNode.getStorageNodeId();
 		storageNode = this.getReplicationNodes(storageNode);
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
@@ -64,7 +64,7 @@ public class Controller {
 	}
 	
 	public synchronized void printStorageNodeIds() {
-		for (Map.Entry<String, StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
+		for (Map.Entry<String, StorageMessages.StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
 			System.out.println(existingStorageNode.getValue().getStorageNodeId());
 		}
 	}
@@ -72,10 +72,10 @@ public class Controller {
 	/* This will update the replication nodes for storage nodes 
 	 * This will randomly select two other registered nodes as replicas for current node
 	 */
-	private StorageNode getReplicationNodes(StorageNode storageNode) {
+	private StorageMessages.StorageNode getReplicationNodes(StorageMessages.StorageNode storageNode) {
 		ArrayList<String> duplicateNodeList = new ArrayList<String>(); 
 		int count = 0;
-		for (Map.Entry<String, StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
+		for (Map.Entry<String, StorageMessages.StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
 			if(existingStorageNode.getKey() != storageNode.getStorageNodeId()){
 				duplicateNodeList.add(existingStorageNode.getKey());
 				count++;
@@ -84,7 +84,8 @@ public class Controller {
 				break;
 			}
 		}
-		storageNode.setReplicationNodeIds(duplicateNodeList);
+		storageNode.newBuilder().addAllReplicationNodeIds(duplicateNodeList);
+		
 		return storageNode;
 	}
 	
@@ -100,8 +101,8 @@ public class Controller {
 	 *  This will be called by client to get the list of nodes to save a chunk
 	 *  This will randomly select three nodes from activeStorageNodes
 	 */
-	public synchronized ArrayList<StorageNode>getNodesForChunkSave() {
-		ArrayList<StorageNode> nodeList = new ArrayList<StorageNode>();
+	public synchronized ArrayList<StorageMessages.StorageNode>getNodesForChunkSave() {
+		ArrayList<StorageMessages.StorageNode> nodeList = new ArrayList<StorageMessages.StorageNode>();
 		List<String> keysAsArray = new ArrayList<String>(this.activeStorageNodes.keySet());
 		for (int i = 0; i < 3; i++) {
 			Random r = new Random();
