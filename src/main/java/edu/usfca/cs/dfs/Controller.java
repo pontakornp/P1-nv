@@ -19,8 +19,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 public class Controller {
 	private String controllerNodeAddr;
 	private int controllerNodePort;
-	private static ConcurrentHashMap<String, StorageNode> activeStorageNodes;
-	private static ConcurrentHashMap<String, BloomFilter> bloomFilterList;
+	private ConcurrentHashMap<String, StorageNode> activeStorageNodes;
+	private ConcurrentHashMap<String, BloomFilter> bloomFilterList;
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	
@@ -40,6 +40,8 @@ public class Controller {
 	private void setVariables(Config config) {
 		this.controllerNodeAddr = config.getControllerNodeAddr();
 		this.controllerNodePort = config.getControllerNodePort();
+		this.activeStorageNodes = new ConcurrentHashMap<String, StorageNode>();
+		this.bloomFilterList = new ConcurrentHashMap<String, BloomFilter>();
 		System.out.println("Controller Node config updated.");
 	}
 	
@@ -54,6 +56,16 @@ public class Controller {
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
 			activeStorageNodes.put(storageNodeId, storageNode);
 			bloomFilterList.put(storageNodeId, new BloomFilter(Controller.BLOOM_FILTER_SIZE, Controller.BLOOM_HASH_COUNT));
+			System.out.println("INFO: Storage Node registered with controller");
+			this.printStorageNodeIds();
+		}else {
+			System.out.println("ERROR: Storage Node already registered with controller");
+		}
+	}
+	
+	public synchronized void printStorageNodeIds() {
+		for (Map.Entry<String, StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
+			System.out.println(existingStorageNode.getValue().getStorageNodeId());
 		}
 	}
 	
@@ -168,12 +180,12 @@ public class Controller {
 		Config config = new Config(configFileName);
 		Controller controllerNode = Controller.getInstance();
 		controllerNode.setVariables(config);
-		
 		try {
 			controllerNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start controller node");
 			e.printStackTrace();
 		}
+		
     } 
 }

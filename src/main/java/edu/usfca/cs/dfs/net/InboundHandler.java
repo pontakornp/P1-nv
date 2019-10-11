@@ -2,8 +2,9 @@ package edu.usfca.cs.dfs.net;
 
 import java.net.InetSocketAddress;
 
+import edu.usfca.cs.dfs.Controller;
 import edu.usfca.cs.dfs.StorageMessages;
-
+import edu.usfca.cs.dfs.StorageNode;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -37,12 +38,20 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     }
 
     @Override
-    public void channelRead0(
-            ChannelHandlerContext ctx,
-            StorageMessages.MessageWrapper msg) {
-
-        StorageMessages.StoreChunk storeChunkMsg
-            = msg.getStoreChunkMsg();
+    public void channelRead0(ChannelHandlerContext ctx, StorageMessages.MessageWrapper msg) {
+    	int messageType = msg.getMessageType();
+    	if (messageType == 1) {
+    		StorageMessages.StorageNode storageNodeMsg = msg.getStorageNodeMsg();
+    		StorageNode storageNode = StorageNode.getInstance();
+    		storageNode.updateValuesFromProto(storageNodeMsg);
+    		Controller controller = Controller.getInstance();
+    		controller.addStorageNode(storageNode);
+    	}else if(messageType == 2){
+    		
+    	}else if(messageType == 3){
+    		
+    	}
+        StorageMessages.StoreChunk storeChunkMsg = msg.getStoreChunkMsg();
         System.out.println("Storing file name: "
                 + storeChunkMsg.getFileName());
     }

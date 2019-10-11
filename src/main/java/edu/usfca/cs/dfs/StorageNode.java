@@ -91,11 +91,20 @@ public class StorageNode {
     	
     	StorageMessages.MessageWrapper msgWrapper =
                 StorageMessages.MessageWrapper.newBuilder()
+                	.setMessageType(1)
                     .setStorageNodeMsg(registerNodeMessage)
                     .build();
     	
     	return msgWrapper;
     }
+    
+    public void updateValuesFromProto(StorageMessages.StorageNode storageNodeMsg) {
+		this.storageNodeId = storageNodeMsg.getStorageNodeId();
+		this.storageNodeAddr = storageNodeMsg.getStorageNodeAddr();
+		this.storageNodePort = storageNodeMsg.getStorageNodePort();
+		this.currentStorageValue = storageNodeMsg.getCurrentStorageValue();
+		this.maxStorageValue = storageNodeMsg.getMaxStorageValue();
+	}
 
 	/*
 	 * This send a request to controller to register the node onto the controller
