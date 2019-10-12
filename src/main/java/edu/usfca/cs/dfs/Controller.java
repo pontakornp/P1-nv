@@ -26,6 +26,7 @@ public class Controller {
 	private ConcurrentHashMap<String, Timestamp> timeStamps;
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
+	private static long MAX_STORAGE_TIME_INACTIVITY = 30000;
 	
 	private static Controller controllerInstance; 
 	
@@ -142,15 +143,36 @@ public class Controller {
 	 * for each inactive node it handles the inactive node by replicating the data on inactive node
 	 */
 	public synchronized void handleInactiveNodes() {
-		
+		Thread thread = new Thread() {
+			public void run() {
+				while(true) {
+					try {
+						System.out.println("Handling Inactive Nodes thread running");
+						Controller.detectInactiveNodes(Controller.getInstance());
+						System.out.println("Handling Inactive Nodes thread sleeping");
+			            Thread.sleep(30000);
+			        } catch (InterruptedException e) {
+			            e.printStackTrace();
+			        }
+				}
+			}
+		};
+		thread.start();
 	}
 	
 	
 	/*
 	 * This will be called to detect list of inactive nodes
 	 */
-	public synchronized void detectInactiveNodes() {
-		
+	public static void detectInactiveNodes(Controller controller) {
+		for (Map.Entry<String, Timestamp> storageNodeTimestamp : controller.timeStamps.entrySet()) {
+			if(Controller.getCurrentTimeStamp().getTime()-storageNodeTimestamp.getValue().getTime()>=Controller.MAX_STORAGE_TIME_INACTIVITY){
+				System.out.println("Identified StorageNode  inactivity detected for StorageNodeId: "+  storageNodeTimestamp.getKey());
+				controller.timeStamps.remove(storageNodeTimestamp.getKey());
+				// TODO: Need to handle recovery of node here
+				controller.activeStorageNodes.remove(storageNodeTimestamp.getKey());
+			}
+		}
 	}
 	
 	/*
@@ -159,7 +181,7 @@ public class Controller {
 	 * for each chunk on inactive node it replicates the chunk to a new node
 	 * 
 	 */
-	public synchronized void handleInactiveNode() {
+	public synchronized void handleInactiveStorageNode() {
 		
 	}
 	
@@ -178,7 +200,6 @@ public class Controller {
  
             ChannelFuture f = b.bind(this.controllerNodePort).sync();
             System.out.println("Controller started at given port: " + String.valueOf(this.controllerNodePort));
-            
             f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
@@ -199,6 +220,7 @@ public class Controller {
 		Controller controllerNode = Controller.getInstance();
 		controllerNode.setVariables(config);
 		try {
+			controllerNode.handleInactiveNodes();
 			controllerNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start controller node");

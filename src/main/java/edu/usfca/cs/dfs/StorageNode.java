@@ -40,7 +40,6 @@ public class StorageNode {
 	private int storageNodePort;
 	private int availableStorageCapacity;
 	private int maxStorageCapacity;
-	private boolean isActive;
 	
 	private List<String> replicationNodeIds;
 	private List<StorageNode> replicatedStorageNodeObjs;
@@ -360,7 +359,6 @@ public class StorageNode {
  
             ChannelFuture f = b.bind(this.storageNodePort).sync();
             System.out.println("Storage Node started at port: " + String.valueOf(this.storageNodePort));
-            this.isActive = true;
             this.registerNode();
             this.handleHeartBeats();
         } finally {
