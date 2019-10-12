@@ -32,7 +32,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
         /* A connection has been established */
         InetSocketAddress addr
             = (InetSocketAddress) ctx.channel().remoteAddress();
-        System.out.println("Connection established: " + addr);
+		logger.info("Connection established: " + addr);
     }
 
     @Override
@@ -40,7 +40,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
         /* A channel has been disconnected */
         InetSocketAddress addr
             = (InetSocketAddress) ctx.channel().remoteAddress();
-        System.out.println("Connection lost: " + addr);
+		logger.info("Connection lost: " + addr);
     }
 
     @Override
@@ -58,31 +58,31 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     public void channelRead0(ChannelHandlerContext ctx, StorageMessages.MessageWrapper msg) {
     	int messageType = msg.getMessageType();
     	if (messageType == 1) {
-    		System.out.println("Received Storage Node Registration Message");
+			logger.info("Received Storage Node Registration Message");
             StorageMessages.StorageNode storageNode = msg.getStorageNodeRegisterRequest().getStorageNode();
     		Controller controller = Controller.getInstance();
     		controller.addStorageNode(storageNode);
     		
     		MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeResponse(storageNode);
-        	System.out.println("Sending Storage Node Registration Response Message");
+    		logger.info("Sending Storage Node Registration Response Message");
     		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
     		future.addListener(ChannelFutureListener.CLOSE);
     	}else if(messageType == 2){
-    		System.out.println("Received Storage Node Registration Response Message");
+			logger.info("Received Storage Node Registration Response Message");
     		StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponse = msg.getStorageNodeRegisterResponse();
     		StorageMessages.StorageNode storageNodeMsg = storageNodeRegisterResponse.getStorageNode();
     		StorageNode storageNode = StorageNode.getInstance();
     		storageNode.setReplicationNodeIds((List<String>) storageNodeMsg.getReplicationNodeIdsList());
     	}else if(messageType == 3){
-    		System.out.println("Heartbeat received on controller");
+			logger.info("Heartbeat received on controller");
     		StorageMessages.StorageNodeHeartbeat storageNodeHeartbeat = msg.getStorageNodeHeartBeatRequest().getStorageNodeHeartbeat();
     		String storageNodeId = storageNodeHeartbeat.getStorageNodeId();
     		Controller controller = Controller.getInstance();
     		controller.receiveHeartBeat(storageNodeId);
-    		System.out.println("Heartbeat updated on controller for storageNodeId: " + storageNodeId);
+			logger.info("Heartbeat updated on controller for storageNodeId: " + storageNodeId);
     		ctx.close();
     	}else if(messageType == 4){
-			System.out.println("Storage node receives chunk to be stored from client");
+			logger.info("Storage node receives chunk to be stored from client");
 			StorageMessages.Chunk chunk = msg.getStoreChunkRequest().getChunk();
 			StorageNode storageNode = StorageNode.getInstance();
 			boolean isSuccess = storageNode.storeChunk(chunk.getFileName(), chunk.getChunkId(), chunk.getData().toByteArray(), chunk.getChecksum());
@@ -91,9 +91,8 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			future.addListener(ChannelFutureListener.CLOSE);
     	}else if(messageType == 5){
-			System.out.println("Client receives store chunk ack");
-
-
+			logger.info("Client receives store chunk ack");
+			
     	}else if(messageType == 6){
 
     	}
