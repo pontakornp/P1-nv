@@ -3,7 +3,8 @@ package edu.usfca.cs.dfs;
 public class HDFSMessagesBuilder {
 
     /*
-     * This will use protobuf message to register storagenode on controller
+     * This will use protobuf message to register storageNode on controller
+     * Sets message type as 1 for inbound handler to identify as registration request message
      */
     public static StorageMessages.MessageWrapper constructRegisterNodeRequest(StorageNode storageNode){
         StorageMessages.StorageNode storageNodeMsg
@@ -20,16 +21,17 @@ public class HDFSMessagesBuilder {
         	.setStorageNode(storageNodeMsg)
         	.build();
         
-        StorageMessages.MessageWrapper msgWrapper =
-                StorageMessages.MessageWrapper.newBuilder()
-                        .setMessageType(1)
-                        .setStorageNodeRegisterRequest(storageNodeRegisterRequestMsg)
-                        .build();
+        StorageMessages.MessageWrapper msgWrapper
+                = StorageMessages.MessageWrapper.newBuilder()
+                .setMessageType(1)
+                .setStorageNodeRegisterRequest(storageNodeRegisterRequestMsg)
+                .build();
         return msgWrapper;
     }
     
     /*
-     * This will use protobuf message to register storagenode on controller
+     * This will use protobuf message to send response from controller to  storageNode
+     * Sets message type as 2 for inbound handler to identify as registration response message
      */
     public static StorageMessages.MessageWrapper constructRegisterNodeResponse(StorageMessages.StorageNode storageNodeMsg){
 		StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponseMsg
@@ -37,17 +39,35 @@ public class HDFSMessagesBuilder {
 			.setStorageNode(storageNodeMsg)
 			.build();
 		
-		StorageMessages.MessageWrapper msgWrapper =
-		        StorageMessages.MessageWrapper.newBuilder()
-		                .setMessageType(2)
-		                .setStorageNodeRegisterResponse(storageNodeRegisterResponseMsg)
-		                .build();
+		StorageMessages.MessageWrapper msgWrapper
+			= StorageMessages.MessageWrapper.newBuilder()
+            .setMessageType(2)
+            .setStorageNodeRegisterResponse(storageNodeRegisterResponseMsg)
+            .build();
 		return msgWrapper;
     }
     
-    
+    /*
+     * This will use protobuf message to send heartbeat from storageNode to controller
+     * Sets message type as 3 for inbound handler to identify as heartbeat request message
+     */
 	public static StorageMessages.MessageWrapper constructHeartBeatRequest(StorageNode storageNode) {
-		return null;
+		StorageMessages.StorageNodeHeartbeat StorageNodeHeartbeatMsg
+			= StorageMessages.StorageNodeHeartbeat.newBuilder()
+			.setStorageNodeId(storageNode.getStorageNodeId())
+			.build();
+		
+		StorageMessages.StorageNodeHeartBeatRequest storageNodeHeartBeatRequestMsg
+	    	= StorageMessages.StorageNodeHeartBeatRequest.newBuilder()
+	    	.setStorageNodeHeartbeat(StorageNodeHeartbeatMsg)
+	    	.build();
+		
+		StorageMessages.MessageWrapper msgWrapper =
+		        StorageMessages.MessageWrapper.newBuilder()
+		                .setMessageType(3)
+		                .setStorageNodeHeartBeatRequest(storageNodeHeartBeatRequestMsg)
+		                .build();
+		return msgWrapper;
     }
 
     public static StorageMessages.MessageWrapper constructGetPrimaryNodeResponse() {

@@ -40,6 +40,7 @@ public class StorageNode {
 	private int storageNodePort;
 	private int availableStorageCapacity;
 	private int maxStorageCapacity;
+	private boolean isActive;
 	
 	private List<String> replicationNodeIds;
 	private HashMap<String, Chunk> metaDataMap;
@@ -56,9 +57,36 @@ public class StorageNode {
 	public static StorageNode getInstance() { 
         if (storageNodeInstance == null) 
         	storageNodeInstance = new StorageNode(); 
-  
         return storageNodeInstance; 
-    } 
+    }
+	
+	public String getStorageNodeId() {
+		return this.storageNodeId;
+	}
+	
+	public String getStorageNodeAddr() {
+		return this.storageNodeAddr;
+	}
+	
+	public int getStorageNodePort() {
+		return this.storageNodePort;
+	}
+	
+	public int getAvailableStorageCapacity() {
+		return this.availableStorageCapacity;
+	}
+	
+	public int getMaxStorageCapacity() {
+		return this.maxStorageCapacity;
+	}
+
+	public List<String> getReplicationNodeIds() {
+		return this.replicationNodeIds;
+	}
+	
+	public void setReplicationNodeIds(List<String> replicationNodesIdList) {
+		this.replicationNodeIds = replicationNodesIdList;
+	}
 	
 	private void setVariables(Config config) {
 		this.storageNodeId = UUID.randomUUID().toString();
@@ -117,33 +145,60 @@ public class StorageNode {
 			logger.error("Registration of storage node failed. Controller connection establishment failed");
 		}
 	}
-
-	public String getStorageNodeId() {
-		return this.storageNodeId;
+	
+	/*
+	 * This send a request to controller to register the node onto the controller
+	 * @request parameters : None
+	 * @return type: None
+	 */
+	// send heartbeat to controller to inform that storage node is still available
+	private void sendHeartBeat() {
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+	        MessagePipeline pipeline = new MessagePipeline();
+	        
+	        System.out.println("HeartBeat initiated to controller");
+	        Bootstrap bootstrap = new Bootstrap()
+	            .group(workerGroup)
+	            .channel(NioSocketChannel.class)
+	            .option(ChannelOption.SO_KEEPALIVE, true)
+	            .handler(pipeline);
+	        
+	        System.out.println(this.controllerNodeAddr+String.valueOf(this.controllerNodePort));
+	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+	        cf.syncUninterruptibly();
+	
+	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructHeartBeatRequest(StorageNode.getInstance());
+	
+	        Channel chan = cf.channel();
+	        ChannelFuture write = chan.write(msgWrapper);
+	        chan.flush();
+	        write.syncUninterruptibly();
+	        chan.closeFuture().sync();
+	        workerGroup.shutdownGracefully();
+	        System.out.println("HeartBeat message sent to controller");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Registration of storage node failed. Controller connetion establishment failed");
+		}
 	}
 	
-	public String getStorageNodeAddr() {
-		return this.storageNodeAddr;
-	}
-	
-	public int getStorageNodePort() {
-		return this.storageNodePort;
-	}
-	
-	public int getAvailableStorageCapacity() {
-		return this.availableStorageCapacity;
-	}
-	
-	public int getMaxStorageCapacity() {
-		return this.maxStorageCapacity;
-	}
-
-	public List<String> getReplicationNodeIds() {
-		return this.replicationNodeIds;
-	}
-	
-	public void setReplicationNodeIds(List<String> replicationNodesIdList) {
-		this.replicationNodeIds = replicationNodesIdList;
+	public void handleHeartBeats() {
+		Thread thread = new Thread() {
+			public void run() {
+				while(true) {
+					try {
+						System.out.println("HeartbeatThread running");
+						StorageNode.getInstance().sendHeartBeat();
+						System.out.println("HeartbeatThread sleeping");
+			            Thread.sleep(5000);
+			        } catch (InterruptedException e) {
+			            e.printStackTrace();
+			        }
+				}
+			}
+		};
+		thread.start();
 	}
 
 	private boolean isFileCorrupted(byte[] chunkData, String originalCheckSum) {
@@ -244,40 +299,6 @@ public class StorageNode {
 	public void listChunksAndFileNames() {
 
 	}
-
-	// send heartbeat to controller to inform that storage node is still available
-	public void sendHeartBeat() {
-		try {
-			EventLoopGroup workerGroup = new NioEventLoopGroup();
-	        MessagePipeline pipeline = new MessagePipeline();
-	        
-	        System.out.println("HeartBeat initiated to controller");
-	        Bootstrap bootstrap = new Bootstrap()
-	            .group(workerGroup)
-	            .channel(NioSocketChannel.class)
-	            .option(ChannelOption.SO_KEEPALIVE, true)
-	            .handler(pipeline);
-	        
-	        System.out.println(this.controllerNodeAddr+String.valueOf(this.controllerNodePort));
-	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
-	        cf.syncUninterruptibly();
-	
-	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructHeartBeatRequest(StorageNode.getInstance());
-	
-	        Channel chan = cf.channel();
-	        ChannelFuture write = chan.write(msgWrapper);
-	        chan.flush();
-	        write.syncUninterruptibly();
-	
-	        /* Don't quit until we've disconnected: */
-	        System.out.println("Registration message sent to controller");
-	        chan.closeFuture().sync();
-	        workerGroup.shutdownGracefully();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Registration of storage node failed. Controller connetion establishment failed");
-		}
-	}
 	
 	public void start() throws IOException, InterruptedException {
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -294,8 +315,9 @@ public class StorageNode {
  
             ChannelFuture f = b.bind(this.storageNodePort).sync();
             System.out.println("Storage Node started at port: " + String.valueOf(this.storageNodePort));
+            this.isActive = true;
             this.registerNode();
-            f.channel().closeFuture().sync();
+            this.handleHeartBeats();
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
@@ -312,7 +334,6 @@ public class StorageNode {
 		Config config = new Config(configFileName);
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
-		
 		try {
 			storageNode.start();
 		}catch (Exception e){

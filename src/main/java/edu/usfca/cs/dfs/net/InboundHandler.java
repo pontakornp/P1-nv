@@ -67,7 +67,13 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		StorageNode storageNode = StorageNode.getInstance();
     		storageNode.setReplicationNodeIds((List<String>) storageNodeMsg.getReplicationNodeIdsList());
     	}else if(messageType == 3){
-    		
+    		System.out.println("Heartbeat received on controller");
+    		StorageMessages.StorageNodeHeartbeat storageNodeHeartbeat = msg.getStorageNodeHeartBeatRequest().getStorageNodeHeartbeat();
+    		String storageNodeId = storageNodeHeartbeat.getStorageNodeId();
+    		Controller controller = Controller.getInstance();
+    		controller.receiveHeartBeat(storageNodeId);
+    		System.out.println("Heartbeat updated on controller for storageNodeId: " + storageNodeId);
+    		ctx.close();
     	}else if(messageType == 3){
     		
     	}else if(messageType == 4){

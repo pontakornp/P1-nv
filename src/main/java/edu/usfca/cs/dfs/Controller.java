@@ -1,7 +1,9 @@
 package edu.usfca.cs.dfs;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -21,6 +23,7 @@ public class Controller {
 	private int controllerNodePort;
 	private ConcurrentHashMap<String, StorageMessages.StorageNode> activeStorageNodes;
 	private ConcurrentHashMap<String, BloomFilter> bloomFilterList;
+	private ConcurrentHashMap<String, Timestamp> timeStamps;
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	
@@ -42,7 +45,15 @@ public class Controller {
 		this.controllerNodePort = config.getControllerNodePort();
 		this.activeStorageNodes = new ConcurrentHashMap<String, StorageMessages.StorageNode>();
 		this.bloomFilterList = new ConcurrentHashMap<String, BloomFilter>();
+		this.timeStamps = new ConcurrentHashMap<String, Timestamp>();
 		System.out.println("Controller Node config updated.");
+	}
+	
+	private static Timestamp getCurrentTimeStamp() {
+		Date date= new Date();
+		long time = date.getTime();
+		Timestamp ts = new Timestamp(time);
+		return ts;
 	}
 	
 	/*
@@ -54,8 +65,9 @@ public class Controller {
 		String storageNodeId = storageNode.getStorageNodeId();
 		storageNode = this.getReplicationNodes(storageNode);
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
-			activeStorageNodes.put(storageNodeId, storageNode);
-			bloomFilterList.put(storageNodeId, new BloomFilter(Controller.BLOOM_FILTER_SIZE, Controller.BLOOM_HASH_COUNT));
+			this.activeStorageNodes.put(storageNodeId, storageNode);
+			this.bloomFilterList.put(storageNodeId, new BloomFilter(Controller.BLOOM_FILTER_SIZE, Controller.BLOOM_HASH_COUNT));
+			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
 			System.out.println("INFO: Storage Node registered with controller");
 			this.printStorageNodeIds();
 		}else {
@@ -90,6 +102,19 @@ public class Controller {
 	}
 	
 	/*
+	 * This will be called when StorageNode send HeartBeat to controller
+	 * This will need to update metadata of chunk on controller
+	 */
+	public synchronized void receiveHeartBeat(String storageNodeId) {
+		if(this.timeStamps.containsKey(storageNodeId)) {
+			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
+			System.out.println("INFO: Storage Node Heartbeat has been updated");
+		}else {
+			System.out.println("ERROR: Storage Node not registered on controller. Heartbeat will not be updated");
+		}
+	}
+	
+	/*
 	 * This is called when controller deletes StorageNode when it decides it on inactive status
 	 * This will remove the node from activeStorageNodes
 	 */
@@ -109,14 +134,6 @@ public class Controller {
 			nodeList.add(this.activeStorageNodes.get(keysAsArray.get(r.nextInt(keysAsArray.size()))));
 		}
 		return nodeList;
-	}
-	
-	/*
-	 * This will be called when StorageNode send HeartBeat to controller
-	 * This will need to update metadata of chunk on controller
-	 */
-	public synchronized void receiveHeartBeat(HeartBeat heartbeat) {
-		
 	}
 	
 	
