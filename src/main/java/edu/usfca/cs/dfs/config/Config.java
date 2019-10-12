@@ -27,7 +27,7 @@ public class Config {
 	private String storageNodeAddr;
 	private int storageNodePort;
 	private String storageDirectoryPath;
-	private int maxStorageValue;
+	private int maxStorageCapacity;
 
 	private int chunkSize;
 	
@@ -56,11 +56,10 @@ public class Config {
 			this.controllerNodeAddr = config.controllerNodeAddr;
 			this.controllerNodePort = config.controllerNodePort;
 			
-			
 			this.storageNodeAddr = config.storageNodeAddr;
 			this.storageNodePort = config.storageNodePort;
 			this.storageDirectoryPath = config.storageDirectoryPath;
-			this.maxStorageValue = config.maxStorageValue;
+			this.maxStorageCapacity = config.maxStorageCapacity;
 			
 			this.chunkSize = config.chunkSize;
 		} catch(IOException ioe) {
@@ -126,11 +125,11 @@ public class Config {
 		this.storageNodePort = storageNodePort;
 	}
 	
-	public int getMaxStorageValue() {
-		return this.maxStorageValue;
+	public int getMaxStorageCapacity() {
+		return this.maxStorageCapacity;
 	}
 
-	public void setMaxStorageValue(int maxStorageValue) {
-		this.maxStorageValue = maxStorageValue;
+	public void setMaxStorageCapacity(int maxStorageCapacity) {
+		this.maxStorageCapacity = maxStorageCapacity;
 	}
 }

@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,10 +38,10 @@ public class StorageNode {
 	private String storageNodeAddr;
 	private String storageNodeDirectoryPath; // storageNodeAddr + storageNodeAddr + '/'
 	private int storageNodePort;
-	private int currentStorageValue;
-	private int maxStorageValue;
+	private int availableStorageCapacity;
+	private int maxStorageCapacity;
 	
-	private ArrayList<String> replicationNodeIds;
+	private List<String> replicationNodeIds;
 	private HashMap<String, Chunk> metaDataMap;
 	
 	private String controllerNodeAddr;
@@ -63,9 +64,9 @@ public class StorageNode {
 		this.storageNodeId = UUID.randomUUID().toString();
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
-		this.storageNodeDirectoryPath = storageNodeAddr + storageNodePort;
-		this.currentStorageValue = 0;
-		this.maxStorageValue = config.getMaxStorageValue();
+		this.storageNodeDirectoryPath = config.getStorageDirectoryPath();
+		this.availableStorageCapacity = 0;
+		this.maxStorageCapacity = config.getMaxStorageCapacity();
 		this.replicationNodeIds = new ArrayList<String>();
 		this.metaDataMap = new HashMap<String, Chunk>();
 		
@@ -78,8 +79,8 @@ public class StorageNode {
 		this.storageNodeId = storageNodeMsg.getStorageNodeId();
 		this.storageNodeAddr = storageNodeMsg.getStorageNodeAddr();
 		this.storageNodePort = storageNodeMsg.getStorageNodePort();
-		this.currentStorageValue = storageNodeMsg.getCurrentStorageValue();
-		this.maxStorageValue = storageNodeMsg.getMaxStorageValue();
+		this.availableStorageCapacity = storageNodeMsg.getAvailableStorageCapacity();
+		this.maxStorageCapacity = storageNodeMsg.getMaxStorageCapacity();
 	}
 
 	/*
@@ -92,14 +93,12 @@ public class StorageNode {
 			EventLoopGroup workerGroup = new NioEventLoopGroup();
 	        MessagePipeline pipeline = new MessagePipeline();
 	        
-	        System.out.println("Registration initiated to controller");
+	        logger.info("Registration initiated to controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
 	        Bootstrap bootstrap = new Bootstrap()
 	            .group(workerGroup)
 	            .channel(NioSocketChannel.class)
 	            .option(ChannelOption.SO_KEEPALIVE, true)
 	            .handler(pipeline);
-	        
-	        System.out.println(this.controllerNodeAddr+String.valueOf(this.controllerNodePort));
 	        
 	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
 	        cf.syncUninterruptibly();
@@ -110,16 +109,13 @@ public class StorageNode {
 	        ChannelFuture write = chan.write(msgWrapper);
 	        chan.flush();
 	        write.syncUninterruptibly();
-	
-	        /* Don't quit until we've disconnected: */
-	        System.out.println("Registration message sent to controller");
+	        logger.info("Registration message sent to controller");
 	        chan.closeFuture().sync();
 	        workerGroup.shutdownGracefully();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Registration of storage node failed. Controller connetion establishment failed");
+			logger.error("Registration of storage node failed. Controller connection establishment failed");
 		}
-		
 	}
 
 	public String getStorageNodeId() {
@@ -134,19 +130,19 @@ public class StorageNode {
 		return this.storageNodePort;
 	}
 	
-	public int getCurrentStorageValue() {
-		return this.currentStorageValue;
+	public int getAvailableStorageCapacity() {
+		return this.availableStorageCapacity;
 	}
 	
-	public int getMaxStorageValue() {
-		return this.maxStorageValue;
+	public int getMaxStorageCapacity() {
+		return this.maxStorageCapacity;
 	}
 
-	public ArrayList<String> getReplicationNodeIds() {
+	public List<String> getReplicationNodeIds() {
 		return this.replicationNodeIds;
 	}
 	
-	public void setReplicationNodeIds(ArrayList<String> replicationNodesIdList) {
+	public void setReplicationNodeIds(List<String> replicationNodesIdList) {
 		this.replicationNodeIds = replicationNodesIdList;
 	}
 

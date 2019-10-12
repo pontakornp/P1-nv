@@ -11,17 +11,40 @@ public class HDFSMessagesBuilder {
                 .setStorageNodeId(storageNode.getStorageNodeId())
                 .setStorageNodeAddr(storageNode.getStorageNodeAddr())
                 .setStorageNodePort(storageNode.getStorageNodePort())
-                .setCurrentStorageValue(storageNode.getCurrentStorageValue())
-                .setMaxStorageValue(storageNode.getMaxStorageValue())
+                .setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
+                .setMaxStorageCapacity(storageNode.getMaxStorageCapacity())
                 .build();
-
+        
+        StorageMessages.StorageNodeRegisterRequest storageNodeRegisterRequestMsg
+        	= StorageMessages.StorageNodeRegisterRequest.newBuilder()
+        	.setStorageNode(storageNodeMsg)
+        	.build();
+        
         StorageMessages.MessageWrapper msgWrapper =
                 StorageMessages.MessageWrapper.newBuilder()
                         .setMessageType(1)
-                        .setStorageNode(storageNodeMsg)
+                        .setStorageNodeRegisterRequest(storageNodeRegisterRequestMsg)
                         .build();
         return msgWrapper;
     }
+    
+    /*
+     * This will use protobuf message to register storagenode on controller
+     */
+    public static StorageMessages.MessageWrapper constructRegisterNodeResponse(StorageMessages.StorageNode storageNodeMsg){
+		StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponseMsg
+			= StorageMessages.StorageNodeRegisterResponse.newBuilder()
+			.setStorageNode(storageNodeMsg)
+			.build();
+		
+		StorageMessages.MessageWrapper msgWrapper =
+		        StorageMessages.MessageWrapper.newBuilder()
+		                .setMessageType(2)
+		                .setStorageNodeRegisterResponse(storageNodeRegisterResponseMsg)
+		                .build();
+		return msgWrapper;
+    }
+    
     
 	public static StorageMessages.MessageWrapper constructHeartBeatRequest(StorageNode storageNode) {
 		return null;
