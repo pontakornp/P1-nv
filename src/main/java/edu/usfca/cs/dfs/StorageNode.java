@@ -43,6 +43,7 @@ public class StorageNode {
 	private boolean isActive;
 	
 	private List<String> replicationNodeIds;
+	private List<StorageNode> replicatedStorageNodeObjs;
 	private HashMap<String, Chunk> metaDataMap;
 	
 	private String controllerNodeAddr;
@@ -83,9 +84,53 @@ public class StorageNode {
 	public List<String> getReplicationNodeIds() {
 		return this.replicationNodeIds;
 	}
+
+	public List<StorageNode> getReplicatedNodeObjs() {return this.replicatedStorageNodeObjs;}
 	
 	public void setReplicationNodeIds(List<String> replicationNodesIdList) {
 		this.replicationNodeIds = replicationNodesIdList;
+	}
+
+	/**
+	 * store chunks in all of the storage node's replicas
+	 * @param chunk
+	 */
+	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk) {
+		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, false);
+		for (StorageNode replica: this.replicatedStorageNodeObjs) {
+			boolean isStoredSuccess = storeChunkOnReplicaHelper(message, replica);
+			if (!isStoredSuccess) {
+				//sleep for sometime and retry
+			}
+		}
+		return true;
+	}
+
+
+	private boolean storeChunkOnReplicaHelper(MessageWrapper message, StorageNode storageNode) {
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+			MessagePipeline pipeline = new MessagePipeline();
+
+			logger.info("Connection initiated to storage node replica: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+			Bootstrap bootstrap = new Bootstrap()
+					.group(workerGroup)
+					.channel(NioSocketChannel.class)
+					.option(ChannelOption.SO_KEEPALIVE, true)
+					.handler(pipeline);
+
+			ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
+			cf.syncUninterruptibly();
+			Channel chan = cf.channel();
+			ChannelFuture write = chan.write(message);
+			chan.flush();
+			write.syncUninterruptibly();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("replicate chunk failed. Replicated storage node connection establishment failed");
+			return false;
+		}
 	}
 	
 	private void setVariables(Config config) {
