@@ -46,7 +46,6 @@ message Chunk {
 	string checksum = 4;
 	bytes data = 5;
 	int32 maxChunkNumber = 6;
-	bool isCompressed = 7;
 }
 
 message GetFileChunkNumberResponse {
@@ -68,6 +67,7 @@ message GetStorageNodesForChunksResponse {
 
 message StoreChunkRequest {
     Chunk chunk = 1;
+    bool isReplica = 2;
 }
 
 message StoreChunkResponse {
