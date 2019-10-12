@@ -40,32 +40,36 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
         /* Writable status of the channel changed */
     }
 
+    /*
+     * MessageType = 1 for register initiation request
+     * MessageType = 2 for register acknowledge response
+     *  
+     */
     @Override
     public void channelRead0(ChannelHandlerContext ctx, StorageMessages.MessageWrapper msg) {
     	int messageType = msg.getMessageType();
     	if (messageType == 1) {
     		System.out.println("Received Storage Node Registration Message");
-    		StorageMessages.StorageNodeRegisterRequest storageNodeRegisterRequest = msg.getStorageNodeRegisterRequest();
-            StorageMessages.StorageNode storageNode = storageNodeRegisterRequest.getStorageNode();
+            StorageMessages.StorageNode storageNode = msg.getStorageNode();
     		Controller controller = Controller.getInstance();
     		controller.addStorageNode(storageNode);
         	
-    		StorageMessages.StorageNodeRegisterAck storageMessageAck = 
-    				StorageMessages.StorageNodeRegisterAck.newBuilder()
-    				.setStorageNode(storageNode)
-    				.build();
-    		
         	StorageMessages.MessageWrapper msgWrapper =
                     StorageMessages.MessageWrapper.newBuilder()
-                    	.setMessageType(6)
-                        .setStorageNodeRegisterAck(storageMessageAck)
+                    	.setMessageType(2)
+                        .setStorageNode(storageNode)
                         .build();
     		
         	System.out.println("Sending Storage Node Registration Acknowledgement Message");
     		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
     		future.addListener(ChannelFutureListener.CLOSE);
     	}else if(messageType == 2){
+    		System.out.println("Received Storage Node Registration Acknowledgement Message");
+    		StorageMessages.StorageNode storageNodeResponse = msg.getStorageNode();
+    		StorageNode storageNode = StorageNode.getInstance();
     		
+    		
+    		storageNode.setReplicationNodeIds((ArrayList<String>) storageNodeResponse.getReplicationNodeIdsList());
     	}else if(messageType == 3){
     		
     	}else if(messageType == 3){
@@ -75,11 +79,6 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     	}else if(messageType == 5){
     		
     	}else if(messageType == 6){
-    		System.out.println("Received Storage Node Registration Acknowledgement Message");
-    		StorageMessages.StorageNodeRegisterAck storageNodeRegisterAck = msg.getStorageNodeRegisterAck();
-    		StorageMessages.StorageNode storageNodeAck = storageNodeRegisterAck.getStorageNode();
-    		StorageNode storageNode = StorageNode.getInstance();
-    		storageNode.setReplicationNodeIds((ArrayList<String>) storageNodeAck.getReplicationNodeIdsList());
     	}
     }
 

@@ -1,43 +1,30 @@
 package edu.usfca.cs.dfs;
 
-public class StorageMessagesBuilder {
-
-    public static StorageMessages.StorageNodeRegisterRequest getNodesForChunkStoreRequest() {
-        return null;
-    }
+public class HDFSMessagesBuilder {
 
     /*
-     * This will use protobuf message to create the chunk message
-     * This will be used by client to send to storageNode to save particular chunk
+     * This will use protobuf message to register storagenode on controller
      */
-    public static StorageMessages.MessageWrapper constructGetPrimaryNodeRequest
-            (
-                String storageNodeId,
-                String storageNodeAddr,
-                int storageNodePort,
-                int currentStorageValue,
-                int maxStorageValue
-             ) {
-        StorageMessages.StorageNode storageNode
+    public static StorageMessages.MessageWrapper constructRegisterNodeRequest(StorageNode storageNode){
+        StorageMessages.StorageNode storageNodeMsg
                 = StorageMessages.StorageNode.newBuilder()
-                .setStorageNodeId(storageNodeId)
-                .setStorageNodeAddr(storageNodeAddr)
-                .setStorageNodePort(storageNodePort)
-                .setCurrentStorageValue(currentStorageValue)
-                .setMaxStorageValue(maxStorageValue)
-                .build();
-
-        StorageMessages.StorageNodeRegisterRequest registerNodeMessage
-                = StorageMessages.StorageNodeRegisterRequest.newBuilder()
-                .setStorageNode(storageNode)
+                .setStorageNodeId(storageNode.getStorageNodeId())
+                .setStorageNodeAddr(storageNode.getStorageNodeAddr())
+                .setStorageNodePort(storageNode.getStorageNodePort())
+                .setCurrentStorageValue(storageNode.getCurrentStorageValue())
+                .setMaxStorageValue(storageNode.getMaxStorageValue())
                 .build();
 
         StorageMessages.MessageWrapper msgWrapper =
                 StorageMessages.MessageWrapper.newBuilder()
                         .setMessageType(1)
-                        .setStorageNodeRegisterRequest(registerNodeMessage)
+                        .setStorageNode(storageNodeMsg)
                         .build();
         return msgWrapper;
+    }
+    
+	public static StorageMessages.MessageWrapper constructHeartBeatRequest(StorageNode storageNode) {
+		return null;
     }
 
     public static StorageMessages.MessageWrapper constructGetPrimaryNodeResponse() {

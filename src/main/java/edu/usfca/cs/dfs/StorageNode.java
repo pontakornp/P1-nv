@@ -74,12 +74,12 @@ public class StorageNode {
 		System.out.println("Storage Node config updated. Storage Node Id: "+ this.storageNodeId);
 	}
     
-    public void updateValuesFromProto(StorageMessages.StorageNodeRegisterRequest storageNodeRegisterRequest) {
-		this.storageNodeId = storageNodeRegisterRequest.getStorageNode().getStorageNodeId();
-		this.storageNodeAddr = storageNodeRegisterRequest.getStorageNode().getStorageNodeAddr();
-		this.storageNodePort = storageNodeRegisterRequest.getStorageNode().getStorageNodePort();
-		this.currentStorageValue = storageNodeRegisterRequest.getStorageNode().getCurrentStorageValue();
-		this.maxStorageValue = storageNodeRegisterRequest.getStorageNode().getMaxStorageValue();
+    public void updateValuesFromProto(StorageMessages.StorageNode storageNodeMsg) {
+		this.storageNodeId = storageNodeMsg.getStorageNodeId();
+		this.storageNodeAddr = storageNodeMsg.getStorageNodeAddr();
+		this.storageNodePort = storageNodeMsg.getStorageNodePort();
+		this.currentStorageValue = storageNodeMsg.getCurrentStorageValue();
+		this.maxStorageValue = storageNodeMsg.getMaxStorageValue();
 	}
 
 	/*
@@ -104,8 +104,7 @@ public class StorageNode {
 	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
 	        cf.syncUninterruptibly();
 	
-	        MessageWrapper msgWrapper = StorageMessagesBuilder.constructGetPrimaryNodeRequest
-					(this.storageNodeId, this.storageNodeAddr, this.storageNodePort, this.currentStorageValue, this.maxStorageValue);
+	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeRequest(StorageNode.getInstance());
 	
 	        Channel chan = cf.channel();
 	        ChannelFuture write = chan.write(msgWrapper);
@@ -252,7 +251,36 @@ public class StorageNode {
 
 	// send heartbeat to controller to inform that storage node is still available
 	public void sendHeartBeat() {
-		
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+	        MessagePipeline pipeline = new MessagePipeline();
+	        
+	        System.out.println("HeartBeat initiated to controller");
+	        Bootstrap bootstrap = new Bootstrap()
+	            .group(workerGroup)
+	            .channel(NioSocketChannel.class)
+	            .option(ChannelOption.SO_KEEPALIVE, true)
+	            .handler(pipeline);
+	        
+	        System.out.println(this.controllerNodeAddr+String.valueOf(this.controllerNodePort));
+	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+	        cf.syncUninterruptibly();
+	
+	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructHeartBeatRequest(StorageNode.getInstance());
+	
+	        Channel chan = cf.channel();
+	        ChannelFuture write = chan.write(msgWrapper);
+	        chan.flush();
+	        write.syncUninterruptibly();
+	
+	        /* Don't quit until we've disconnected: */
+	        System.out.println("Registration message sent to controller");
+	        chan.closeFuture().sync();
+	        workerGroup.shutdownGracefully();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Registration of storage node failed. Controller connetion establishment failed");
+		}
 	}
 	
 	public void start() throws IOException, InterruptedException {

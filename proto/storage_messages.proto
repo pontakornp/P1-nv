@@ -7,121 +7,105 @@ message StorageNode {
 	string storageNodeId = 1;
 	string storageNodeAddr = 2;
 	int32 storageNodePort = 3;
-	int32 currentStorageValue = 4;
-	int32 maxStorageValue = 5;
+	int32 availableStorageCapacity = 4;
+	int32 maxStorageCapacity = 5;
 	repeated string replicationNodeIds = 6;
 }
 
 message StorageNodeRegisterRequest {
-    StorageNode storageNode = 1;
+ 	StorageNode storageNode = 1;
 }
-
-message StorageNodeRegisterAck {
+message StorageNodeRegisterResponse {
 	StorageNode storageNode = 1;
 }
 
-// 2. Get nodes for chunk store
-message PrimaryStorageNodeRequest {
-	string fileName = 1;
-	//int32 maxChunk = 2;
-	//bool isMetaData = 3;
-
-	int32 chunkId = 2;
-	int32 chunkSize = 3;
+message StorageNodeHeartbeat {
+	string storageNodeId = 1;
 }
 
-message PrimaryStorageNodeResponse {
-    repeated ChunkMapping chunkMappings = 1;
+message StorageNodeHeartBeatRequest {
+	StorageNodeHeartbeat storageNodeHeartbeat = 1;
+}
+
+message FileExistenceRequest {
+	string fileName = 1;
+}
+
+message FileExistenceResponse {
+	repeated StorageNode storageNodeList = 1;
+}
+
+message GetFileChunkNumberRequest {
+	string fileName = 1;
+}
+
+message Chunk {
+	string fileName = 1;
+	int32 chunkId = 2;
+	int32 chunkSize = 3;
+	string checksum = 4;
+	bytes data = 5;
+	int32 maxChunkNumber = 6;
+	bool isCompressed = 7;
+}
+
+message GetFileChunkNumberResponse {
+	Chunk chunk = 1;
 }
 
 message ChunkMapping {
-	string fileName = 1;
-	int32 chunkId = 2;
-	repeated StorageNode storageNodeObjs = 3;
+	Chunk chunk = 1;
+	repeated StorageNode storageNodeObjs = 2;
 }
 
-
-message PrimaryStorageNodeAck {
-    string fileName = 1;
+message GetStorageNodesForChunksRequest {
+	repeated Chunk chunkList = 1;
 }
 
+message GetStorageNodesForChunksResponse {
+	repeated ChunkMapping chunkMappings = 1;
+}
 
-// 3. Store chunk
 message StoreChunkRequest {
-    string fileName = 1;
-    int32 chunkId = 2;
-    bytes data = 3;
-    string checksum = 4;
-    int32 chunkSize = 5;
+    Chunk chunk = 1;
 }
 
-message StoreChunkAck {
-    string fileName = 1;
-    int32 chunkId = 2;
+message StoreChunkResponse {
+	Chunk chunk = 1;
+	bool isSuccess = 2;
 }
 
-// 5. Get nodes for retrieve chunk
-
-
-message AllStorageNodeRequest {
-    string fileName = 1;
-    int32 maxChunk = 2;
-    bool isMetaData = 3;
+message RetrieveFileRequest {
+	string fileName = 1;
 }
 
-message AllStorageNodeResponse {
-    repeated ChunkMapping chunkMappings = 1;
+message RetrieveFileResponse {
+	ChunkMapping chunkMappings = 1;
 }
-
-message AllStorageNodeAck {
-    string fileName = 1;
-}
-
-// 6. Retrieve chunk
 
 message RetrieveChunkRequest {
-    string fileName = 1;
+    Chunk chunk = 1;
 }
 
 message RetrieveChunkResponse {
-    string fileName = 1;
-    int32 maxChunk = 2;
-    bool isMetaData = 3;
-}
-
-message RetrieveChunkAck {
-    string fileName = 1;
-    int32 chunkId = 2;
+    Chunk chunk = 1;
 }
 
 message MessageWrapper {
     int32 messageType = 1;
     StorageNodeRegisterRequest storageNodeRegisterRequest = 2;
-    StorageNodeRegisterAck storageNodeRegisterAck = 3;
-    PrimaryStorageNodeRequest primaryStorageNodeRequest = 4;
-    PrimaryStorageNodeResponse primaryStorageNodeResponse = 5;
-    PrimaryStorageNodeAck primaryStorageNodeAck = 6;
-    StoreChunkRequest storeChunkRequest = 7;
-    StoreChunkAck storeChunkAck = 8;
-    AllStorageNodeRequest allStorageNodeRequest = 9;
-    AllStorageNodeResponse allStorageNodeResponse = 10;
-    AllStorageNodeAck allStorageNodeAck = 11;
-    RetrieveChunkRequest retrieveChunkRequest = 12;
-    RetrieveChunkResponse retrieveChunkResponse = 13;
-    RetrieveChunkAck retrieveChunkAck = 14;
+    StorageNodeRegisterResponse storageNodeRegisterResponse = 3;
+    StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;
+    FileExistenceRequest fileExistenceRequest = 5;
+    FileExistenceResponse fileExistenceResponse = 6;
+    GetFileChunkNumberRequest getFileChunkNumberRequest=7;
+    GetFileChunkNumberResponse getFileChunkNumberResponse=8;
+    GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;
+    GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;
+    StoreChunkRequest storeChunkRequest = 11;
+    StoreChunkResponse storeChunkResponse = 12;
+    RetrieveFileRequest retrieveFileRequest = 13;
+    RetrieveFileResponse retrieveFileResponse = 14;
+    RetrieveChunkRequest retrieveChunkRequest = 15;
+    RetrieveChunkResponse retrieveChunkResponse = 16;
 }
-
-
-/*
-message MessageWrapper {
-	int32 messageType = 1;
-	GetPrimaryStorageNode getPrimaryStorageNodeMsg = 2;
-    StoreChunk storeChunkMsg = 3;
-    StorageNode storageNodeMsg = 4;
-
-    RetrieveFile retrieveFileMsg = 5;
-    StorageNodeRegisterAck storageNodeRegisterAckMsg = 6;
-
-    RetrieveChunk retrieveChunkMsg = 5;
-}
-*/
