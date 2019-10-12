@@ -82,8 +82,16 @@ public class HDFSMessagesBuilder {
         return null;
     }
 
-    public static StorageMessages.MessageWrapper constructStoreChunkAck() {
-        return null;
+    public static StorageMessages.MessageWrapper constructStoreChunkAck(StorageMessages.Chunk chunk, boolean isSuccess) {
+        StorageMessages.StoreChunkResponse storeChunkResponse = StorageMessages.StoreChunkResponse.newBuilder()
+                .setChunk(chunk)
+                .setIsSuccess(isSuccess)
+                .build();
+        StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+                .setMessageType(5)
+                .setStoreChunkResponse(storeChunkResponse)
+                .build();
+	    return msgWrapper;
     }
 
     public static StorageMessages.MessageWrapper constructAllStorageNodeRequest() {
