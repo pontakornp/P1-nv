@@ -54,8 +54,6 @@ public class Client {
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(pipeline);
-    		
-    		
 	    	RandomAccessFile aFile = new RandomAccessFile(filePath, "r");
 	        FileChannel inChannel = aFile.getChannel();
 	        Integer bufferSize = this.chunkSize;
@@ -66,14 +64,14 @@ public class Client {
 	            byte[] arr = new byte[buffer.remaining()];
 	            buffer.get(arr);
 	            
-	            MessageWrapper getPrimaryStorageNodemessage 
+	            MessageWrapper getPrimaryStorageNodeMessage
 	            	= this.constructGetPrimaryStorageNodeRequestMessage(fileName, chunkId, arr.length);
 	            
-	            StorageNode storageNode = this.getPrimaryStorageNode(bootstrap, getPrimaryStorageNodemessage);
+	            StorageNode storageNode = this.getPrimaryStorageNode(bootstrap, getPrimaryStorageNodeMessage);
 	            
 	            MessageWrapper saveChunkMessage = 
 	            		this.constructSaveChunkRequestMessage(fileName, chunkId, arr);
-	            this.saveChunkonPrimary(bootstrap, saveChunkMessage, storageNode);
+	            this.saveChunkOnPrimary(bootstrap, saveChunkMessage, storageNode);
 	            buffer.clear();
 	            chunkId++;
 	        }
@@ -101,14 +99,14 @@ public class Client {
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(pipeline);
     		
-            StorageMessages.RetrieveFile retreiveFileMsg  
-            	= StorageMessages.RetrieveFile.newBuilder()
+            StorageMessages.RetrieveChunkRequest retrieveFileMsg
+            	= StorageMessages.RetrieveChunkRequest.newBuilder()
             	.setFileName(fileName)
             	.build();
             
             StorageMessages.MessageWrapper msgWrapper =
                     StorageMessages.MessageWrapper.newBuilder()
-                        .setRetrieveFileMsg(retreiveFileMsg)
+                        .setRetrieveChunkRequest(retrieveFileMsg)
                         .build();
             
             ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
@@ -131,8 +129,8 @@ public class Client {
      *  
      */
     public MessageWrapper constructGetPrimaryStorageNodeRequestMessage(String fileName, int chunkId, int chunksize) {
-    	StorageMessages.GetPrimaryStorageNode getPrimaryStorageNodeMsg
-        = StorageMessages.GetPrimaryStorageNode.newBuilder()
+    	StorageMessages.PrimaryStorageNodeRequest primaryStorageNodeRequest
+        = StorageMessages.PrimaryStorageNodeRequest.newBuilder()
             .setFileName(fileName)
             .setChunkId(chunkId)
             .setChunkSize(chunksize)
@@ -140,7 +138,7 @@ public class Client {
     	
     	StorageMessages.MessageWrapper msgWrapper =
                 StorageMessages.MessageWrapper.newBuilder()
-                    .setGetPrimaryStorageNodeMsg(getPrimaryStorageNodeMsg)
+                    .setPrimaryStorageNodeRequest(primaryStorageNodeRequest)
                     .build();
     	
     	return msgWrapper;
@@ -154,8 +152,8 @@ public class Client {
     public MessageWrapper constructSaveChunkRequestMessage(String fileName, int chunkId, byte[] chunk) {
     	ByteString data = ByteString.copyFrom(chunk);
     	
-    	StorageMessages.StoreChunk storeChunkRequestMessage
-        = StorageMessages.StoreChunk.newBuilder()
+    	StorageMessages.StoreChunkRequest storeChunkRequestMessage
+        = StorageMessages.StoreChunkRequest.newBuilder()
             .setFileName(fileName)
             .setChunkId(chunkId)
             .setData(data)
@@ -163,7 +161,7 @@ public class Client {
     	
     	StorageMessages.MessageWrapper msgWrapper =
                 StorageMessages.MessageWrapper.newBuilder()
-                    .setStoreChunkMsg(storeChunkRequestMessage)
+                    .setStoreChunkRequest(storeChunkRequestMessage)
                     .build();
     	
     	return msgWrapper;
@@ -187,7 +185,7 @@ public class Client {
         return null;
     }
     
-    private void saveChunkonPrimary(Bootstrap bootstrap, MessageWrapper message, StorageNode storageNode) {
+    private void saveChunkOnPrimary(Bootstrap bootstrap, MessageWrapper message, StorageNode storageNode) {
     	ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
         cf.syncUninterruptibly();
         Channel chan = cf.channel();
@@ -196,8 +194,6 @@ public class Client {
         write.syncUninterruptibly();
         // TODO: Need to create a two way communication between client and storageNode
     }
-    
-    
     
     public static void main(String[] args)
     throws IOException {
@@ -215,8 +211,8 @@ public class Client {
         cf.syncUninterruptibly();
 
         ByteString data = ByteString.copyFromUtf8("Hello World!");
-        StorageMessages.StoreChunk storeChunkMsg
-            = StorageMessages.StoreChunk.newBuilder()
+        StorageMessages.StoreChunkRequest storeChunkMsg
+            = StorageMessages.StoreChunkRequest.newBuilder()
                 .setFileName("my_file.txt")
                 .setChunkId(3)
                 .setData(data)
@@ -224,7 +220,7 @@ public class Client {
 
         StorageMessages.MessageWrapper msgWrapper =
             StorageMessages.MessageWrapper.newBuilder()
-                .setStoreChunkMsg(storeChunkMsg)
+                .setStoreChunkRequest(storeChunkMsg)
                 .build();
 
         Channel chan = cf.channel();

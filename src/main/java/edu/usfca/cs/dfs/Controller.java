@@ -50,7 +50,7 @@ public class Controller {
 	 * This will add the node metadata to activeStorageNodes
 	 * Takes the Storage 
 	 */
-	public synchronized void  addStorageNode(StorageMessages.StorageNode storageNode) {
+	public synchronized void addStorageNode(StorageMessages.StorageNode storageNode) {
 		String storageNodeId = storageNode.getStorageNodeId();
 		storageNode = this.getReplicationNodes(storageNode);
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {

@@ -73,37 +73,13 @@ public class StorageNode {
 		this.controllerNodePort = config.getControllerNodePort();
 		System.out.println("Storage Node config updated. Storage Node Id: "+ this.storageNodeId);
 	}
-	
-	/*
-     * This will use protobuf message to create the chunk message
-     * This will be used by client to send to storageNode to save particular chunk
-     */
-    public MessageWrapper constructRegisterNodeMessage() {
-    	
-    	StorageMessages.StorageNode registerNodeMessage
-        = StorageMessages.StorageNode.newBuilder()
-            .setStorageNodeId(this.storageNodeId)
-            .setStorageNodeAddr(this.storageNodeAddr)
-            .setStorageNodePort(this.storageNodePort)
-            .setCurrentStorageValue(this.currentStorageValue)
-            .setMaxStorageValue(this.maxStorageValue)
-            .build();
-    	
-    	StorageMessages.MessageWrapper msgWrapper =
-                StorageMessages.MessageWrapper.newBuilder()
-                	.setMessageType(1)
-                    .setStorageNodeMsg(registerNodeMessage)
-                    .build();
-    	
-    	return msgWrapper;
-    }
     
-    public void updateValuesFromProto(StorageMessages.StorageNode storageNodeMsg) {
-		this.storageNodeId = storageNodeMsg.getStorageNodeId();
-		this.storageNodeAddr = storageNodeMsg.getStorageNodeAddr();
-		this.storageNodePort = storageNodeMsg.getStorageNodePort();
-		this.currentStorageValue = storageNodeMsg.getCurrentStorageValue();
-		this.maxStorageValue = storageNodeMsg.getMaxStorageValue();
+    public void updateValuesFromProto(StorageMessages.StorageNodeRegisterRequest storageNodeRegisterRequest) {
+		this.storageNodeId = storageNodeRegisterRequest.getStorageNode().getStorageNodeId();
+		this.storageNodeAddr = storageNodeRegisterRequest.getStorageNode().getStorageNodeAddr();
+		this.storageNodePort = storageNodeRegisterRequest.getStorageNode().getStorageNodePort();
+		this.currentStorageValue = storageNodeRegisterRequest.getStorageNode().getCurrentStorageValue();
+		this.maxStorageValue = storageNodeRegisterRequest.getStorageNode().getMaxStorageValue();
 	}
 
 	/*
@@ -128,7 +104,8 @@ public class StorageNode {
 	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
 	        cf.syncUninterruptibly();
 	
-	        MessageWrapper msgWrapper = this.constructRegisterNodeMessage();
+	        MessageWrapper msgWrapper = StorageMessagesBuilder.constructGetPrimaryNodeRequest
+					(this.storageNodeId, this.storageNodeAddr, this.storageNodePort, this.currentStorageValue, this.maxStorageValue);
 	
 	        Channel chan = cf.channel();
 	        ChannelFuture write = chan.write(msgWrapper);

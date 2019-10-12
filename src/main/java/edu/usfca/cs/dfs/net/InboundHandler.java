@@ -45,19 +45,20 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     	int messageType = msg.getMessageType();
     	if (messageType == 1) {
     		System.out.println("Received Storage Node Registration Message");
-    		StorageMessages.StorageNode storageNodeMsg = msg.getStorageNodeMsg();
+    		StorageMessages.StorageNodeRegisterRequest storageNodeRegisterRequest = msg.getStorageNodeRegisterRequest();
+            StorageMessages.StorageNode storageNode = storageNodeRegisterRequest.getStorageNode();
     		Controller controller = Controller.getInstance();
-    		controller.addStorageNode(storageNodeMsg);
+    		controller.addStorageNode(storageNode);
         	
     		StorageMessages.StorageNodeRegisterAck storageMessageAck = 
     				StorageMessages.StorageNodeRegisterAck.newBuilder()
-    				.setStorageNode(storageNodeMsg)
+    				.setStorageNode(storageNode)
     				.build();
     		
         	StorageMessages.MessageWrapper msgWrapper =
                     StorageMessages.MessageWrapper.newBuilder()
                     	.setMessageType(6)
-                        .setStorageNodeRegisterAckMsg(storageMessageAck)
+                        .setStorageNodeRegisterAck(storageMessageAck)
                         .build();
     		
         	System.out.println("Sending Storage Node Registration Acknowledgement Message");
@@ -75,7 +76,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		
     	}else if(messageType == 6){
     		System.out.println("Received Storage Node Registration Acknowledgement Message");
-    		StorageMessages.StorageNodeRegisterAck storageNodeRegisterAck = msg.getStorageNodeRegisterAckMsg();
+    		StorageMessages.StorageNodeRegisterAck storageNodeRegisterAck = msg.getStorageNodeRegisterAck();
     		StorageMessages.StorageNode storageNodeAck = storageNodeRegisterAck.getStorageNode();
     		StorageNode storageNode = StorageNode.getInstance();
     		storageNode.setReplicationNodeIds((ArrayList<String>) storageNodeAck.getReplicationNodeIdsList());
