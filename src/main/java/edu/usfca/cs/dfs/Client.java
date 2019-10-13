@@ -230,7 +230,7 @@ public class Client {
             .option(ChannelOption.SO_KEEPALIVE, true)
             .handler(pipeline);
 
-        ChannelFuture cf = bootstrap.connect("localhost", 7777);
+        ChannelFuture cf = bootstrap.connect("localhost", 7001);
         cf.syncUninterruptibly();
 
         ByteString data = ByteString.copyFromUtf8("Hello World!");
@@ -247,10 +247,12 @@ public class Client {
         StorageMessages.StoreChunkRequest storeChunkMsg
             = StorageMessages.StoreChunkRequest.newBuilder()
                 .setChunk(chunk)
+                .setIsPrimary(true)
                 .build();
 
         StorageMessages.MessageWrapper msgWrapper =
             StorageMessages.MessageWrapper.newBuilder()
+                .setMessageType(4)
                 .setStoreChunkRequest(storeChunkMsg)
                 .build();
 

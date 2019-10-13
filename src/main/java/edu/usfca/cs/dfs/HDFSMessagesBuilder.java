@@ -144,7 +144,7 @@ public class HDFSMessagesBuilder {
     public static StorageMessages.MessageWrapper constructStoreChunkRequest(StorageMessages.Chunk chunk, boolean isPrimary) {
         StorageMessages.StoreChunkRequest storeChunkRequest = StorageMessages.StoreChunkRequest.newBuilder()
                 .setChunk(chunk)
-                .setIsReplica(isPrimary)
+                .setIsPrimary(isPrimary)
                 .build();
         StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
                 .setMessageType(4)

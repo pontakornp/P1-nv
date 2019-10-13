@@ -90,7 +90,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 			StorageNode storageNode = StorageNode.getInstance();
 			boolean isSuccess = storageNode.storeChunk(chunk.getFileName(), chunk.getChunkId(), chunk.getData().toByteArray(), chunk.getChecksum());
-			boolean isPrimary = storeChunkRequest.getIsReplica();
+			boolean isPrimary = storeChunkRequest.getIsPrimary();
 			// if its a primary node, then the chunk will be replicated to 2 other nodes
 			if (isPrimary) {
 				boolean isReplicated = storageNode.storeChunkOnReplica(chunk);

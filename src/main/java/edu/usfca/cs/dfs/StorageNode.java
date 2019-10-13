@@ -82,10 +82,50 @@ public class StorageNode {
 		return this.replicationNodeIds;
 	}
 
-	public List<StorageNode> getReplicatedNodeObjs() {return this.replicatedStorageNodeObjs;}
-	
 	public void setReplicationNodeIds(List<String> replicationNodesIdList) {
 		this.replicationNodeIds = replicationNodesIdList;
+	}
+
+	public List<StorageNode> getReplicatedNodeObjs() {return this.replicatedStorageNodeObjs;}
+
+	public void setReplicatedStorageNodeObjs(List<StorageNode> replicatedStorageNodeObjs) {
+		this.replicatedStorageNodeObjs = replicatedStorageNodeObjs;
+	}
+
+	public void setStorageNodeId(String storageNodeId) {
+		this.storageNodeId = storageNodeId;
+	}
+
+	public void setStorageNodeAddr(String storageNodeAddr) {
+		this.storageNodeAddr = storageNodeAddr;
+	}
+
+	public void setStorageNodeDirectoryPath(String storageNodeDirectoryPath) {
+		this.storageNodeDirectoryPath = storageNodeDirectoryPath;
+	}
+
+	public void setStorageNodePort(int storageNodePort) {
+		this.storageNodePort = storageNodePort;
+	}
+
+	public void setAvailableStorageCapacity(int availableStorageCapacity) {
+		this.availableStorageCapacity = availableStorageCapacity;
+	}
+
+	public void setMaxStorageCapacity(int maxStorageCapacity) {
+		this.maxStorageCapacity = maxStorageCapacity;
+	}
+
+	public void setControllerNodeAddr(String controllerNodeAddr) {
+		this.controllerNodeAddr = controllerNodeAddr;
+	}
+
+	public void setControllerNodePort(int controllerNodePort) {
+		this.controllerNodePort = controllerNodePort;
+	}
+
+	public static void setStorageNodeInstance(StorageNode storageNodeInstance) {
+		StorageNode.storageNodeInstance = storageNodeInstance;
 	}
 
 	/**
@@ -134,7 +174,7 @@ public class StorageNode {
 		this.storageNodeId = UUID.randomUUID().toString();
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
-		this.storageNodeDirectoryPath = storageNodeAddr + storageNodeId + '/';
+		this.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
 		this.maxStorageCapacity = config.getMaxStorageCapacity();
 		this.availableStorageCapacity = this.maxStorageCapacity;
 		
@@ -176,9 +216,8 @@ public class StorageNode {
 	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeRequest(StorageNode.getInstance());
 	
 	        Channel chan = cf.channel();
-	        ChannelFuture write = chan.write(msgWrapper);
-	        chan.flush();
-	        write.syncUninterruptibly();
+	        ChannelFuture write = chan.writeAndFlush(msgWrapper);
+	        
 	        logger.info("Registration message sent to controller");
 	        chan.closeFuture().sync();
 	        workerGroup.shutdownGracefully();
@@ -269,7 +308,7 @@ public class StorageNode {
 		// else do not compress
 		// then store the compress or uncompressed chunk data in a file
 		StringBuilder filePathBuilder = new StringBuilder();
-		filePathBuilder.append(this.storageNodeDirectoryPath);
+		filePathBuilder.append(this.storageNodeId + "/");
 		filePathBuilder.append(fileName);
 		filePathBuilder.append("_" + chunkId);
 		if (maximumCompression > 0.6) {
@@ -283,7 +322,8 @@ public class StorageNode {
 		filePathBuilder.append("_" + originalCheckSum);
 		String filePath = filePathBuilder.toString();
 		// create directory
-		File dir = new File(this.storageNodeDirectoryPath);
+		File dir = new File(this.storageNodeId);
+
 		if (!dir.exists()) {
 			dir.mkdir();
 			logger.info("Created new directory");
@@ -299,7 +339,7 @@ public class StorageNode {
 				return false;
 			}
 		} catch (IOException e) {
-			System.out.println("There is a problem when writing stream to file.");
+			logger.error("There is a problem when writing stream to file");
 			return false;
 		}
 	}
@@ -371,7 +411,7 @@ public class StorageNode {
  
             ChannelFuture f = b.bind(this.storageNodePort).sync();
             System.out.println("Storage Node started at port: " + String.valueOf(this.storageNodePort));
-//            this.registerNode();
+            this.registerNode();
 //            this.handleHeartBeats();
 			f.channel().closeFuture().sync();
         } finally {
@@ -381,15 +421,28 @@ public class StorageNode {
     }
 	
 	public static void main(String args[]) {
+
 		String configFileName;
 		if(args.length>0) {
     		configFileName= args[0];
     	}else {
     		configFileName = "config.json";
     	}
+
 		Config config = new Config(configFileName);
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
+
+		StorageNode replica = new StorageNode();
+		replica.setVariables(config);
+		replica.setStorageNodePort(7000);
+		replica.setStorageNodeId("051cdb2f-fda1-4cff-9fff-4e6b1d0440c8");
+
+		List<StorageNode> snList = new ArrayList<>();
+		snList.add(replica);
+		storageNode.setReplicatedStorageNodeObjs(snList);
+
+		logger.info(storageNode.storageNodeDirectoryPath);
 		try {
 			storageNode.start();
 		}catch (Exception e){
@@ -398,14 +451,14 @@ public class StorageNode {
 		}
 
 
-//		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
-//		try {
-//			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
-//			StorageNode sn = new StorageNode();
-//			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
+		try {
+			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
+			StorageNode sn = new StorageNode();
+			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 }
