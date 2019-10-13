@@ -64,6 +64,7 @@ public class Config {
 			
 			this.chunkSize = config.chunkSize;
 		} catch(IOException ioe) {
+			ioe.printStackTrace();
 			System.out.println("Please try again with correct config file.");
 			return false;
 		}

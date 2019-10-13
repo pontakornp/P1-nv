@@ -2,9 +2,6 @@ package edu.usfca.cs.dfs;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Map;
-
-import edu.usfca.cs.dfs.StorageMessages.FileExistenceResponse.Builder;
 
 public class HDFSMessagesBuilder {
 
