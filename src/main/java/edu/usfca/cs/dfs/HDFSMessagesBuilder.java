@@ -1,7 +1,22 @@
 package edu.usfca.cs.dfs;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Map;
+
+import edu.usfca.cs.dfs.StorageMessages.FileExistenceResponse.Builder;
+
 public class HDFSMessagesBuilder {
 
+	private static long getMaxChunkNumber(long fileSize, int chunkSize) {
+    	int maxChunkNumber;
+    	maxChunkNumber = (int) fileSize/chunkSize;
+    	if(fileSize%chunkSize !=0) {
+    		maxChunkNumber++; 
+    	}
+    	return maxChunkNumber;
+    }
+	
     /*
      * This will use protobuf message to register storageNode on controller
      * Sets message type as 1 for inbound handler to identify as registration request message
@@ -69,7 +84,55 @@ public class HDFSMessagesBuilder {
 		                .build();
 		return msgWrapper;
     }
-
+	
+	
+	/*
+     * This will use protobuf message from client to controller requesting storageNodes for file
+     * Sets message type as 6 for inbound handler to identify as GetStorageNodesForChunksRequest
+     */
+	public static StorageMessages.MessageWrapper constructGetStorageNodesForChunksRequest(File file, int chunkSize) {
+		String fileName = file.getName();
+		String fileAbsolutePath = file.getAbsolutePath();
+    	long fileSize = file.length();
+    	long maxChunkNumber = HDFSMessagesBuilder.getMaxChunkNumber(fileSize, chunkSize);
+    	
+    	StorageMessages.GetStorageNodesForChunksRequest.Builder getStorageNodesForChunksRequestBuilder 
+    		= StorageMessages.GetStorageNodesForChunksRequest.newBuilder();
+    	
+    	
+    	for(int i=0; i<maxChunkNumber; i++) {
+    		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
+    			.setChunkId(i)
+    			.setFileName(fileName)
+    			.setChunkSize(chunkSize)
+    			.setFileAbsolutePath(fileAbsolutePath)
+    			.build();
+    		
+    		getStorageNodesForChunksRequestBuilder.addChunkList(i, chunk);
+    	}
+		
+		StorageMessages.MessageWrapper msgWrapper =
+		        StorageMessages.MessageWrapper.newBuilder()
+		                .setMessageType(6)
+		                .setGetStorageNodeForChunksRequest(getStorageNodesForChunksRequestBuilder.build())
+		                .build();
+		return msgWrapper;
+    }
+	
+	public static StorageMessages.ChunkMapping constructChunkMapping (
+		StorageMessages.Chunk chunk, ArrayList<StorageMessages.StorageNode> storageNodeList) {
+		
+		StorageMessages.ChunkMapping.Builder chunkMappingMsg  = StorageMessages.ChunkMapping.newBuilder();
+		chunkMappingMsg.setChunk(chunk);
+		
+		for (int i = 0; i < storageNodeList.size(); i++) {
+			chunkMappingMsg.setStorageNodeObjs(i, storageNodeList.get(i));
+		}
+		StorageMessages.ChunkMapping chunkMapping = chunkMappingMsg.build();
+		
+		return chunkMapping;
+	}
+	
     public static StorageMessages.MessageWrapper constructGetPrimaryNodeResponse() {
         return null;
     }
@@ -81,7 +144,7 @@ public class HDFSMessagesBuilder {
     public static StorageMessages.MessageWrapper constructStoreChunkRequest(StorageMessages.Chunk chunk, boolean isPrimary) {
         StorageMessages.StoreChunkRequest storeChunkRequest = StorageMessages.StoreChunkRequest.newBuilder()
                 .setChunk(chunk)
-                .setIsPrimary(isPrimary)
+                .setIsReplica(isPrimary)
                 .build();
         StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
                 .setMessageType(4)
