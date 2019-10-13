@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
 import java.util.List;
-
-import com.google.protobuf.ByteString;
-import edu.usfca.cs.dfs.util.CheckSum;
-import edu.usfca.cs.ft.net.PrefixedMessage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.protobuf.ByteString;
+
 import edu.usfca.cs.dfs.StorageMessages.MessageWrapper;
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
+import edu.usfca.cs.dfs.util.CheckSum;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -34,6 +34,7 @@ public class Client {
 	private String controllerNodeAddr;
 	private Integer controllerNodePort;
 	private String fileDestinationPath;
+	private static HashMap<String, StorageMessages.Chunk> chunkMap;
 	
     public Client() {
 
@@ -134,41 +135,36 @@ public class Client {
     		
     		Client.updateChunkWithFileData(chunk);
 
-    		Thread thread = new Thread() {
-    			public void run() {
-    				for (StorageMessages.StorageNode storageNode : chunkMapping.getStorageNodeObjsList()) {
-    					try {
-    						EventLoopGroup workerGroup = new NioEventLoopGroup();
-    				        MessagePipeline pipeline = new MessagePipeline();
-    				        
-    				        logger.info("Save File Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + String.valueOf(storageNode.getStorageNodePort()));
-    				        Bootstrap bootstrap = new Bootstrap()
-    				            .group(workerGroup)
-    				            .channel(NioSocketChannel.class)
-    				            .option(ChannelOption.SO_KEEPALIVE, true)
-    				            .handler(pipeline);
-    				        
-    				        ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
-    				        cf.syncUninterruptibly();
-    				
-    				        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetStorageNodesForChunksRequest();
-    				
-    				        Channel chan = cf.channel();
-    				        ChannelFuture write = chan.write(msgWrapper);
-    				        chan.flush();
-    				        write.syncUninterruptibly();
-    				        logger.info("Save File Chunks completed at storageNode");
-    				        chan.closeFuture().sync();
-    				        workerGroup.shutdownGracefully();
-    					} catch (Exception e) {
-    						e.printStackTrace();
-    						logger.error("Save File Chunk failed. Storage node connection establishment failed");
-    					}
-    				
-    				}
-    			}
-    		};
-    		thread.start();
+			for (StorageMessages.StorageNode storageNode : chunkMapping.getStorageNodeObjsList()) {
+				try {
+					EventLoopGroup workerGroup = new NioEventLoopGroup();
+			        MessagePipeline pipeline = new MessagePipeline();
+			        
+			        logger.info("Save File Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + String.valueOf(storageNode.getStorageNodePort()));
+			        Bootstrap bootstrap = new Bootstrap()
+			            .group(workerGroup)
+			            .channel(NioSocketChannel.class)
+			            .option(ChannelOption.SO_KEEPALIVE, true)
+			            .handler(pipeline);
+			        
+			        ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
+			        cf.syncUninterruptibly();
+			
+			        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, true);
+			
+			        Channel chan = cf.channel();
+			        ChannelFuture write = chan.write(msgWrapper);
+			        chan.flush();
+			        write.syncUninterruptibly();
+			        logger.info("Save File Chunks completed at storageNode");
+			        chan.closeFuture().sync();
+			        workerGroup.shutdownGracefully();
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error("Save File Chunk failed. Storage node connection establishment failed");
+				}
+			
+			}
 		}
     	ctx.close();
     }

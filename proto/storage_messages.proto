@@ -69,11 +69,15 @@ message GetStorageNodesForChunksResponse {
 message StoreChunkRequest {
     Chunk chunk = 1;
     bool isPrimary = 2;
+	int32 primaryCount = 3;
+	int32 replicaCount = 4;
 }
 
 message StoreChunkResponse {
 	Chunk chunk = 1;
 	bool isSuccess = 2;
+	int32 primaryCount = 3;
+	int32 replicaCount = 4;
 }
 
 message RetrieveFileRequest {

@@ -23,9 +23,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 
 	static Logger logger = LogManager.getLogger(Client.class);
 
-    public InboundHandler(
-
-	) { }
+    public InboundHandler() { }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -68,7 +66,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeResponse(storageNode);
     		logger.info("Sending Storage Node Registration Response Message");
     		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
-    		ctx.close();
+    		future.addListener(ChannelFutureListener.CLOSE);
     	}else if(messageType == 2){
 			logger.info("Received Storage Node Registration Response Message");
     		StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponse = msg.getStorageNodeRegisterResponse();
@@ -127,7 +125,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		                .build();
     		
     		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
-    		ctx.close();
+    		future.addListener(ChannelFutureListener.CLOSE);
     	}else if(messageType == 7){
     		logger.info("Storage Nodes for saving files chunks received on client");
     		StorageMessages.GetStorageNodesForChunksResponse storageNodesForChunksResponse
