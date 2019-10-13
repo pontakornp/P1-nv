@@ -83,10 +83,50 @@ public class StorageNode {
 		return this.replicationNodeIds;
 	}
 
-	public List<StorageNode> getReplicatedNodeObjs() {return this.replicatedStorageNodeObjs;}
-	
 	public void setReplicationNodeIds(List<String> replicationNodesIdList) {
 		this.replicationNodeIds = replicationNodesIdList;
+	}
+
+	public List<StorageNode> getReplicatedNodeObjs() {return this.replicatedStorageNodeObjs;}
+
+	public void setReplicatedStorageNodeObjs(List<StorageNode> replicatedStorageNodeObjs) {
+		this.replicatedStorageNodeObjs = replicatedStorageNodeObjs;
+	}
+
+	public void setStorageNodeId(String storageNodeId) {
+		this.storageNodeId = storageNodeId;
+	}
+
+	public void setStorageNodeAddr(String storageNodeAddr) {
+		this.storageNodeAddr = storageNodeAddr;
+	}
+
+	public void setStorageNodeDirectoryPath(String storageNodeDirectoryPath) {
+		this.storageNodeDirectoryPath = storageNodeDirectoryPath;
+	}
+
+	public void setStorageNodePort(int storageNodePort) {
+		this.storageNodePort = storageNodePort;
+	}
+
+	public void setAvailableStorageCapacity(int availableStorageCapacity) {
+		this.availableStorageCapacity = availableStorageCapacity;
+	}
+
+	public void setMaxStorageCapacity(int maxStorageCapacity) {
+		this.maxStorageCapacity = maxStorageCapacity;
+	}
+
+	public void setControllerNodeAddr(String controllerNodeAddr) {
+		this.controllerNodeAddr = controllerNodeAddr;
+	}
+
+	public void setControllerNodePort(int controllerNodePort) {
+		this.controllerNodePort = controllerNodePort;
+	}
+
+	public static void setStorageNodeInstance(StorageNode storageNodeInstance) {
+		StorageNode.storageNodeInstance = storageNodeInstance;
 	}
 
 	/**
@@ -391,9 +431,19 @@ public class StorageNode {
     	}else {
     		configFileName = "config.json";
     	}
+
 		Config config = new Config(configFileName);
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
+
+		StorageNode replica = new StorageNode();
+		replica.setVariables(config);
+		replica.setStorageNodePort(7000);
+		replica.setStorageNodeId("051cdb2f-fda1-4cff-9fff-4e6b1d0440c8");
+
+		List<StorageNode> snList = new ArrayList<>();
+		snList.add(replica);
+		storageNode.setReplicatedStorageNodeObjs(snList);
 
 		logger.info(storageNode.storageNodeDirectoryPath);
 		try {
