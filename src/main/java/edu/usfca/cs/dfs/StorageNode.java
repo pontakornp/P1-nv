@@ -371,8 +371,9 @@ public class StorageNode {
  
             ChannelFuture f = b.bind(this.storageNodePort).sync();
             System.out.println("Storage Node started at port: " + String.valueOf(this.storageNodePort));
-            this.registerNode();
-            this.handleHeartBeats();
+//            this.registerNode();
+//            this.handleHeartBeats();
+			f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
@@ -395,5 +396,16 @@ public class StorageNode {
 			System.out.println("Unable to start storage node");
 			e.printStackTrace();
 		}
+
+
+//		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
+//		try {
+//			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
+//			StorageNode sn = new StorageNode();
+//			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+
 	}
 }

@@ -6,6 +6,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import edu.usfca.cs.dfs.util.CheckSum;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -198,39 +199,48 @@ public class Client {
     
     public static void main(String[] args)
     throws IOException {
-//        EventLoopGroup workerGroup = new NioEventLoopGroup();
-//        MessagePipeline pipeline = new MessagePipeline();
-//        
-//
-//        Bootstrap bootstrap = new Bootstrap()
-//            .group(workerGroup)
-//            .channel(NioSocketChannel.class)
-//            .option(ChannelOption.SO_KEEPALIVE, true)
-//            .handler(pipeline);
-//
-//        ChannelFuture cf = bootstrap.connect("localhost", 7777);
-//        cf.syncUninterruptibly();
-//
-//        ByteString data = ByteString.copyFromUtf8("Hello World!");
-//        StorageMessages.StoreChunkRequest storeChunkMsg
-//            = StorageMessages.StoreChunkRequest.newBuilder()
-//                .setFileName("my_file.txt")
-//                .setChunkId(3)
-//                .setData(data)
-//                .build();
-//
-//        StorageMessages.MessageWrapper msgWrapper =
-//            StorageMessages.MessageWrapper.newBuilder()
-//                .setStoreChunkRequest(storeChunkMsg)
-//                .build();
-//
-//        Channel chan = cf.channel();
-//        ChannelFuture write = chan.write(msgWrapper);
-//        chan.flush();
-//        write.syncUninterruptibly();
-//
-//        /* Don't quit until we've disconnected: */
-//        System.out.println("Shutting down");
-//        workerGroup.shutdownGracefully();
+
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        MessagePipeline pipeline = new MessagePipeline();
+
+
+        Bootstrap bootstrap = new Bootstrap()
+            .group(workerGroup)
+            .channel(NioSocketChannel.class)
+            .option(ChannelOption.SO_KEEPALIVE, true)
+            .handler(pipeline);
+
+        ChannelFuture cf = bootstrap.connect("localhost", 7777);
+        cf.syncUninterruptibly();
+
+        ByteString data = ByteString.copyFromUtf8("Hello World!");
+        String checkSum = CheckSum.checkSum(data.toByteArray());
+        int chunkSize = data.toByteArray().length;
+        StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
+                .setFileName("my_file")
+                .setChecksum(checkSum)
+                .setChunkId(1)
+                .setData(data)
+                .setChunkSize(chunkSize)
+                .build();
+
+        StorageMessages.StoreChunkRequest storeChunkMsg
+            = StorageMessages.StoreChunkRequest.newBuilder()
+                .setChunk(chunk)
+                .build();
+
+        StorageMessages.MessageWrapper msgWrapper =
+            StorageMessages.MessageWrapper.newBuilder()
+                .setStoreChunkRequest(storeChunkMsg)
+                .build();
+
+        Channel chan = cf.channel();
+        ChannelFuture write = chan.write(msgWrapper);
+        chan.flush();
+        write.syncUninterruptibly();
+
+        /* Don't quit until we've disconnected: */
+        System.out.println("Shutting down");
+        workerGroup.shutdownGracefully();
     }
 }
