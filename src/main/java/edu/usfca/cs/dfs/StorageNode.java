@@ -135,7 +135,9 @@ public class StorageNode {
 		this.storageNodeId = UUID.randomUUID().toString();
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
-		this.storageNodeDirectoryPath = storageNodeAddr + storageNodeId + '/';
+		this.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
+		logger.info(config.getStorageNodeDirectoryPath());
+		logger.info(storageNodeId);
 		this.availableStorageCapacity = 0;
 		this.maxStorageCapacity = config.getMaxStorageCapacity();
 		this.replicationNodeIds = new ArrayList<String>();
@@ -269,7 +271,7 @@ public class StorageNode {
 		// else do not compress
 		// then store the compress or uncompressed chunk data in a file
 		StringBuilder filePathBuilder = new StringBuilder();
-		filePathBuilder.append(this.storageNodeDirectoryPath);
+		filePathBuilder.append(this.storageNodeId + "/");
 		filePathBuilder.append(fileName);
 		filePathBuilder.append("_" + chunkId);
 		if (maximumCompression > 0.6) {
@@ -283,7 +285,8 @@ public class StorageNode {
 		filePathBuilder.append("_" + originalCheckSum);
 		String filePath = filePathBuilder.toString();
 		// create directory
-		File dir = new File(this.storageNodeDirectoryPath);
+		File dir = new File(this.storageNodeId);
+
 		if (!dir.exists()) {
 			dir.mkdir();
 			logger.info("Created new directory");
@@ -299,7 +302,7 @@ public class StorageNode {
 				return false;
 			}
 		} catch (IOException e) {
-			System.out.println("There is a problem when writing stream to file.");
+			logger.error("There is a problem when writing stream to file");
 			return false;
 		}
 	}
@@ -381,6 +384,7 @@ public class StorageNode {
     }
 	
 	public static void main(String args[]) {
+
 		String configFileName;
 		if(args.length>0) {
     		configFileName= args[0];
@@ -390,6 +394,8 @@ public class StorageNode {
 		Config config = new Config(configFileName);
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
+
+		logger.info(storageNode.storageNodeDirectoryPath);
 		try {
 			storageNode.start();
 		}catch (Exception e){
@@ -398,14 +404,14 @@ public class StorageNode {
 		}
 
 
-//		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
-//		try {
-//			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
-//			StorageNode sn = new StorageNode();
-//			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
+		try {
+			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
+			StorageNode sn = new StorageNode();
+			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 }
