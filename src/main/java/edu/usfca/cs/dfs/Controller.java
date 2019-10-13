@@ -141,7 +141,7 @@ public class Controller {
 	 */
 	public synchronized StorageMessages.ChunkMapping getNodesForChunkSave(StorageMessages.Chunk chunk) {
 		String bloomFilterKey = chunk.getFileName() + "_" + chunk.getChunkId();
-		ArrayList<StorageMessages.StorageNode> storageNodeList = findNodesContainingFileChunk(bloomFilterKey);
+		ArrayList<StorageMessages.StorageNode> storageNodeList = findNodesContainingFileChunk(chunk, bloomFilterKey);
 		return HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
 	}
 	
@@ -151,15 +151,16 @@ public class Controller {
 	 * Adds one not containing node to ensure atleast one non containing node is returned
 	 * This ensures the handling of storage node for files with different versions and bloom filter false positives
 	 */
-	public ArrayList<StorageMessages.StorageNode> findNodesContainingFileChunk(String bloomKey){
+	public ArrayList<StorageMessages.StorageNode> findNodesContainingFileChunk(StorageMessages.Chunk chunk, String bloomKey){
 		ArrayList<StorageMessages.StorageNode> containingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		ArrayList<StorageMessages.StorageNode> notContainingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
+			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
 			if(storageNodeBloomFilter.getValue().get(bloomKey.getBytes())) {
-				containingStorageNodeList.add(this.activeStorageNodes.get(storageNodeBloomFilter.getKey()));
-			}else {
-				notContainingStorageNodeList.add(this.activeStorageNodes.get(storageNodeBloomFilter.getKey()));
+				containingStorageNodeList.add(storageNode);
+			}else if(storageNode.getAvailableStorageCapacity()-chunk.getChunkSize()>0) {
+				notContainingStorageNodeList.add(storageNode);
 			}
 		}
 		if(notContainingStorageNodeList.size()>0) {

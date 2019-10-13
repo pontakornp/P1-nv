@@ -52,7 +52,9 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     /*
      * MessageType = 1 for register initiation request
      * MessageType = 2 for register acknowledge response
-     *  
+     * MessageType = 3 for heartbeat request from storageNode
+     * MessageType = 6 for getting list of storage nodes for chunk save
+     * MessageType = 7 response from controller to client for getting list of storage nodes for chunk save 
      */
     @Override
     public void channelRead0(ChannelHandlerContext ctx, StorageMessages.MessageWrapper msg) {
@@ -73,6 +75,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		StorageMessages.StorageNode storageNodeMsg = storageNodeRegisterResponse.getStorageNode();
     		StorageNode storageNode = StorageNode.getInstance();
     		storageNode.setReplicationNodeIds((List<String>) storageNodeMsg.getReplicationNodeIdsList());
+    		ctx.close();
     	}else if(messageType == 3){
 			logger.info("Heartbeat received on controller");
     		StorageMessages.StorageNodeHeartbeat storageNodeHeartbeat = msg.getStorageNodeHeartBeatRequest().getStorageNodeHeartbeat();
@@ -103,7 +106,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			logger.info("Client receives store chunk ack");
 
     	}else if(messageType == 6){
-    		logger.info("Save File Chunks received on controller");
+    		logger.info("Get Storage Nodes for saving file chunks received on controller");
     		StorageMessages.GetStorageNodesForChunksRequest getStorageNodesForChunksRequest = msg.getGetStorageNodeForChunksRequest();
     		Controller controller = Controller.getInstance();
     		
@@ -126,8 +129,12 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
     		ctx.close();
     	}else if(messageType == 7){
-    		logger.info("File Existence check response received on client");
-    		//TODO: Client need to handle the response
+    		logger.info("Storage Nodes for saving files chunks received on client");
+    		StorageMessages.GetStorageNodesForChunksResponse storageNodesForChunksResponse
+    			= msg.getGetStorageNodesForChunksResponse();
+    		
+    		List<StorageMessages.ChunkMapping> chunkMapping = storageNodesForChunksResponse.getChunkMappingsList();
+    		Client.saveChunkFromChunkMappings(ctx, chunkMapping);
     	}
     }
 

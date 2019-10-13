@@ -1,10 +1,17 @@
 package edu.usfca.cs.dfs;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.List;
 
 import com.google.protobuf.ByteString;
 import edu.usfca.cs.dfs.util.CheckSum;
+import edu.usfca.cs.ft.net.PrefixedMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +21,7 @@ import edu.usfca.cs.dfs.net.MessagePipeline;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -86,6 +94,85 @@ public class Client {
 			logger.error("File Existence Check failed. Controller connection establishment failed");
 		}
     }
+    
+    public static void updateChunkWithFileData(StorageMessages.Chunk chunk) {
+    	String filePath = chunk.getFileAbsolutePath();
+    	int chunkId = chunk.getChunkId();
+    	int chunkSize = chunk.getChunkSize();
+    	
+    	RandomAccessFile aFile;
+		try {
+			aFile = new RandomAccessFile(filePath, "r");
+			aFile.seek(chunkId*chunkSize);
+			FileChannel inChannel = aFile.getChannel();
+			
+	        ByteBuffer buffer = ByteBuffer.allocate(chunkSize);
+	        while(inChannel.read(buffer) > 0){
+	            buffer.flip();
+	            byte[] arr = new byte[buffer.remaining()];
+	            buffer.get(arr);
+	            chunk.newBuilder().setData(ByteString.copyFrom(arr));
+	            buffer.clear();
+	        }
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+		}
+    }
+    
+    /*
+     * This will update the chunk with file byte data
+     * This method will save each chunk in seperate thread.
+     * Each thread tries to save the chunk in storageNode
+     * The first storage node not containing the file becomes the primary node for that chunk
+     * If file already exists but not in primary node we do not save it
+     */
+    public static void saveChunkFromChunkMappings(ChannelHandlerContext ctx, List<StorageMessages.ChunkMapping> chunkMappingList){
+    	for (StorageMessages.ChunkMapping chunkMapping : chunkMappingList) {
+    		StorageMessages.Chunk chunk = chunkMapping.getChunk();
+    		
+    		Client.updateChunkWithFileData(chunk);
+
+    		Thread thread = new Thread() {
+    			public void run() {
+    				for (StorageMessages.StorageNode storageNode : chunkMapping.getStorageNodeObjsList()) {
+    					try {
+    						EventLoopGroup workerGroup = new NioEventLoopGroup();
+    				        MessagePipeline pipeline = new MessagePipeline();
+    				        
+    				        logger.info("Save File Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + String.valueOf(storageNode.getStorageNodePort()));
+    				        Bootstrap bootstrap = new Bootstrap()
+    				            .group(workerGroup)
+    				            .channel(NioSocketChannel.class)
+    				            .option(ChannelOption.SO_KEEPALIVE, true)
+    				            .handler(pipeline);
+    				        
+    				        ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
+    				        cf.syncUninterruptibly();
+    				
+    				        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetStorageNodesForChunksRequest();
+    				
+    				        Channel chan = cf.channel();
+    				        ChannelFuture write = chan.write(msgWrapper);
+    				        chan.flush();
+    				        write.syncUninterruptibly();
+    				        logger.info("Save File Chunks completed at storageNode");
+    				        chan.closeFuture().sync();
+    				        workerGroup.shutdownGracefully();
+    					} catch (Exception e) {
+    						e.printStackTrace();
+    						logger.error("Save File Chunk failed. Storage node connection establishment failed");
+    					}
+    				
+    				}
+    			}
+    		};
+    		thread.start();
+		}
+    	ctx.close();
+    }
+    
     
     /*
      * This sends a request to controller to get list of storage nodes

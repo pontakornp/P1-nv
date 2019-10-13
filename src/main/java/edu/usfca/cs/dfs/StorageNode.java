@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -136,8 +135,9 @@ public class StorageNode {
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
 		this.storageNodeDirectoryPath = storageNodeAddr + storageNodeId + '/';
-		this.availableStorageCapacity = 0;
 		this.maxStorageCapacity = config.getMaxStorageCapacity();
+		this.availableStorageCapacity = this.maxStorageCapacity;
+		
 		this.replicationNodeIds = new ArrayList<String>();
 		
 		this.controllerNodeAddr = config.getControllerNodeAddr();
