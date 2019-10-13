@@ -2,16 +2,12 @@ package edu.usfca.cs.dfs;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.protobuf.ByteString;
-
 import edu.usfca.cs.dfs.StorageMessages.MessageWrapper;
+import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -24,65 +20,70 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 public class Client {
 	
 	static Logger logger = LogManager.getLogger(Client.class);
-	private Integer chunkSize;
+	private int chunkSize; // This is chunk size in bytes
 	private String controllerNodeAddr;
 	private Integer controllerNodePort;
-	private Integer fileDestinationPath;
+	private String fileDestinationPath;
 	
-    public Client(String configFileName) {
+    public Client() {
 
     }
+    
+    private void setVariables(Config config) {
+		this.chunkSize = config.getChunkSize();
+		this.controllerNodeAddr = config.getControllerNodeAddr();
+		this.controllerNodePort = config.getControllerNodePort();
+		this.fileDestinationPath = config.getClientDirectoryPath();
+		System.out.println("Client Node config updated.");
+	}
     
     /*
      * This sends a request to controller to get list of storage nodes
      * to save for each chunk. Opens a channel to controller with 
      * fileName, chunkId, chunksize
      */
-//    public void sendFile(String filePath) {
-//    	File file = new File(filePath);
-//    	if (!file.exists()) {
-//    		System.out.println("File with the given path: " +   filePath +  " does not exists");
-//    		return;
-//    	}
-//    	String fileName = file.getName();
-//    	
-//    	try {
-//    		EventLoopGroup workerGroup = new NioEventLoopGroup();
-//            MessagePipeline pipeline = new MessagePipeline();
-//            Bootstrap bootstrap = new Bootstrap()
-//                    .group(workerGroup)
-//                    .channel(NioSocketChannel.class)
-//                    .option(ChannelOption.SO_KEEPALIVE, true)
-//                    .handler(pipeline);
-//	    	RandomAccessFile aFile = new RandomAccessFile(filePath, "r");
-//	        FileChannel inChannel = aFile.getChannel();
-//	        Integer bufferSize = this.chunkSize;
-//	        ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-//	        int chunkId = 1;
-//	        while(inChannel.read(buffer) > 0){
-//	            buffer.flip();
-//	            byte[] arr = new byte[buffer.remaining()];
-//	            buffer.get(arr);
-//	            
-//	            MessageWrapper getPrimaryStorageNodeMessage
-//	            	= this.constructGetPrimaryStorageNodeRequestMessage(fileName, chunkId, arr.length);
-//	            
-//	            StorageNode storageNode = this.getPrimaryStorageNode(bootstrap, getPrimaryStorageNodeMessage);
-//	            
-//	            MessageWrapper saveChunkMessage = 
-//	            		this.constructSaveChunkRequestMessage(fileName, chunkId, arr);
-//	            this.saveChunkOnPrimary(bootstrap, saveChunkMessage, storageNode);
-//	            buffer.clear();
-//	            chunkId++;
-//	        }
-//	        aFile.close();
-//	        workerGroup.shutdownGracefully();
-//    	}catch (Exception e) {
-//        	System.out.println("Caught exception");
-//            e.printStackTrace();	
-//        }
-//    }
+    public void sendFile(String filePath) {
+    	File file = new File(filePath);
+    	if (!file.exists()) {
+    		System.out.println("File with the given path: " +   filePath +  " does not exists");
+    		return;
+    	}
+    	this.saveFileChunks(file);
+    }
     
+    /*
+     * Calculates the maximum chunk number for a given file
+     * Gets the chunkMappings for maxChunkNumber of a file
+     */
+    private void saveFileChunks(File file) {
+    	try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+	        MessagePipeline pipeline = new MessagePipeline();
+	        
+	        logger.info("Save File initiated to controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+	        Bootstrap bootstrap = new Bootstrap()
+	            .group(workerGroup)
+	            .channel(NioSocketChannel.class)
+	            .option(ChannelOption.SO_KEEPALIVE, true)
+	            .handler(pipeline);
+	        
+	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+	        cf.syncUninterruptibly();
+	
+	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetStorageNodesForChunksRequest(file, this.chunkSize);
+	
+	        Channel chan = cf.channel();
+	        ChannelFuture write = chan.write(msgWrapper);
+	        chan.flush();
+	        write.syncUninterruptibly();
+	        logger.info("Save File Chunks initial request sent to controller");
+	        chan.closeFuture().sync();
+	        workerGroup.shutdownGracefully();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("File Existence Check failed. Controller connection establishment failed");
+		}
+    }
     
     /*
      * This sends a request to controller to get list of storage nodes
@@ -90,85 +91,7 @@ public class Client {
      * fileName, chunkId, chunksize
      */
     public void getFile(String fileName) {
-//    	try {
-//    		EventLoopGroup workerGroup = new NioEventLoopGroup();
-//            MessagePipeline pipeline = new MessagePipeline();
-//            Bootstrap bootstrap = new Bootstrap()
-//                    .group(workerGroup)
-//                    .channel(NioSocketChannel.class)
-//                    .option(ChannelOption.SO_KEEPALIVE, true)
-//                    .handler(pipeline);
-//    		
-//            StorageMessages.RetrieveChunkRequest retrieveFileMsg
-//            	= StorageMessages.RetrieveChunkRequest.newBuilder()
-//            	.setFileName(fileName)
-//            	.build();
-//            
-//            StorageMessages.MessageWrapper msgWrapper =
-//                    StorageMessages.MessageWrapper.newBuilder()
-//                        .setRetrieveChunkRequest(retrieveFileMsg)
-//                        .build();
-//            
-//            ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
-//            cf.syncUninterruptibly();
-//            Channel chan = cf.channel();
-//            ChannelFuture write = chan.write(msgWrapper);
-//            chan.flush();
-//            write.syncUninterruptibly();
-//            //TODO: Need to read response from controller
-//            //TODO: Need to handle response from controller
-//    	}catch (Exception e) {
-//        	System.out.println("Caught exception");
-//          e.printStackTrace();	
-//    	}
     }
-    
-    /*
-     * This will use protobuf message to create the chunk message
-     * This will be used by client to send to controller
-     *  
-     */
-    public MessageWrapper constructGetPrimaryStorageNodeRequestMessage(String fileName, int chunkId, int chunksize) {
-//    	StorageMessages.PrimaryStorageNodeRequest primaryStorageNodeRequest
-//        = StorageMessages.PrimaryStorageNodeRequest.newBuilder()
-//            .setFileName(fileName)
-//            .setChunkId(chunkId)
-//            .setChunkSize(chunksize)
-//            .build();
-//    	
-//    	StorageMessages.MessageWrapper msgWrapper =
-//                StorageMessages.MessageWrapper.newBuilder()
-//                    .setPrimaryStorageNodeRequest(primaryStorageNodeRequest)
-//                    .build();
-//    	
-//    	return msgWrapper;
-    	return null;
-    }
-    
-    
-    /*
-     * This will use protobuf message to create the chunk message
-     * This will be used by client to send to storageNode to save particular chunk
-     */
-//    public MessageWrapper constructSaveChunkRequestMessage(String fileName, int chunkId, byte[] chunk) {
-//    	ByteString data = ByteString.copyFrom(chunk);
-//    	
-//    	StorageMessages.StoreChunkRequest storeChunkRequestMessage
-//        = StorageMessages.StoreChunkRequest.newBuilder()
-//            .setFileName(fileName)
-//            .setChunkId(chunkId)
-//            .setData(data)
-//            .build();
-//    	
-//    	StorageMessages.MessageWrapper msgWrapper =
-//                StorageMessages.MessageWrapper.newBuilder()
-//                    .setStoreChunkRequest(storeChunkRequestMessage)
-//                    .build();
-//    	
-//    	return msgWrapper;
-//    }
-    	
-    
     
     /*
      * This sends a request to controller to get list of storage nodes
@@ -196,41 +119,14 @@ public class Client {
         // TODO: Need to create a two way communication between client and storageNode
     }
     
-    public static void main(String[] args)
-    throws IOException {
-//        EventLoopGroup workerGroup = new NioEventLoopGroup();
-//        MessagePipeline pipeline = new MessagePipeline();
-//        
-//
-//        Bootstrap bootstrap = new Bootstrap()
-//            .group(workerGroup)
-//            .channel(NioSocketChannel.class)
-//            .option(ChannelOption.SO_KEEPALIVE, true)
-//            .handler(pipeline);
-//
-//        ChannelFuture cf = bootstrap.connect("localhost", 7777);
-//        cf.syncUninterruptibly();
-//
-//        ByteString data = ByteString.copyFromUtf8("Hello World!");
-//        StorageMessages.StoreChunkRequest storeChunkMsg
-//            = StorageMessages.StoreChunkRequest.newBuilder()
-//                .setFileName("my_file.txt")
-//                .setChunkId(3)
-//                .setData(data)
-//                .build();
-//
-//        StorageMessages.MessageWrapper msgWrapper =
-//            StorageMessages.MessageWrapper.newBuilder()
-//                .setStoreChunkRequest(storeChunkMsg)
-//                .build();
-//
-//        Channel chan = cf.channel();
-//        ChannelFuture write = chan.write(msgWrapper);
-//        chan.flush();
-//        write.syncUninterruptibly();
-//
-//        /* Don't quit until we've disconnected: */
-//        System.out.println("Shutting down");
-//        workerGroup.shutdownGracefully();
+    public static void main(String[] args) throws IOException {
+    	String configFileName;
+    	if(args.length>0) {
+    		configFileName= args[0];
+    	}else {
+    		configFileName = "config.json";
+    	}
+    	Config config = new Config(configFileName);
+    	
     }
 }

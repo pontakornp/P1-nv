@@ -66,7 +66,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeResponse(storageNode);
     		logger.info("Sending Storage Node Registration Response Message");
     		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
-    		future.addListener(ChannelFutureListener.CLOSE);
+    		ctx.close();
     	}else if(messageType == 2){
 			logger.info("Received Storage Node Registration Response Message");
     		StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponse = msg.getStorageNodeRegisterResponse();
@@ -87,7 +87,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 			StorageNode storageNode = StorageNode.getInstance();
 			boolean isSuccess = storageNode.storeChunk(chunk.getFileName(), chunk.getChunkId(), chunk.getData().toByteArray(), chunk.getChecksum());
-			boolean isPrimary = storeChunkRequest.getIsPrimary();
+			boolean isPrimary = storeChunkRequest.getIsReplica();
 			// if its a primary node, then the chunk will be replicated to 2 other nodes
 			if (isPrimary) {
 				boolean isReplicated = storageNode.storeChunkOnReplica(chunk);
@@ -103,7 +103,31 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			logger.info("Client receives store chunk ack");
 
     	}else if(messageType == 6){
-
+    		logger.info("Save File Chunks received on controller");
+    		StorageMessages.GetStorageNodesForChunksRequest getStorageNodesForChunksRequest = msg.getGetStorageNodeForChunksRequest();
+    		Controller controller = Controller.getInstance();
+    		
+    		StorageMessages.GetStorageNodesForChunksResponse.Builder responseMsg = StorageMessages.GetStorageNodesForChunksResponse.newBuilder();
+    		List<StorageMessages.Chunk> chunkList = getStorageNodesForChunksRequest.getChunkListList();
+    		
+    		for (int i=0; i< chunkList.size(); i++) {
+    			StorageMessages.ChunkMapping chunkMapping = controller.getNodesForChunkSave(chunkList.get(i));
+    			responseMsg.setChunkMappings(i, chunkMapping);
+    		}
+    		
+    		StorageMessages.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = responseMsg.build();
+    		
+    		StorageMessages.MessageWrapper msgWrapper =
+    		        StorageMessages.MessageWrapper.newBuilder()
+    		                .setMessageType(7)
+    		                .setGetStorageNodesForChunksResponse(getStorageNodesForChunksResponse)
+    		                .build();
+    		
+    		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
+    		ctx.close();
+    	}else if(messageType == 7){
+    		logger.info("File Existence check response received on client");
+    		//TODO: Client need to handle the response
     	}
     }
 

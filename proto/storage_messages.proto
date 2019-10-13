@@ -46,6 +46,7 @@ message Chunk {
 	string checksum = 4;
 	bytes data = 5;
 	int32 maxChunkNumber = 6;
+	string fileAbsolutePath = 7;
 }
 
 message GetFileChunkNumberResponse {

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import edu.usfca.cs.dfs.StorageMessages.FileExistenceResponse.Builder;
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
 import io.netty.bootstrap.ServerBootstrap;
@@ -22,7 +23,7 @@ public class Controller {
 	private String controllerNodeAddr;
 	private int controllerNodePort;
 	private ConcurrentHashMap<String, StorageMessages.StorageNode> activeStorageNodes;
-	private ConcurrentHashMap<String, BloomFilter> bloomFilterList;
+	private ConcurrentHashMap<String, BloomFilter> bloomFilterMap;
 	private ConcurrentHashMap<String, Timestamp> timeStamps;
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
@@ -33,6 +34,15 @@ public class Controller {
 	private Controller() {
 		
 	}
+	
+	public ConcurrentHashMap<String, BloomFilter> getBloomFilters(){
+		return this.bloomFilterMap;
+	}
+	
+	public ConcurrentHashMap<String, StorageMessages.StorageNode> getActiveStorageNodes(){
+		return this.activeStorageNodes;
+	}
+	
 	
 	public static Controller getInstance() {
 		if (controllerInstance == null){
@@ -45,7 +55,7 @@ public class Controller {
 		this.controllerNodeAddr = config.getControllerNodeAddr();
 		this.controllerNodePort = config.getControllerNodePort();
 		this.activeStorageNodes = new ConcurrentHashMap<String, StorageMessages.StorageNode>();
-		this.bloomFilterList = new ConcurrentHashMap<String, BloomFilter>();
+		this.bloomFilterMap = new ConcurrentHashMap<String, BloomFilter>();
 		this.timeStamps = new ConcurrentHashMap<String, Timestamp>();
 		System.out.println("Controller Node config updated.");
 	}
@@ -67,7 +77,7 @@ public class Controller {
 		storageNode = this.getReplicationNodes(storageNode);
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
 			this.activeStorageNodes.put(storageNodeId, storageNode);
-			this.bloomFilterList.put(storageNodeId, new BloomFilter(Controller.BLOOM_FILTER_SIZE, Controller.BLOOM_HASH_COUNT));
+			this.bloomFilterMap.put(storageNodeId, new BloomFilter(Controller.BLOOM_FILTER_SIZE, Controller.BLOOM_HASH_COUNT));
 			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
 			System.out.println("INFO: Storage Node registered with controller");
 			this.printStorageNodeIds();
@@ -125,17 +135,40 @@ public class Controller {
 	
 	/*
 	 *  This will be called by client to get the list of nodes to save a chunk
-	 *  This will randomly select three nodes from activeStorageNodes
+	 *  This will check if chunk exists and identifies storagenodes depending on its existence
+	 *  if file chunk exists return the node containing the previous version chunk
+	 *  if file chunk does not exist return new storage node that can save the file chunk 
 	 */
-	public synchronized ArrayList<StorageMessages.StorageNode>getNodesForChunkSave() {
-		ArrayList<StorageMessages.StorageNode> nodeList = new ArrayList<StorageMessages.StorageNode>();
-		List<String> keysAsArray = new ArrayList<String>(this.activeStorageNodes.keySet());
-		for (int i = 0; i < 3; i++) {
-			Random r = new Random();
-			nodeList.add(this.activeStorageNodes.get(keysAsArray.get(r.nextInt(keysAsArray.size()))));
-		}
-		return nodeList;
+	public synchronized StorageMessages.ChunkMapping getNodesForChunkSave(StorageMessages.Chunk chunk) {
+		String bloomFilterKey = chunk.getFileName() + "_" + chunk.getChunkId();
+		ArrayList<StorageMessages.StorageNode> storageNodeList = findNodesContainingFileChunk(bloomFilterKey);
+		return HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
 	}
+	
+	
+	/*
+	 * This splits the storagenodes into containing nodes and not containing nodes
+	 * Adds one not containing node to ensure atleast one non containing node is returned
+	 * This ensures the handling of storage node for files with different versions and bloom filter false positives
+	 */
+	public ArrayList<StorageMessages.StorageNode> findNodesContainingFileChunk(String bloomKey){
+		ArrayList<StorageMessages.StorageNode> containingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
+		ArrayList<StorageMessages.StorageNode> notContainingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
+		
+		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
+			if(storageNodeBloomFilter.getValue().get(bloomKey.getBytes())) {
+				containingStorageNodeList.add(this.activeStorageNodes.get(storageNodeBloomFilter.getKey()));
+			}else {
+				notContainingStorageNodeList.add(this.activeStorageNodes.get(storageNodeBloomFilter.getKey()));
+			}
+		}
+		if(notContainingStorageNodeList.size()>0) {
+			containingStorageNodeList.add(notContainingStorageNodeList.get(0));
+		}
+		
+		return containingStorageNodeList;
+	}
+	
 	
 	
 	/*
@@ -164,7 +197,7 @@ public class Controller {
 	/*
 	 * This will be called to detect list of inactive nodes
 	 */
-	public static void detectInactiveNodes(Controller controller) {
+	private static void detectInactiveNodes(Controller controller) {
 		for (Map.Entry<String, Timestamp> storageNodeTimestamp : controller.timeStamps.entrySet()) {
 			if(Controller.getCurrentTimeStamp().getTime()-storageNodeTimestamp.getValue().getTime()>=Controller.MAX_STORAGE_TIME_INACTIVITY){
 				System.out.println("Identified StorageNode  inactivity detected for StorageNodeId: "+  storageNodeTimestamp.getKey());
@@ -182,6 +215,10 @@ public class Controller {
 	 * 
 	 */
 	public synchronized void handleInactiveStorageNode() {
+		
+	}
+	
+	public synchronized void detectFileExistence(String fileName) {
 		
 	}
 	
