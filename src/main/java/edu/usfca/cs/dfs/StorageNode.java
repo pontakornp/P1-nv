@@ -36,14 +36,13 @@ public class StorageNode {
 	
 	private String storageNodeId;
 	private String storageNodeAddr;
-	private String storageNodeDirectoryPath; // storageNodeAddr + storageNodeAddr + '/'
+	private String storageNodeDirectoryPath; // storageNodeAddr + storageNodeId + '/'
 	private int storageNodePort;
 	private int availableStorageCapacity;
 	private int maxStorageCapacity;
 	
 	private List<String> replicationNodeIds;
 	private List<StorageNode> replicatedStorageNodeObjs;
-	private HashMap<String, Chunk> metaDataMap;
 	
 	private String controllerNodeAddr;
 	private int controllerNodePort;
@@ -97,8 +96,8 @@ public class StorageNode {
 	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk) {
 		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, false);
 		for (StorageNode replica: this.replicatedStorageNodeObjs) {
-			boolean isStoredSuccess = storeChunkOnReplicaHelper(message, replica);
-			if (!isStoredSuccess) {
+			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
+			if (!isReplicated) {
 				//sleep for sometime and retry
 			}
 		}
@@ -136,11 +135,10 @@ public class StorageNode {
 		this.storageNodeId = UUID.randomUUID().toString();
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
-		this.storageNodeDirectoryPath = config.getStorageDirectoryPath();
+		this.storageNodeDirectoryPath = storageNodeAddr + storageNodeId + '/';
 		this.availableStorageCapacity = 0;
 		this.maxStorageCapacity = config.getMaxStorageCapacity();
 		this.replicationNodeIds = new ArrayList<String>();
-		this.metaDataMap = new HashMap<String, Chunk>();
 		
 		this.controllerNodeAddr = config.getControllerNodeAddr();
 		this.controllerNodePort = config.getControllerNodePort();
@@ -262,7 +260,7 @@ public class StorageNode {
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
-	public boolean storeChunk(String fileName, int chunkNumber, byte[] chunkData, String originalCheckSum) {
+	public boolean storeChunk(String fileName, int chunkId, byte[] chunkData, String originalCheckSum) {
 		// calculate Shannon Entropy
 		double entropyBits = Entropy.calculateShannonEntropy(chunkData);
 		double maximumCompression = 1 - (entropyBits / 8);
@@ -270,32 +268,32 @@ public class StorageNode {
 		// if maximum compression is greater than 0.6, then compress the chunk data
 		// else do not compress
 		// then store the compress or uncompressed chunk data in a file
-		boolean isCompressed = false;
+		StringBuilder filePathBuilder = new StringBuilder();
+		filePathBuilder.append(this.storageNodeDirectoryPath);
+		filePathBuilder.append(fileName);
+		filePathBuilder.append("_" + chunkId);
 		if (maximumCompression > 0.6) {
 			data = CompressDecompress.compress(chunkData);
+			filePathBuilder.append("_compressed");
 			if (data == null) {
+				logger.error("Fails to compress chunk");
 				return false;
 			}
-			isCompressed = true;
 		}
+		filePathBuilder.append("_" + originalCheckSum);
+		String filePath = filePathBuilder.toString();
 		// create directory
 		File dir = new File(this.storageNodeDirectoryPath);
 		if (!dir.exists()) {
 			dir.mkdir();
 			logger.info("Created new directory");
 		}
-		// store the chunk in a file
 		try {
-			OutputStream outputStream = new FileOutputStream(this.storageNodeDirectoryPath + fileName);
+			OutputStream outputStream = new FileOutputStream(filePath);
 			outputStream.write(data);
-			byte[] storedChunkData = Files.readAllBytes(Paths.get(this.storageNodeDirectoryPath + fileName));
-			// check sum if the file is corrupted or not
+			byte[] storedChunkData = Files.readAllBytes(Paths.get(filePath));
 			if (!isFileCorrupted(storedChunkData, originalCheckSum)) {
-				// add chunk to the meta data map
-				Chunk chunkObj = new Chunk(originalCheckSum, isCompressed, chunkNumber, chunkData.length);
-				String chunkKey = fileName + '_' + chunkNumber;
-				metaDataMap.put(chunkKey, chunkObj);
-				logger.info("add chunk");
+				logger.info("Chunk is added successfully");
 				return true;
 			} else {
 				return false;
@@ -310,26 +308,40 @@ public class StorageNode {
 	public synchronized Integer getChunkCount(String fileName) {
 		return 0;
 	}
+
 	// get chunk location
 	public synchronized String getChunkLocation(String fileName, Integer chunkNumber) {
 		String filePath = this.storageNodeDirectoryPath + fileName + '_' + chunkNumber;
-		return filePath;
+		File file = new File(filePath);
+		if (file.exists()) {
+			return filePath;
+		}
+		String compressedFilePath = filePath + "_compressed";
+		File compressedFile = new File(compressedFilePath);
+		if (compressedFile.exists()) {
+			return compressedFilePath;
+		}
+		return null;
 	}
 
 	// retrieve chunk from a file
-	public synchronized byte[] retrieveChunk(String fileName, Integer chunkNumber) {
+	public synchronized byte[] retrieveChunk(String fileName, int chunkId) {
 		// 1. get chunk location
-		String filePath = getChunkLocation(fileName, chunkNumber);
-		// 2. check if file exist in the meta data map
-		if (!metaDataMap.containsKey(filePath)) {
+		String filePath = getChunkLocation(fileName, chunkId);
+		// 2. if file does not exist returns null
+		if (filePath == null) {
 			return null;
 		}
-		Chunk chunk = metaDataMap.get(filePath);
+		boolean isCompressed = false;
+		if (filePath.contains("_compressed")) {
+			isCompressed = true;
+		}
 		// 3. if chunk is compressed, need to decompress the byte array data before returning it
 		// else return the byte array data right away
 		try {
 			byte[] chunkData = Files.readAllBytes(Paths.get(filePath));
-			if (chunk.isCompressed()) {
+			// if chunk is compressed
+			if (isCompressed) {
 				chunkData = CompressDecompress.decompress(chunkData);
 			}
 			return chunkData;
