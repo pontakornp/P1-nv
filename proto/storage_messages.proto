@@ -68,7 +68,7 @@ message GetStorageNodesForChunksResponse {
 
 message StoreChunkRequest {
     Chunk chunk = 1;
-    bool isReplica = 2;
+    bool isPrimary = 2;
 }
 
 message StoreChunkResponse {
