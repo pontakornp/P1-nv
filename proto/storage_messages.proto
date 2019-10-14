@@ -66,14 +66,6 @@ message GetStorageNodesForChunksResponse {
 	repeated ChunkMapping chunkMappings = 1;
 }
 
-message GetReplicationNodeRequest {
-    string primaryNodeId = 1;
-}
-
-message GetReplicationNodeResponse {
-    repeated StorageNode replicas = 5;
-}
-
 message StoreChunkRequest {
     Chunk chunk = 1;
     bool isPrimary = 2;
@@ -115,12 +107,10 @@ message MessageWrapper {
     GetFileChunkNumberResponse getFileChunkNumberResponse=8;
     GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;
     GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;
-    GetReplicationNodeRequest getReplicationNodeRequest = 11;
-    GetReplicationNodeResponse getReplicationNodeResponse = 12;
-    StoreChunkRequest storeChunkRequest = 13;
-    StoreChunkResponse storeChunkResponse = 14;
-    RetrieveFileRequest retrieveFileRequest = 15;
-    RetrieveFileResponse retrieveFileResponse = 16;
-    RetrieveChunkRequest retrieveChunkRequest = 17;
-    RetrieveChunkResponse retrieveChunkResponse = 18;
+    StoreChunkRequest storeChunkRequest = 11;
+    StoreChunkResponse storeChunkResponse = 12;
+    RetrieveFileRequest retrieveFileRequest = 13;
+    RetrieveFileResponse retrieveFileResponse = 14;
+    RetrieveChunkRequest retrieveChunkRequest = 15;
+    RetrieveChunkResponse retrieveChunkResponse = 16;
 }
