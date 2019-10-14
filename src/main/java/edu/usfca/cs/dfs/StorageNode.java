@@ -313,39 +313,13 @@ public class StorageNode {
 		}
 	}
 
-	public List<StorageNode> getReplicationNodesFromController() {
-		try {
-			EventLoopGroup workerGroup = new NioEventLoopGroup();
-			MessagePipeline pipeline = new MessagePipeline();
-			logger.info("Get Replication Nodes from Controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
-			Bootstrap bootstrap = new Bootstrap()
-					.group(workerGroup)
-					.channel(NioSocketChannel.class)
-					.option(ChannelOption.SO_KEEPALIVE, true)
-					.handler(pipeline);
-			ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
-			cf.syncUninterruptibly();
-			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetReplicationNodeRequest(this.storageNodeId);
-			Channel chan = cf.channel();
-			ChannelFuture write = chan.write(msgWrapper);
-			chan.flush();
-			write.syncUninterruptibly();
-			chan.closeFuture().sync();
-			workerGroup.shutdownGracefully();
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Get replication node failed. Controller connection establishment failed");
-		}
-		return null;
-	}
 	/**
 	 * store chunks in all of the storage node's replicas
 	 * @param chunk
 	 */
 	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk) {
 		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, false);
-		List<StorageNode> replicatedNodes = getReplicationNodesFromController();
-		for (StorageNode replica: replicatedNodes) {
+		for (StorageNode replica: this.replicatedStorageNodeObjs) {
 			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
 			if (!isReplicated) {
 				return false;
