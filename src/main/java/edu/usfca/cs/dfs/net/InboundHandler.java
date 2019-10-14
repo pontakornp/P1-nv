@@ -74,15 +74,15 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponse = msg.getStorageNodeRegisterResponse();
     		StorageMessages.StorageNode storageNodeMsg = storageNodeRegisterResponse.getStorageNode();
     		StorageNode storageNode = StorageNode.getInstance();
-    		storageNode.setReplicationNodeIds((List<String>) storageNodeMsg.getReplicationNodeIdsList());
+    		storageNode.setReplicaStorageNodes(storageNodeMsg.getReplicaNodesList());
     		ctx.close();
     	}else if(messageType == 3){
 			logger.info("Heartbeat received on controller");
-    		StorageMessages.StorageNodeHeartbeat storageNodeHeartbeat = msg.getStorageNodeHeartBeatRequest().getStorageNodeHeartbeat();
-    		String storageNodeId = storageNodeHeartbeat.getStorageNodeId();
+    		StorageMessages.StorageNodeHeartbeat storageNodeHeartBeat = msg.getStorageNodeHeartBeatRequest().getStorageNodeHeartbeat();
+    		StorageMessages.StorageNode storageNodeMsg = storageNodeHeartBeat.getStorageNode();
     		Controller controller = Controller.getInstance();
-    		controller.receiveHeartBeat(storageNodeId);
-			logger.info("Heartbeat updated on controller for storageNodeId: " + storageNodeId);
+    		controller.receiveHeartBeat(storageNodeMsg);
+			logger.info("Heartbeat updated on controller for storageNodeId: " + storageNodeMsg.getStorageNodeId());
     		ctx.close();
     	}else if(messageType == 4){
 			logger.info("Storage node receives chunk to be stored from client");
