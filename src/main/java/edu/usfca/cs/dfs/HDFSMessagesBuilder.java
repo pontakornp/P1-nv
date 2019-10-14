@@ -129,37 +129,6 @@ public class HDFSMessagesBuilder {
 		return chunkMapping;
 	}
 
-	public static StorageMessages.MessageWrapper constructGetReplicationNodeRequest(String primaryNodeId) {
-		StorageMessages.GetReplicationNodeRequest getReplicationNodeRequest = StorageMessages.GetReplicationNodeRequest.newBuilder()
-				.setPrimaryNodeId(primaryNodeId)
-				.build();
-
-		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-				.setGetReplicationNodeRequest(getReplicationNodeRequest)
-				.build();
-		return msgWrapper;
-	}
-
-	public static StorageMessages.MessageWrapper constructGetReplicationNodeResponse(List<StorageNode> replicas) {
-		StorageMessages.GetReplicationNodeResponse.Builder getReplicationNodeResponseBuilder = StorageMessages.GetReplicationNodeResponse.newBuilder();
-		for (int i = 0; i < replicas.size(); i++) {
-			StorageNode storageNode = replicas.get(i);
-			StorageMessages.StorageNode storageNodeMsg = StorageMessages.StorageNode.newBuilder()
-					.setStorageNodeId(storageNode.getStorageNodeId())
-					.setStorageNodeAddr(storageNode.getStorageNodeAddr())
-					.setStorageNodePort(storageNode.getStorageNodePort())
-					.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
-					.setMaxStorageCapacity(storageNode.getMaxStorageCapacity())
-					.build();
-			getReplicationNodeResponseBuilder.setReplicas(i, storageNodeMsg);
-		}
-		StorageMessages.GetReplicationNodeResponse getReplicationNodeResponse = getReplicationNodeResponseBuilder.build();
-		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-				.setGetReplicationNodeResponse(getReplicationNodeResponse)
-				.build();
-		return msgWrapper;
-	}
-
     public static StorageMessages.MessageWrapper constructGetPrimaryNodeResponse() {
         return null;
     }
@@ -204,13 +173,34 @@ public class HDFSMessagesBuilder {
         return null;
     }
 
+    public static StorageMessages.MessageWrapper constructRetrieveFileRequest(String fileName) {
+		StorageMessages.RetrieveFileRequest retrieveFileRequest = StorageMessages.RetrieveFileRequest.newBuilder()
+				.setFileName(fileName)
+				.build();
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setMessageType(8)
+				.setRetrieveFileRequest(retrieveFileRequest)
+				.build();
+        return null;
+    }
+
+    public static StorageMessages.MessageWrapper constructRetrieveFileResponse(StorageMessages.ChunkMapping chunkMapping) {
+		StorageMessages.RetrieveFileResponse retrieveFileResponse = StorageMessages.RetrieveFileResponse.newBuilder()
+				.setChunkMappings(chunkMapping)
+				.build();
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setRetrieveFileResponse(retrieveFileResponse)
+				.build();
+		return msgWrapper;
+	}
+
     public static StorageMessages.MessageWrapper constructRetrieveChunkRequest() {
         return null;
     }
 
-    public static StorageMessages.MessageWrapper constructRetrieveChunkResponse() {
-        return null;
-    }
+	public static StorageMessages.MessageWrapper constructRetrieveChunkResponse() {
+		return null;
+	}
 
     public static StorageMessages.MessageWrapper constructRetrieveChunkAck() {
         return null;

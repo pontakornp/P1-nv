@@ -59,7 +59,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, StorageMessages.MessageWrapper msg) {
     	int messageType = msg.getMessageType();
-    	if (messageType == 1) {
+    	if(messageType == 1){
 			logger.info("Received Storage Node Registration Message");
             StorageMessages.StorageNode storageNode = msg.getStorageNodeRegisterRequest().getStorageNode();
     		Controller controller = Controller.getInstance();
@@ -128,7 +128,30 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		
     		List<StorageMessages.ChunkMapping> chunkMapping = storageNodesForChunksResponse.getChunkMappingsList();
     		Client.saveChunkFromChunkMappings(ctx, chunkMapping);
-    	}
+    	}else if(messageType == 8){
+			logger.info("Retrieve File Request: Controller receives retrieve file request from client to get storage nodes that may contains the file ");
+			StorageMessages.RetrieveFileRequest retrieveFileRequest = msg.getRetrieveFileRequest();
+			String fileName = retrieveFileRequest.getFileName();
+			Controller controller = Controller.getInstance();
+
+
+			StorageMessages.ChunkMapping chunkMapping = controller.getNodesForRetrieveFile(fileName);
+			if(chunkMapping == null) {
+				logger.info("No storage node containing the file");
+			}
+			// controller send nodes to clients
+			controller.sendNodesToClient(chunkMapping);
+
+		}else if(messageType == 9) {
+    		logger.info("Retrieve Chunk Request: Storage Node receive request from client");
+    		StorageMessages.RetrieveChunkRequest retrieveChunkRequest = msg.getRetrieveChunkRequest();
+    		StorageMessages.Chunk chunk = retrieveChunkRequest.getChunk();
+    		String fileName = chunk.getFileName();
+    		int chunkId = chunk.getChunkId();
+    		// return the chunk to the client
+			StorageNode storageNode = StorageNode.getInstance();
+			storageNode.retrieveChunk(fileName, chunkId);
+		}
     }
 
     @Override

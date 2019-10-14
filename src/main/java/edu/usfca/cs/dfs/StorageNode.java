@@ -370,6 +370,7 @@ public class StorageNode {
 			return filePath;
 		}
 		String compressedFilePath = filePath + "_compressed";
+		// add _{checksum} then check if the file exist or not
 		File compressedFile = new File(compressedFilePath);
 		if (compressedFile.exists()) {
 			return compressedFilePath;

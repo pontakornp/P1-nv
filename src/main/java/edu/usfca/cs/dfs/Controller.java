@@ -7,14 +7,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.naming.ldap.Control;
 
 public class Controller {
+	static Logger logger = LogManager.getLogger(Controller.class);
 	private String controllerNodeAddr;
 	private int controllerNodePort;
 	private ConcurrentHashMap<String, StorageMessages.StorageNode> activeStorageNodes;
@@ -137,7 +145,7 @@ public class Controller {
 		this.bloomFilterMap.remove(storageNode.getStorageNodeId());
 		this.timeStamps.remove(storageNode.getStorageNodeId());
 	}
-	
+
 	/*
 	 *  This will be called by client to get the list of nodes to save a chunk
 	 *  This will check if chunk exists and identifies storagenodes depending on its existence
@@ -150,8 +158,7 @@ public class Controller {
 		ArrayList<StorageMessages.StorageNode> storageNodeList = this.findNodesContainingFileChunk(chunk, bloomFilterKey);
 		return HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
 	}
-	
-	
+
 	/*
 	 * This splits the storagenodes into containing nodes and not containing nodes
 	 * Adds one not containing node to ensure atleast one non containing node is returned
@@ -180,7 +187,37 @@ public class Controller {
 		return containingStorageNodeList;
 	}
 	
-	
+	// find node containing file meta data
+	public synchronized StorageMessages.ChunkMapping getNodesForRetrieveFile(String fileName) {
+		String bloomFilterKey = fileName + "_0";
+		ArrayList<StorageMessages.StorageNode> storageNodeList = new ArrayList<StorageMessages.StorageNode>();
+		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
+			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
+			System.out.println("Iterating bloom filter for storage node" + storageNode.getStorageNodeId());
+			System.out.println("Current capacity of storagenode: " + +storageNode.getAvailableStorageCapacity());
+			if(storageNodeBloomFilter.getValue().getBloomKey(bloomFilterKey.getBytes())) {
+				storageNodeList.add(storageNode);
+			}
+		}
+		// if no storage node potentially contain the file, return null
+		if(storageNodeList.isEmpty()) {
+			return null;
+		}
+		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
+				.setFileName(fileName)
+				.build();
+		return HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
+	}
+
+	public void sendNodesToClient(StorageMessages.ChunkMapping chunkMapping) {
+	}
+
+
+	public ArrayList<StorageMessages.StorageNode> findNodesContainingFileMetaData() {
+		return null;
+	}
+
+
 	
 	/*
 	 * This will be called repeatedly and identify the list of inactive nodes
