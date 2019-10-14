@@ -7,8 +7,8 @@ message StorageNode {
 	string storageNodeId = 1;
 	string storageNodeAddr = 2;
 	int32 storageNodePort = 3;
-	int32 availableStorageCapacity = 4;
-	int32 maxStorageCapacity = 5;
+	int64 availableStorageCapacity = 4;
+	int64 maxStorageCapacity = 5;
 	repeated string replicationNodeIds = 6;
 }
 

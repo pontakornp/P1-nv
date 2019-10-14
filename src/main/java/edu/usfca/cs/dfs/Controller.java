@@ -43,6 +43,7 @@ public class Controller {
 	
 	public static Controller getInstance() {
 		if (controllerInstance == null){
+			System.out.println("New controller instance instantiated");
 			controllerInstance = new Controller();
 		}
 		return controllerInstance;
@@ -71,6 +72,8 @@ public class Controller {
 	 */
 	public synchronized void addStorageNode(StorageMessages.StorageNode storageNode) {
 		String storageNodeId = storageNode.getStorageNodeId();
+		System.out.println("Storage Node Received on controller for registration"
+				+ storageNodeId +  " StorageNode Size: " + storageNode.getAvailableStorageCapacity());
 		storageNode = this.getReplicationNodes(storageNode);
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
 			this.activeStorageNodes.put(storageNodeId, storageNode);
@@ -104,7 +107,7 @@ public class Controller {
 				break;
 			}
 		}
-		storageNode.newBuilder().addAllReplicationNodeIds(duplicateNodeList);
+		storageNode.toBuilder().addAllReplicationNodeIds(duplicateNodeList);
 		
 		return storageNode;
 	}
@@ -128,6 +131,8 @@ public class Controller {
 	 */
 	public synchronized void deleteStorageNode(StorageNode storageNode){
 		this.activeStorageNodes.remove(storageNode.getStorageNodeId());
+		this.bloomFilterMap.remove(storageNode.getStorageNodeId());
+		this.timeStamps.remove(storageNode.getStorageNodeId());
 	}
 	
 	/*
@@ -138,7 +143,8 @@ public class Controller {
 	 */
 	public synchronized StorageMessages.ChunkMapping getNodesForChunkSave(StorageMessages.Chunk chunk) {
 		String bloomFilterKey = chunk.getFileName() + "_" + chunk.getChunkId();
-		ArrayList<StorageMessages.StorageNode> storageNodeList = findNodesContainingFileChunk(chunk, bloomFilterKey);
+		System.out.println("Bloom Key: " + bloomFilterKey);
+		ArrayList<StorageMessages.StorageNode> storageNodeList = this.findNodesContainingFileChunk(chunk, bloomFilterKey);
 		return HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
 	}
 	
@@ -152,9 +158,13 @@ public class Controller {
 		ArrayList<StorageMessages.StorageNode> containingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		ArrayList<StorageMessages.StorageNode> notContainingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		
+		System.out.println("Current bloom filter map size" + this.bloomFilterMap.size());
+		System.out.println("Chunk size: " + chunk.getChunkSize());
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
 			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
-			if(storageNodeBloomFilter.getValue().get(bloomKey.getBytes())) {
+			System.out.println("Iterating bloom filter for storage node" + storageNode.getStorageNodeId());
+			System.out.println("Current capacity of storagenode: " + +storageNode.getAvailableStorageCapacity());
+			if(storageNodeBloomFilter.getValue().getBloomKey(bloomKey.getBytes())) {
 				containingStorageNodeList.add(storageNode);
 			}else if(storageNode.getAvailableStorageCapacity()-chunk.getChunkSize()>0) {
 				notContainingStorageNodeList.add(storageNode);
@@ -163,7 +173,7 @@ public class Controller {
 		if(notContainingStorageNodeList.size()>0) {
 			containingStorageNodeList.add(notContainingStorageNodeList.get(0));
 		}
-		
+		System.out.println("StorageNodes Identified for chunk: " + String.valueOf(containingStorageNodeList.size()));
 		return containingStorageNodeList;
 	}
 	
@@ -255,7 +265,7 @@ public class Controller {
 		Controller controllerNode = Controller.getInstance();
 		controllerNode.setVariables(config);
 		try {
-			controllerNode.handleInactiveNodes();
+			//controllerNode.handleInactiveNodes();
 			controllerNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start controller node");

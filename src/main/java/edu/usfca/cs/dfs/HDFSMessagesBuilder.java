@@ -122,9 +122,7 @@ public class HDFSMessagesBuilder {
 		StorageMessages.ChunkMapping.Builder chunkMappingMsg  = StorageMessages.ChunkMapping.newBuilder();
 		chunkMappingMsg.setChunk(chunk);
 		
-		for (int i = 0; i < storageNodeList.size(); i++) {
-			chunkMappingMsg.setStorageNodeObjs(i, storageNodeList.get(i));
-		}
+		chunkMappingMsg.addAllStorageNodeObjs(storageNodeList);
 		StorageMessages.ChunkMapping chunkMapping = chunkMappingMsg.build();
 		
 		return chunkMapping;

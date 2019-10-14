@@ -37,8 +37,8 @@ public class StorageNode {
 	private String storageNodeAddr;
 	private String storageNodeDirectoryPath; // storageNodeAddr + storageNodeId + '/'
 	private int storageNodePort;
-	private int availableStorageCapacity;
-	private int maxStorageCapacity;
+	private long availableStorageCapacity;
+	private long maxStorageCapacity;
 	
 	private List<String> replicationNodeIds;
 	private List<StorageNode> replicatedStorageNodeObjs;
@@ -70,11 +70,11 @@ public class StorageNode {
 		return this.storageNodePort;
 	}
 	
-	public int getAvailableStorageCapacity() {
+	public long getAvailableStorageCapacity() {
 		return this.availableStorageCapacity;
 	}
 	
-	public int getMaxStorageCapacity() {
+	public long getMaxStorageCapacity() {
 		return this.maxStorageCapacity;
 	}
 
@@ -182,7 +182,8 @@ public class StorageNode {
 		
 		this.controllerNodeAddr = config.getControllerNodeAddr();
 		this.controllerNodePort = config.getControllerNodePort();
-		System.out.println("Storage Node config updated. Storage Node Id: "+ this.storageNodeId);
+		System.out.println("Storage Node config updated. Storage Node Id: "
+			+ this.storageNodeId +  " StorageNode Size: " + this.availableStorageCapacity);
 	}
     
     public void updateValuesFromProto(StorageMessages.StorageNode storageNodeMsg) {
@@ -412,7 +413,6 @@ public class StorageNode {
             ChannelFuture f = b.bind(this.storageNodePort).sync();
             System.out.println("Storage Node started at port: " + String.valueOf(this.storageNodePort));
             this.registerNode();
-//            this.handleHeartBeats();
 			f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
@@ -433,17 +433,9 @@ public class StorageNode {
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
 
-		StorageNode replica = new StorageNode();
-		replica.setVariables(config);
-		replica.setStorageNodePort(7000);
-		replica.setStorageNodeId("051cdb2f-fda1-4cff-9fff-4e6b1d0440c8");
-
-		List<StorageNode> snList = new ArrayList<>();
-		snList.add(replica);
-		storageNode.setReplicatedStorageNodeObjs(snList);
-
 		logger.info(storageNode.storageNodeDirectoryPath);
 		try {
+			storageNode.sendHeartBeat();
 			storageNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start storage node");

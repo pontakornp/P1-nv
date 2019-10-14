@@ -6,18 +6,21 @@ import com.sangupta.murmur.Murmur3;
  * BloomFilter - a way to test for set membership without actually storing all the data
  */
 public class BloomFilter {
-	private Integer bitCount;
-	private Integer hashCount;
-	private Integer[] bloomFilterArray;
-	private Integer elementCount;
+	private int bitCount;
+	private int hashCount;
+	private int[] bloomFilterArray;
+	private int elementCount;
 	private static final long MURMUR_SEED = 0;
 	
 	public BloomFilter(Integer bitCount, Integer hashCount) {
 		this.bitCount = bitCount;
 		this.hashCount = hashCount;
-		this.bloomFilterArray = new Integer[bitCount];
+		this.bloomFilterArray = new int[bitCount];
 	}
 
+	public int[] getBloomFilterArray() {
+		return this.bloomFilterArray;
+	}
 	
 	/**
      * 
@@ -53,7 +56,7 @@ public class BloomFilter {
      * 3. If any one location is 0 return false else return true!	
      * 
      */
-    public boolean get(byte[] data) {
+    public boolean getBloomKey(byte[] data) {
         long[] bitLocationArray = this.getBitLocations(data);
 
         for (int i = 0; i < bitLocationArray.length; i++) {
@@ -71,7 +74,7 @@ public class BloomFilter {
      * 3. Increments the element count
      * 
      */
-    public void put(byte[] data) {
+    public void putBloomKey(byte[] data) {
         long[] bitLocations = this.getBitLocations(data);
         for (int i = 0; i < bitLocations.length; i++) {
             this.bloomFilterArray[(int) bitLocations[i]] = 1;

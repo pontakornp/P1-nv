@@ -100,6 +100,7 @@ public class Client {
     	int chunkId = chunk.getChunkId();
     	int chunkSize = chunk.getChunkSize();
     	
+    	System.out.println("Chunk update with file data initiated");
     	RandomAccessFile aFile;
 		try {
 			aFile = new RandomAccessFile(filePath, "r");
@@ -119,6 +120,7 @@ public class Client {
 		} catch (IOException e) {
 			
 		}
+		System.out.println("Chunk has been updated with file data");
     }
     
     /*
@@ -129,17 +131,21 @@ public class Client {
      * If file already exists but not in primary node we do not save it
      */
     public static void saveChunkFromChunkMappings(ChannelHandlerContext ctx, List<StorageMessages.ChunkMapping> chunkMappingList){
+    	
+    	System.out.println("ChunkMapping count received from controller: " + String.valueOf(chunkMappingList.size()));
     	for (StorageMessages.ChunkMapping chunkMapping : chunkMappingList) {
     		StorageMessages.Chunk chunk = chunkMapping.getChunk();
     		
     		Client.updateChunkWithFileData(chunk);
-
+    		
+    		System.out.println("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
 			for (StorageMessages.StorageNode storageNode : chunkMapping.getStorageNodeObjsList()) {
+				
 				try {
 					EventLoopGroup workerGroup = new NioEventLoopGroup();
 			        MessagePipeline pipeline = new MessagePipeline();
 			        
-			        logger.info("Save File Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + String.valueOf(storageNode.getStorageNodePort()));
+			        logger.info("Save File Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort()));
 			        Bootstrap bootstrap = new Bootstrap()
 			            .group(workerGroup)
 			            .channel(NioSocketChannel.class)

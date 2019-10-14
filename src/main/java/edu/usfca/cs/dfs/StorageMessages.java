@@ -49,16 +49,16 @@ public final class StorageMessages {
     int getStorageNodePort();
 
     /**
-     * <code>int32 availableStorageCapacity = 4;</code>
+     * <code>int64 availableStorageCapacity = 4;</code>
      * @return The availableStorageCapacity.
      */
-    int getAvailableStorageCapacity();
+    long getAvailableStorageCapacity();
 
     /**
-     * <code>int32 maxStorageCapacity = 5;</code>
+     * <code>int64 maxStorageCapacity = 5;</code>
      * @return The maxStorageCapacity.
      */
-    int getMaxStorageCapacity();
+    long getMaxStorageCapacity();
 
     /**
      * <code>repeated string replicationNodeIds = 6;</code>
@@ -153,12 +153,12 @@ public final class StorageMessages {
             }
             case 32: {
 
-              availableStorageCapacity_ = input.readInt32();
+              availableStorageCapacity_ = input.readInt64();
               break;
             }
             case 40: {
 
-              maxStorageCapacity_ = input.readInt32();
+              maxStorageCapacity_ = input.readInt64();
               break;
             }
             case 50: {
@@ -288,22 +288,22 @@ public final class StorageMessages {
     }
 
     public static final int AVAILABLESTORAGECAPACITY_FIELD_NUMBER = 4;
-    private int availableStorageCapacity_;
+    private long availableStorageCapacity_;
     /**
-     * <code>int32 availableStorageCapacity = 4;</code>
+     * <code>int64 availableStorageCapacity = 4;</code>
      * @return The availableStorageCapacity.
      */
-    public int getAvailableStorageCapacity() {
+    public long getAvailableStorageCapacity() {
       return availableStorageCapacity_;
     }
 
     public static final int MAXSTORAGECAPACITY_FIELD_NUMBER = 5;
-    private int maxStorageCapacity_;
+    private long maxStorageCapacity_;
     /**
-     * <code>int32 maxStorageCapacity = 5;</code>
+     * <code>int64 maxStorageCapacity = 5;</code>
      * @return The maxStorageCapacity.
      */
-    public int getMaxStorageCapacity() {
+    public long getMaxStorageCapacity() {
       return maxStorageCapacity_;
     }
 
@@ -365,11 +365,11 @@ public final class StorageMessages {
       if (storageNodePort_ != 0) {
         output.writeInt32(3, storageNodePort_);
       }
-      if (availableStorageCapacity_ != 0) {
-        output.writeInt32(4, availableStorageCapacity_);
+      if (availableStorageCapacity_ != 0L) {
+        output.writeInt64(4, availableStorageCapacity_);
       }
-      if (maxStorageCapacity_ != 0) {
-        output.writeInt32(5, maxStorageCapacity_);
+      if (maxStorageCapacity_ != 0L) {
+        output.writeInt64(5, maxStorageCapacity_);
       }
       for (int i = 0; i < replicationNodeIds_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 6, replicationNodeIds_.getRaw(i));
@@ -393,13 +393,13 @@ public final class StorageMessages {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, storageNodePort_);
       }
-      if (availableStorageCapacity_ != 0) {
+      if (availableStorageCapacity_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, availableStorageCapacity_);
+          .computeInt64Size(4, availableStorageCapacity_);
       }
-      if (maxStorageCapacity_ != 0) {
+      if (maxStorageCapacity_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, maxStorageCapacity_);
+          .computeInt64Size(5, maxStorageCapacity_);
       }
       {
         int dataSize = 0;
@@ -454,9 +454,11 @@ public final class StorageMessages {
       hash = (37 * hash) + STORAGENODEPORT_FIELD_NUMBER;
       hash = (53 * hash) + getStorageNodePort();
       hash = (37 * hash) + AVAILABLESTORAGECAPACITY_FIELD_NUMBER;
-      hash = (53 * hash) + getAvailableStorageCapacity();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getAvailableStorageCapacity());
       hash = (37 * hash) + MAXSTORAGECAPACITY_FIELD_NUMBER;
-      hash = (53 * hash) + getMaxStorageCapacity();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxStorageCapacity());
       if (getReplicationNodeIdsCount() > 0) {
         hash = (37 * hash) + REPLICATIONNODEIDS_FIELD_NUMBER;
         hash = (53 * hash) + getReplicationNodeIdsList().hashCode();
@@ -600,9 +602,9 @@ public final class StorageMessages {
 
         storageNodePort_ = 0;
 
-        availableStorageCapacity_ = 0;
+        availableStorageCapacity_ = 0L;
 
-        maxStorageCapacity_ = 0;
+        maxStorageCapacity_ = 0L;
 
         replicationNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -702,10 +704,10 @@ public final class StorageMessages {
         if (other.getStorageNodePort() != 0) {
           setStorageNodePort(other.getStorageNodePort());
         }
-        if (other.getAvailableStorageCapacity() != 0) {
+        if (other.getAvailableStorageCapacity() != 0L) {
           setAvailableStorageCapacity(other.getAvailableStorageCapacity());
         }
-        if (other.getMaxStorageCapacity() != 0) {
+        if (other.getMaxStorageCapacity() != 0L) {
           setMaxStorageCapacity(other.getMaxStorageCapacity());
         }
         if (!other.replicationNodeIds_.isEmpty()) {
@@ -930,62 +932,62 @@ public final class StorageMessages {
         return this;
       }
 
-      private int availableStorageCapacity_ ;
+      private long availableStorageCapacity_ ;
       /**
-       * <code>int32 availableStorageCapacity = 4;</code>
+       * <code>int64 availableStorageCapacity = 4;</code>
        * @return The availableStorageCapacity.
        */
-      public int getAvailableStorageCapacity() {
+      public long getAvailableStorageCapacity() {
         return availableStorageCapacity_;
       }
       /**
-       * <code>int32 availableStorageCapacity = 4;</code>
+       * <code>int64 availableStorageCapacity = 4;</code>
        * @param value The availableStorageCapacity to set.
        * @return This builder for chaining.
        */
-      public Builder setAvailableStorageCapacity(int value) {
+      public Builder setAvailableStorageCapacity(long value) {
         
         availableStorageCapacity_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 availableStorageCapacity = 4;</code>
+       * <code>int64 availableStorageCapacity = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearAvailableStorageCapacity() {
         
-        availableStorageCapacity_ = 0;
+        availableStorageCapacity_ = 0L;
         onChanged();
         return this;
       }
 
-      private int maxStorageCapacity_ ;
+      private long maxStorageCapacity_ ;
       /**
-       * <code>int32 maxStorageCapacity = 5;</code>
+       * <code>int64 maxStorageCapacity = 5;</code>
        * @return The maxStorageCapacity.
        */
-      public int getMaxStorageCapacity() {
+      public long getMaxStorageCapacity() {
         return maxStorageCapacity_;
       }
       /**
-       * <code>int32 maxStorageCapacity = 5;</code>
+       * <code>int64 maxStorageCapacity = 5;</code>
        * @param value The maxStorageCapacity to set.
        * @return This builder for chaining.
        */
-      public Builder setMaxStorageCapacity(int value) {
+      public Builder setMaxStorageCapacity(long value) {
         
         maxStorageCapacity_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 maxStorageCapacity = 5;</code>
+       * <code>int64 maxStorageCapacity = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearMaxStorageCapacity() {
         
-        maxStorageCapacity_ = 0;
+        maxStorageCapacity_ = 0L;
         onChanged();
         return this;
       }
@@ -17476,8 +17478,8 @@ public final class StorageMessages {
       "\n\026storage_messages.proto\"\260\001\n\013StorageNode" +
       "\022\025\n\rstorageNodeId\030\001 \001(\t\022\027\n\017storageNodeAd" +
       "dr\030\002 \001(\t\022\027\n\017storageNodePort\030\003 \001(\005\022 \n\030ava" +
-      "ilableStorageCapacity\030\004 \001(\005\022\032\n\022maxStorag" +
-      "eCapacity\030\005 \001(\005\022\032\n\022replicationNodeIds\030\006 " +
+      "ilableStorageCapacity\030\004 \001(\003\022\032\n\022maxStorag" +
+      "eCapacity\030\005 \001(\003\022\032\n\022replicationNodeIds\030\006 " +
       "\003(\t\"?\n\032StorageNodeRegisterRequest\022!\n\013sto" +
       "rageNode\030\001 \001(\0132\014.StorageNode\"@\n\033StorageN" +
       "odeRegisterResponse\022!\n\013storageNode\030\001 \001(\013" +

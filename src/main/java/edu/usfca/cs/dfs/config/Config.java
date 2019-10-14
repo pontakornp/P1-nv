@@ -27,7 +27,7 @@ public class Config {
 	private String storageNodeAddr;
 	private int storageNodePort;
 	private String storageNodeDirectoryPath;
-	private int maxStorageCapacity;
+	private long maxStorageCapacity;
 
 	private int chunkSize;
 	
@@ -127,7 +127,7 @@ public class Config {
 		this.storageNodeDirectoryPath = storageNodeDirectoryPath;
 	}
 
-	public int getMaxStorageCapacity() {
+	public long getMaxStorageCapacity() {
 		return maxStorageCapacity;
 	}
 

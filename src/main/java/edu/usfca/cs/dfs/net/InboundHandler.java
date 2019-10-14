@@ -1,7 +1,11 @@
 package edu.usfca.cs.dfs.net;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.usfca.cs.dfs.Client;
 import edu.usfca.cs.dfs.Controller;
@@ -14,8 +18,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @ChannelHandler.Sharable
 public class InboundHandler
@@ -111,10 +113,12 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		StorageMessages.GetStorageNodesForChunksResponse.Builder responseMsg = StorageMessages.GetStorageNodesForChunksResponse.newBuilder();
     		List<StorageMessages.Chunk> chunkList = getStorageNodesForChunksRequest.getChunkListList();
     		
+    		ArrayList<StorageMessages.ChunkMapping> chunkMappingList = new ArrayList<StorageMessages.ChunkMapping>();
     		for (int i=0; i< chunkList.size(); i++) {
     			StorageMessages.ChunkMapping chunkMapping = controller.getNodesForChunkSave(chunkList.get(i));
-    			responseMsg.setChunkMappings(i, chunkMapping);
+    			chunkMappingList.add(chunkMapping);
     		}
+    		responseMsg.addAllChunkMappings(chunkMappingList);
     		
     		StorageMessages.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = responseMsg.build();
     		
