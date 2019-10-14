@@ -1,9 +1,11 @@
 package edu.usfca.cs.dfs.util;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 public class Entropy {
+	
+	/*
+	 * This calculates the shannon entropy of byte array
+	 * Chunk bytearray is used as input returns entropy of chunk as response
+	 */
     public static double calculateShannonEntropy(byte[] input) {
         if (input.length == 0) {
             return 0.0;
@@ -23,6 +25,8 @@ public class Entropy {
         }
         return entropy;
     }
+    
+    
     public static void main(String[] args) {
 //        byte[] test = Files.readAllBytes(Paths.get(args[0]));
         byte[] test = {5,10,5};

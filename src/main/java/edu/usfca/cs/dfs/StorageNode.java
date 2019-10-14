@@ -35,7 +35,7 @@ public class StorageNode {
 	
 	private String storageNodeId;
 	private String storageNodeAddr;
-	private String storageNodeDirectoryPath; // storageNodeAddr + storageNodeId + '/'
+	private static String storageNodeDirectoryPath; // storageNodeAddr + storageNodeId + '/'
 	private int storageNodePort;
 	private long availableStorageCapacity;
 	private long maxStorageCapacity;
@@ -101,7 +101,7 @@ public class StorageNode {
 	}
 
 	public void setStorageNodeDirectoryPath(String storageNodeDirectoryPath) {
-		this.storageNodeDirectoryPath = storageNodeDirectoryPath;
+		StorageNode.storageNodeDirectoryPath = storageNodeDirectoryPath;
 	}
 
 	public void setStorageNodePort(int storageNodePort) {
@@ -134,7 +134,7 @@ public class StorageNode {
 		this.storageNodeId = UUID.randomUUID().toString();
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
-		this.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
+		StorageNode.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
 		this.maxStorageCapacity = config.getMaxStorageCapacity();
 		this.availableStorageCapacity = this.maxStorageCapacity;
 		
@@ -178,7 +178,6 @@ public class StorageNode {
 	
 	        Channel chan = cf.channel();
 	        ChannelFuture write = chan.writeAndFlush(msgWrapper);
-	        
 	        logger.info("Registration message sent to controller");
 	        chan.closeFuture().sync();
 	        workerGroup.shutdownGracefully();
@@ -256,29 +255,33 @@ public class StorageNode {
 
 	// To store chunk in a file,
 	// 1. calculate Shannon Entropy of the files which is the maximum compression
-	// If their maximum compression is greater than (1 - (entropy bits / 8)), then the chunk should be compressed.
+	// if maximum compression is greater than 0.6, then compress the chunk data
+	// else do not compress
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
 	public boolean storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
 		StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
+		System.out.print(chunk.getData().size());
+		
 		String fileName = chunk.getFileName();
 		int chunkId = chunk.getChunkId();
 		byte[] chunkData = chunk.getData().toByteArray();
 		String originalCheckSum = chunk.getChecksum();
 		boolean isPrimary = storeChunkRequest.getIsPrimary();
 
-
-
-		// calculate Shannon Entropy
 		double entropyBits = Entropy.calculateShannonEntropy(chunkData);
-		double maximumCompression = 1 - (entropyBits / 8);
+		double maximumCompression = 1 - (entropyBits/8);
+
 		byte[] data = chunkData;
-		// if maximum compression is greater than 0.6, then compress the chunk data
-		// else do not compress
-		// then store the compress or uncompressed chunk data in a file
-		StringBuilder filePathBuilder = new StringBuilder();
-		filePathBuilder.append(this.storageNodeId + "/");
+		
+		File dir = new File(StorageNode.storageNodeDirectoryPath, this.storageNodeId);
+		
+		if (!dir.exists()) {
+			dir.mkdirs();
+			logger.info("Created new directory: " + dir.toString());
+		}
+		StringBuilder filePathBuilder = new StringBuilder(); 
 		filePathBuilder.append(fileName);
 		filePathBuilder.append("_" + chunkId);
 		if (maximumCompression > 0.6) {
@@ -288,48 +291,23 @@ public class StorageNode {
 				logger.error("Fails to compress chunk");
 				return false;
 			}
+		}else {
+			filePathBuilder.append("_notcompressed");
 		}
-		filePathBuilder.append("_" + originalCheckSum);
-		String filePath = filePathBuilder.toString();
-		// create directory
-		File dir = new File(this.storageNodeId);
-		if (!dir.exists()) {
-			dir.mkdir();
-			logger.info("Created new directory");
-		}
+		String outputFileName = filePathBuilder.toString();
+		
 		try {
-			OutputStream outputStream = new FileOutputStream(filePath);
+			File outputFile = new File(dir.toString(), outputFileName);
+			System.out.println(outputFile.toString());
+			outputFile.createNewFile();
+			FileOutputStream outputStream = new FileOutputStream(outputFile, true);
 			outputStream.write(data);
-			byte[] storedChunkData = Files.readAllBytes(Paths.get(filePath));
-			if (!isFileCorrupted(storedChunkData, originalCheckSum)) {
-				logger.info("Chunk " + chunkId + "is added successfully in StorageNode" + storageNodeId);
-				//if it a primary, chunk will be replicated to other secondary storage nodes
-				if(isPrimary) {
-					// contact controller to get list of replicate
-//
-//					storeChunkRequest.toBuilder()
-//							.setIsPrimary(false)
-//							.setReplicas()
-//
-				} else {
-					boolean isReplicated = storeChunkOnReplica(chunk);
-					// if this is not a primary node, get storage node
-//					List<StorageMessages.StorageNode> storageNodeList = storeChunkRequest.getReplicasList();
-//					if (!storageNodeList.isEmpty()) {
-//						for(int i = 0; i < storageNodeList.size(); i++) {
-//							StorageMessages.StorageNode storageNode = storageNodeList.get(i);
-//							storageNode.
-//						}
-//					}
-					if (!isReplicated) {
-						return false;
-					}
-				}
-				return true;
-			} else {
-				return false;
-			}
+			//TODO: Calculate the checksum after save.
+			//TODO: Modify the file name after calculating the checksum
+			outputStream.close();
+			return true;
 		} catch (IOException e) {
+			e.printStackTrace();
 			logger.error("There is a problem when writing stream to file");
 			return false;
 		}
