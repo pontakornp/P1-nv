@@ -3,11 +3,11 @@ package edu.usfca.cs.dfs;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -69,7 +69,7 @@ public class Controller {
 		this.activeStorageNodes = new ConcurrentHashMap<String, StorageMessages.StorageNode>();
 		this.bloomFilterMap = new ConcurrentHashMap<String, BloomFilter>();
 		this.timeStamps = new ConcurrentHashMap<String, Timestamp>();
-		System.out.println("Controller Node config updated.");
+		logger.info("Controller Node config updated.");
 	}
 	
 	private static Timestamp getCurrentTimeStamp() {
@@ -88,15 +88,15 @@ public class Controller {
 		String storageNodeId = storageNode.getStorageNodeId();
 		System.out.println("Storage Node Received on controller for registration"
 				+ storageNodeId +  " StorageNode Size: " + storageNode.getAvailableStorageCapacity());
-		storageNode = this.getReplicationNodes(storageNode);
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
 			this.activeStorageNodes.put(storageNodeId, storageNode);
 			this.bloomFilterMap.put(storageNodeId, new BloomFilter(Controller.BLOOM_FILTER_SIZE, Controller.BLOOM_HASH_COUNT));
 			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
-			System.out.println("INFO: Storage Node registered with controller");
+			this.getReplicaNodesByMaxAvailableSize();
+			logger.info("Storage Node registered with controller");
 			this.printStorageNodeIds();
 		}else {
-			System.out.println("ERROR: Storage Node already registered with controller");
+			logger.error("Storage Node already registered with controller");
 		}
 	}
 	
@@ -107,32 +107,41 @@ public class Controller {
 	}
 	
 	/* This will update the replication nodes for storage nodes 
-	 * This will select two other registered nodes which hasas replicas for current node
+	 * This will select other registered nodes as replicas for current node
+	 * Implemented a priority queue which compares(desc) by available storage capacity of node
 	 */
-	private StorageMessages.StorageNode getReplicationNodes(StorageMessages.StorageNode storageNode) {
-		ArrayList<StorageMessages.StorageNode> completeNodeList = new ArrayList<StorageMessages.StorageNode>(); 
-		for (Map.Entry<String, StorageMessages.StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
-			if(existingStorageNode.getKey() != storageNode.getStorageNodeId()){
-				completeNodeList.add(existingStorageNode.getValue());
+	private void getReplicaNodesByMaxAvailableSize() {
+		int maxStorageNodesCount = this.activeStorageNodes.values().size()-1;
+		int maxReplicas = Math.min(maxStorageNodesCount, Controller.MAX_REPLICAS);
+		
+		for (StorageMessages.StorageNode activeStorageNode : this.activeStorageNodes.values()) {
+			if(activeStorageNode.getReplicaNodesCount()< maxReplicas) {
+				PriorityQueue<StorageMessages.StorageNode> completeNodeListPQ 
+					= new PriorityQueue<StorageMessages.StorageNode>(maxStorageNodesCount, new Comparator<StorageMessages.StorageNode>() {
+						@Override 
+						public int compare(StorageMessages.StorageNode p1, StorageMessages.StorageNode p2) {
+				            return (int)p2.getAvailableStorageCapacity() - (int)p1.getAvailableStorageCapacity(); // Descending
+				        }
+					});
+				
+				for (StorageMessages.StorageNode existingStorageNode : this.activeStorageNodes.values()) {
+					completeNodeListPQ.add(existingStorageNode);
+				}
+				
+				ArrayList<StorageMessages.StorageNode> outputNodeList = new ArrayList<StorageMessages.StorageNode>();
+				for(int i=0; i<maxReplicas; i++) {
+					StorageMessages.StorageNode currentNode = completeNodeListPQ.peek();
+					if(activeStorageNode.getStorageNodeId()==currentNode.getStorageNodeId()) {
+						completeNodeListPQ.remove();
+						currentNode = completeNodeListPQ.peek();
+					}
+					logger.info("Storage Node: " + currentNode.getStorageNodeId() + " added as repica for " + activeStorageNode.getStorageNodeId());
+					outputNodeList.add(completeNodeListPQ.remove());
+				}
+				activeStorageNode.toBuilder().addAllReplicaNodes(outputNodeList).build();
 			}
 		}
-		
-		Collections.sort(completeNodeList, new Comparator<StorageMessages.StorageNode>() {
-			@Override public int compare(StorageMessages.StorageNode p1, StorageMessages.StorageNode p2) {
-	            return (int)p1.getAvailableStorageCapacity() - (int)p2.getAvailableStorageCapacity(); // Ascending
-	        }
-		});
-		
-		int maxReplicas = Math.min(completeNodeList.size(), Controller.MAX_REPLICAS);
-		
-		ArrayList<StorageMessages.StorageNode> replicaNodeList = new ArrayList<StorageMessages.StorageNode>();
-		for(int i=0; i<maxReplicas; i++) {
-			replicaNodeList.add(completeNodeList.get(i));
-		}
-		
-		storageNode.toBuilder().addAllReplicaNodes(replicaNodeList).build();
-		
-		return storageNode;
+			
 	}
 	
 	/*
@@ -183,8 +192,6 @@ public class Controller {
 		ArrayList<StorageMessages.StorageNode> containingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		ArrayList<StorageMessages.StorageNode> notContainingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		
-		System.out.println("Current bloom filter map size" + this.bloomFilterMap.size());
-		System.out.println("Chunk size: " + chunk.getChunkSize());
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
 			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
 			System.out.println("Iterating bloom filter for storage node" + storageNode.getStorageNodeId());
@@ -195,6 +202,7 @@ public class Controller {
 				notContainingStorageNodeList.add(storageNode);
 			}
 		}
+		
 		if(notContainingStorageNodeList.size()>0) {
 			containingStorageNodeList.add(notContainingStorageNodeList.get(0));
 		}
