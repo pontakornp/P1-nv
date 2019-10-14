@@ -206,6 +206,7 @@ public class HDFSMessagesBuilder {
 				.setChunkMappings(chunkMapping)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setMessageType(9)
 				.setRetrieveFileResponse(retrieveFileResponse)
 				.build();
 		return msgWrapper;
@@ -215,8 +216,16 @@ public class HDFSMessagesBuilder {
         return null;
     }
 
-	public static StorageMessages.MessageWrapper constructRetrieveChunkResponse() {
-		return null;
+	public static StorageMessages.MessageWrapper constructRetrieveChunkResponse(StorageMessages.Chunk chunk) {
+		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = StorageMessages.RetrieveChunkResponse.newBuilder()
+				.setChunk(chunk)
+				.build();
+
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setMessageType(10)
+				.setRetrieveChunkResponse(retrieveChunkResponse)
+				.build();
+		return msgWrapper;
 	}
 
     public static StorageMessages.MessageWrapper constructRetrieveChunkAck() {
