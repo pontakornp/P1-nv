@@ -38,9 +38,7 @@ public class StorageNode {
 	private int storageNodePort;
 	private long availableStorageCapacity;
 	private long maxStorageCapacity;
-	
-	private List<String> replicationNodeIds;
-	private List<StorageNode> replicatedStorageNodeObjs;
+	private List<StorageMessages.StorageNode> replicaStorageNodes;
 	
 	private String controllerNodeAddr;
 	private int controllerNodePort;
@@ -77,18 +75,12 @@ public class StorageNode {
 		return this.maxStorageCapacity;
 	}
 
-	public List<String> getReplicationNodeIds() {
-		return this.replicationNodeIds;
+	public List<StorageMessages.StorageNode> getReplicaStorageNodes() {
+		return this.replicaStorageNodes;
 	}
 
-	public void setReplicationNodeIds(List<String> replicationNodesIdList) {
-		this.replicationNodeIds = replicationNodesIdList;
-	}
-
-	public List<StorageNode> getReplicatedNodeObjs() {return this.replicatedStorageNodeObjs;}
-
-	public void setReplicatedStorageNodeObjs(List<StorageNode> replicatedStorageNodeObjs) {
-		this.replicatedStorageNodeObjs = replicatedStorageNodeObjs;
+	public void setReplicaStorageNodes(List<StorageMessages.StorageNode> replicaStorageNodes) {
+		this.replicaStorageNodes = replicaStorageNodes;
 	}
 
 	public void setStorageNodeId(String storageNodeId) {
@@ -107,7 +99,7 @@ public class StorageNode {
 		this.storageNodePort = storageNodePort;
 	}
 
-	public void setAvailableStorageCapacity(int availableStorageCapacity) {
+	public void setAvailableStorageCapacity(long availableStorageCapacity) {
 		this.availableStorageCapacity = availableStorageCapacity;
 	}
 
@@ -136,8 +128,7 @@ public class StorageNode {
 		StorageNode.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
 		this.maxStorageCapacity = config.getMaxStorageCapacity();
 		this.availableStorageCapacity = this.maxStorageCapacity;
-		
-		this.replicationNodeIds = new ArrayList<String>();
+		this.replicaStorageNodes = new ArrayList<StorageMessages.StorageNode>();
 		
 		this.controllerNodeAddr = config.getControllerNodeAddr();
 		this.controllerNodePort = config.getControllerNodePort();
@@ -204,7 +195,7 @@ public class StorageNode {
 	            .option(ChannelOption.SO_KEEPALIVE, true)
 	            .handler(pipeline);
 	        
-	        System.out.println(this.controllerNodeAddr+String.valueOf(this.controllerNodePort));
+	        logger.info("Heartbeat send to controller initiated: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
 	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
 	        cf.syncUninterruptibly();
 	
@@ -216,10 +207,10 @@ public class StorageNode {
 	        write.syncUninterruptibly();
 	        chan.closeFuture().sync();
 	        workerGroup.shutdownGracefully();
-	        System.out.println("HeartBeat message sent to controller");
+	        logger.info("Heartbeat send to controller completed");
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Registration of storage node failed. Controller connetion establishment failed");
+			logger.error("Heartbeat send of storage node failed. Controller connetion establishment failed");
 		}
 	}
 	
@@ -228,10 +219,10 @@ public class StorageNode {
 			public void run() {
 				while(true) {
 					try {
-						System.out.println("HeartbeatThread running");
+						logger.info("HeartbeatThread running");
 						StorageNode.getInstance().sendHeartBeat();
-						System.out.println("HeartbeatThread sleeping");
 			            Thread.sleep(5000);
+			            logger.info("HeartbeatThread sleeping");
 			        } catch (InterruptedException e) {
 			            e.printStackTrace();
 			        }
@@ -261,12 +252,9 @@ public class StorageNode {
 	// return true if the chunk is not corrupted, else return false
 	public boolean storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
 		StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
-		System.out.println("Chunk size: " + chunk.getData().size());
-		
 		String fileName = chunk.getFileName();
 		int chunkId = chunk.getChunkId();
 		byte[] chunkData = chunk.getData().toByteArray();
-		String originalCheckSum = chunk.getChecksum();
 		boolean isPrimary = storeChunkRequest.getIsPrimary();
 
 		double entropyBits = Entropy.calculateShannonEntropy(chunkData);
@@ -278,8 +266,9 @@ public class StorageNode {
 		
 		if (!dir.exists()) {
 			dir.mkdirs();
-			logger.info("Created new directory: " + dir.toString());
+			logger.info("Created new file directory on storage node: " + dir.toString());
 		}
+		
 		StringBuilder filePathBuilder = new StringBuilder(); 
 		filePathBuilder.append(fileName);
 		filePathBuilder.append("_" + chunkId);
@@ -304,6 +293,7 @@ public class StorageNode {
 			//TODO: Calculate the checksum after save.
 			//TODO: Modify the file name after calculating the checksum
 			outputStream.close();
+			this.setAvailableStorageCapacity(this.getAvailableStorageCapacity()-outputFile.length());
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -318,7 +308,7 @@ public class StorageNode {
 	 */
 	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk) {
 		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, false);
-		for (StorageNode replica: this.replicatedStorageNodeObjs) {
+		for (StorageMessages.StorageNode replica: this.replicaStorageNodes) {
 			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
 			if (!isReplicated) {
 				return false;
@@ -328,7 +318,7 @@ public class StorageNode {
 	}
 
 
-	private boolean storeChunkOnReplicaHelper(MessageWrapper message, StorageNode storageNode) {
+	private boolean storeChunkOnReplicaHelper(MessageWrapper message, StorageMessages.StorageNode storageNode) {
 		try {
 			EventLoopGroup workerGroup = new NioEventLoopGroup();
 			MessagePipeline pipeline = new MessagePipeline();
@@ -443,8 +433,6 @@ public class StorageNode {
 		Config config = new Config(configFileName);
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
-
-		logger.info(storageNode.storageNodeDirectoryPath);
 		try {
 			storageNode.sendHeartBeat();
 			storageNode.start();

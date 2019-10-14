@@ -9,7 +9,7 @@ message StorageNode {
 	int32 storageNodePort = 3;
 	int64 availableStorageCapacity = 4;
 	int64 maxStorageCapacity = 5;
-	repeated string replicationNodeIds = 6;
+	repeated StorageNode replicaNodes = 6;
 }
 
 message StorageNodeRegisterRequest {
@@ -20,23 +20,11 @@ message StorageNodeRegisterResponse {
 }
 
 message StorageNodeHeartbeat {
-	string storageNodeId = 1;
+	StorageNode storageNode = 1;
 }
 
 message StorageNodeHeartBeatRequest {
 	StorageNodeHeartbeat storageNodeHeartbeat = 1;
-}
-
-message FileExistenceRequest {
-	string fileName = 1;
-}
-
-message FileExistenceResponse {
-	repeated StorageNode storageNodeList = 1;
-}
-
-message GetFileChunkNumberRequest {
-	string fileName = 1;
 }
 
 message Chunk {
@@ -47,10 +35,6 @@ message Chunk {
 	bytes data = 5;
 	int32 maxChunkNumber = 6;
 	string fileAbsolutePath = 7;
-}
-
-message GetFileChunkNumberResponse {
-	Chunk chunk = 1;
 }
 
 message ChunkMapping {
@@ -109,10 +93,6 @@ message MessageWrapper {
     StorageNodeRegisterRequest storageNodeRegisterRequest = 2;
     StorageNodeRegisterResponse storageNodeRegisterResponse = 3;
     StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;
-    FileExistenceRequest fileExistenceRequest = 5;
-    FileExistenceResponse fileExistenceResponse = 6;
-    GetFileChunkNumberRequest getFileChunkNumberRequest=7;
-    GetFileChunkNumberResponse getFileChunkNumberResponse=8;
     GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;
     GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;
     GetReplicationNodeRequest getReplicationNodeRequest = 11;

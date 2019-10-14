@@ -2,8 +2,16 @@ package edu.usfca.cs.dfs;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
@@ -15,6 +23,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class Controller {
+	
+	static Logger logger = LogManager.getLogger(StorageNode.class);
+	
 	private String controllerNodeAddr;
 	private int controllerNodePort;
 	private ConcurrentHashMap<String, StorageMessages.StorageNode> activeStorageNodes;
@@ -23,6 +34,7 @@ public class Controller {
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	private static long MAX_STORAGE_TIME_INACTIVITY = 30000;
+	private static int MAX_REPLICAS = 2;
 
 	private ConcurrentHashMap<String, List<StorageNode>> storageNodeReplicaMap;
 	
@@ -96,21 +108,30 @@ public class Controller {
 	}
 	
 	/* This will update the replication nodes for storage nodes 
-	 * This will randomly select two other registered nodes as replicas for current node
+	 * This will select two other registered nodes which hasas replicas for current node
 	 */
 	private StorageMessages.StorageNode getReplicationNodes(StorageMessages.StorageNode storageNode) {
-		ArrayList<String> duplicateNodeList = new ArrayList<String>(); 
-		int count = 0;
+		ArrayList<StorageMessages.StorageNode> completeNodeList = new ArrayList<StorageMessages.StorageNode>(); 
 		for (Map.Entry<String, StorageMessages.StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
 			if(existingStorageNode.getKey() != storageNode.getStorageNodeId()){
-				duplicateNodeList.add(existingStorageNode.getKey());
-				count++;
-			}
-			if(count==2) {
-				break;
+				completeNodeList.add(existingStorageNode.getValue());
 			}
 		}
-		storageNode.toBuilder().addAllReplicationNodeIds(duplicateNodeList);
+		
+		Collections.sort(completeNodeList, new Comparator<StorageMessages.StorageNode>() {
+			@Override public int compare(StorageMessages.StorageNode p1, StorageMessages.StorageNode p2) {
+	            return (int)p1.getAvailableStorageCapacity() - (int)p2.getAvailableStorageCapacity(); // Ascending
+	        }
+		});
+		
+		int maxReplicas = Math.min(completeNodeList.size(), Controller.MAX_REPLICAS);
+		
+		ArrayList<StorageMessages.StorageNode> replicaNodeList = new ArrayList<StorageMessages.StorageNode>();
+		for(int i=0; i<maxReplicas; i++) {
+			replicaNodeList.add(completeNodeList.get(i));
+		}
+		
+		storageNode.toBuilder().addAllReplicaNodes(replicaNodeList).build();
 		
 		return storageNode;
 	}
@@ -119,12 +140,15 @@ public class Controller {
 	 * This will be called when StorageNode send HeartBeat to controller
 	 * This will need to update metadata of chunk on controller
 	 */
-	public synchronized void receiveHeartBeat(String storageNodeId) {
+	public synchronized void receiveHeartBeat(StorageMessages.StorageNode storageNode) {
+		String storageNodeId = storageNode.getStorageNodeId();
+		
 		if(this.timeStamps.containsKey(storageNodeId)) {
 			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
-			System.out.println("INFO: Storage Node Heartbeat has been updated");
+			this.activeStorageNodes.put(storageNodeId, storageNode);
+			logger.info("Storage Node Heartbeat has been updated");
 		}else {
-			System.out.println("ERROR: Storage Node not registered on controller. Heartbeat will not be updated");
+			logger.error("Storage Node not registered on controller. Heartbeat will not be updated");
 		}
 	}
 	

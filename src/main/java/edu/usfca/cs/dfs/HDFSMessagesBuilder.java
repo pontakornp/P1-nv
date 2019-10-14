@@ -65,14 +65,24 @@ public class HDFSMessagesBuilder {
      * Sets message type as 3 for inbound handler to identify as heartbeat request message
      */
 	public static StorageMessages.MessageWrapper constructHeartBeatRequest(StorageNode storageNode) {
-		StorageMessages.StorageNodeHeartbeat StorageNodeHeartbeatMsg
-			= StorageMessages.StorageNodeHeartbeat.newBuilder()
+		StorageMessages.StorageNode storageNodeMsg 
+			= StorageMessages.StorageNode.newBuilder()
 			.setStorageNodeId(storageNode.getStorageNodeId())
+			.setStorageNodeAddr(storageNode.getStorageNodeAddr())
+			.setStorageNodePort(storageNode.getStorageNodePort())
+			.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
+			.setMaxStorageCapacity(storageNode.getMaxStorageCapacity())
+			.addAllReplicaNodes(storageNode.getReplicaStorageNodes())
+			.build();
+		
+		StorageMessages.StorageNodeHeartbeat StorageNodeHeartBeatMsg
+			= StorageMessages.StorageNodeHeartbeat.newBuilder()
+			.setStorageNode(storageNodeMsg)
 			.build();
 		
 		StorageMessages.StorageNodeHeartBeatRequest storageNodeHeartBeatRequestMsg
 	    	= StorageMessages.StorageNodeHeartBeatRequest.newBuilder()
-	    	.setStorageNodeHeartbeat(StorageNodeHeartbeatMsg)
+	    	.setStorageNodeHeartbeat(StorageNodeHeartBeatMsg)
 	    	.build();
 		
 		StorageMessages.MessageWrapper msgWrapper =
