@@ -3,7 +3,6 @@ package edu.usfca.cs.dfs;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -262,7 +261,7 @@ public class StorageNode {
 	// return true if the chunk is not corrupted, else return false
 	public boolean storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
 		StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
-		System.out.print(chunk.getData().size());
+		System.out.println("Chunk size: " + chunk.getData().size());
 		
 		String fileName = chunk.getFileName();
 		int chunkId = chunk.getChunkId();
@@ -364,7 +363,7 @@ public class StorageNode {
 
 	// get chunk location
 	public synchronized String getChunkLocation(String fileName, Integer chunkNumber) {
-		String filePath = this.storageNodeDirectoryPath + fileName + '_' + chunkNumber;
+		String filePath = StorageNode.storageNodeDirectoryPath + fileName + '_' + chunkNumber;
 		File file = new File(filePath);
 		if (file.exists()) {
 			return filePath;
@@ -453,16 +452,5 @@ public class StorageNode {
 			System.out.println("Unable to start storage node");
 			e.printStackTrace();
 		}
-
-
-//		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
-//		try {
-//			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
-//			StorageNode sn = new StorageNode();
-//			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-
 	}
 }
