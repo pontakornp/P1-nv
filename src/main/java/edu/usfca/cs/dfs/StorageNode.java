@@ -128,47 +128,7 @@ public class StorageNode {
 		StorageNode.storageNodeInstance = storageNodeInstance;
 	}
 
-	/**
-	 * store chunks in all of the storage node's replicas
-	 * @param chunk
-	 */
-	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk) {
-		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, false);
-		for (StorageNode replica: this.replicatedStorageNodeObjs) {
-			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
-			if (!isReplicated) {
-				//sleep for sometime and retry
-			}
-		}
-		return true;
-	}
 
-
-	private boolean storeChunkOnReplicaHelper(MessageWrapper message, StorageNode storageNode) {
-		try {
-			EventLoopGroup workerGroup = new NioEventLoopGroup();
-			MessagePipeline pipeline = new MessagePipeline();
-
-			logger.info("Connection initiated to storage node replica: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
-			Bootstrap bootstrap = new Bootstrap()
-					.group(workerGroup)
-					.channel(NioSocketChannel.class)
-					.option(ChannelOption.SO_KEEPALIVE, true)
-					.handler(pipeline);
-
-			ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
-			cf.syncUninterruptibly();
-			Channel chan = cf.channel();
-			ChannelFuture write = chan.write(message);
-			chan.flush();
-			write.syncUninterruptibly();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("replicate chunk failed. Replicated storage node connection establishment failed");
-			return false;
-		}
-	}
 	
 	private void setVariables(Config config) {
 		this.storageNodeId = UUID.randomUUID().toString();
@@ -300,7 +260,16 @@ public class StorageNode {
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
-	public boolean storeChunk(String fileName, int chunkId, byte[] chunkData, String originalCheckSum) {
+	public boolean storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
+		StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
+		String fileName = chunk.getFileName();
+		int chunkId = chunk.getChunkId();
+		byte[] chunkData = chunk.getData().toByteArray();
+		String originalCheckSum = chunk.getChecksum();
+		boolean isPrimary = storeChunkRequest.getIsPrimary();
+
+
+
 		// calculate Shannon Entropy
 		double entropyBits = Entropy.calculateShannonEntropy(chunkData);
 		double maximumCompression = 1 - (entropyBits / 8);
@@ -324,7 +293,6 @@ public class StorageNode {
 		String filePath = filePathBuilder.toString();
 		// create directory
 		File dir = new File(this.storageNodeId);
-
 		if (!dir.exists()) {
 			dir.mkdir();
 			logger.info("Created new directory");
@@ -334,13 +302,105 @@ public class StorageNode {
 			outputStream.write(data);
 			byte[] storedChunkData = Files.readAllBytes(Paths.get(filePath));
 			if (!isFileCorrupted(storedChunkData, originalCheckSum)) {
-				logger.info("Chunk is added successfully");
+				logger.info("Chunk " + chunkId + "is added successfully in StorageNode" + storageNodeId);
+				//if it a primary, chunk will be replicated to other secondary storage nodes
+				if(isPrimary) {
+					// contact controller to get list of replicate
+//
+//					storeChunkRequest.toBuilder()
+//							.setIsPrimary(false)
+//							.setReplicas()
+//
+				} else {
+					boolean isReplicated = storeChunkOnReplica(chunk);
+					// if this is not a primary node, get storage node
+//					List<StorageMessages.StorageNode> storageNodeList = storeChunkRequest.getReplicasList();
+//					if (!storageNodeList.isEmpty()) {
+//						for(int i = 0; i < storageNodeList.size(); i++) {
+//							StorageMessages.StorageNode storageNode = storageNodeList.get(i);
+//							storageNode.
+//						}
+//					}
+					if (!isReplicated) {
+						return false;
+					}
+				}
 				return true;
 			} else {
 				return false;
 			}
 		} catch (IOException e) {
 			logger.error("There is a problem when writing stream to file");
+			return false;
+		}
+	}
+
+	public List<StorageNode> getReplicationNodesFromController() {
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+			MessagePipeline pipeline = new MessagePipeline();
+			logger.info("Get Replication Nodes from Controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+			Bootstrap bootstrap = new Bootstrap()
+					.group(workerGroup)
+					.channel(NioSocketChannel.class)
+					.option(ChannelOption.SO_KEEPALIVE, true)
+					.handler(pipeline);
+			ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+			cf.syncUninterruptibly();
+			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetReplicationNodeRequest(this.storageNodeId);
+			Channel chan = cf.channel();
+			ChannelFuture write = chan.write(msgWrapper);
+			chan.flush();
+			write.syncUninterruptibly();
+			chan.closeFuture().sync();
+			workerGroup.shutdownGracefully();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Get replication node failed. Controller connection establishment failed");
+		}
+		return null;
+	}
+	/**
+	 * store chunks in all of the storage node's replicas
+	 * @param chunk
+	 */
+	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk) {
+		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, false);
+		List<StorageNode> replicatedNodes = getReplicationNodesFromController();
+		for (StorageNode replica: replicatedNodes) {
+			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
+			if (!isReplicated) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	private boolean storeChunkOnReplicaHelper(MessageWrapper message, StorageNode storageNode) {
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+			MessagePipeline pipeline = new MessagePipeline();
+
+			logger.info("Connection initiated to storage node replica: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+			Bootstrap bootstrap = new Bootstrap()
+					.group(workerGroup)
+					.channel(NioSocketChannel.class)
+					.option(ChannelOption.SO_KEEPALIVE, true)
+					.handler(pipeline);
+
+			ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
+			cf.syncUninterruptibly();
+			Channel chan = cf.channel();
+			ChannelFuture write = chan.write(message);
+			chan.flush();
+			write.syncUninterruptibly();
+			chan.closeFuture().sync();
+			workerGroup.shutdownGracefully();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("replicate chunk failed. Replicated storage node connection establishment failed");
 			return false;
 		}
 	}
@@ -443,14 +503,14 @@ public class StorageNode {
 		}
 
 
-		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
-		try {
-			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
-			StorageNode sn = new StorageNode();
-			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		String checkSum = "098f6bcd4621d373cade4e832627b4f6";
+//		try {
+//			byte[] temp = Files.readAllBytes(Paths.get("/Users/pontakornp/Documents/projects/bigdata/P1-nv/test.jpg"));
+//			StorageNode sn = new StorageNode();
+//			System.out.println(sn.storeChunk("test2.jpg", 1, temp, checkSum));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 	}
 }
