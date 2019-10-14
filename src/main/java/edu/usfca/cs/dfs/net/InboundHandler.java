@@ -87,19 +87,21 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.StoreChunkRequest storeChunkRequest = msg.getStoreChunkRequest();
 			StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 			StorageNode storageNode = StorageNode.getInstance();
-			boolean isSuccess = storageNode.storeChunk(chunk.getFileName(), chunk.getChunkId(), chunk.getData().toByteArray(), chunk.getChecksum());
-			boolean isPrimary = storeChunkRequest.getIsPrimary();
-			// if its a primary node, then the chunk will be replicated to 2 other nodes
-			if (isPrimary) {
-				boolean isReplicated = storageNode.storeChunkOnReplica(chunk);
-				if (!isReplicated) {
-					// retry
-				}
-			}
+			storageNode.storeChunk(storeChunkRequest);
+//			// if its a primary node, then the chunk will be replicated to 2 other nodes
+//			if (isPrimary) {
+//				boolean isReplicated = storageNode.storeChunkOnReplica(chunk);
+//				if (!isReplicated) {
+//					// retry
+//				}
+//			}
 			// send ack response if chunk is stored successfully in primary nodes and its replicas
-			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(chunk, isSuccess);
-			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
-			future.addListener(ChannelFutureListener.CLOSE);
+//			if(isPrimary) {
+//				MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(chunk, isSuccess);
+//				ChannelFuture future = ctx.writeAndFlush(msgWrapper);
+//				future.addListener(ChannelFutureListener.CLOSE);
+//			}
+
     	}else if(messageType == 5){
 			logger.info("Client receives store chunk ack");
 

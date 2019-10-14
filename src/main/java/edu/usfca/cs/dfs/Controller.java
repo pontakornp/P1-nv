@@ -2,9 +2,7 @@ package edu.usfca.cs.dfs;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import edu.usfca.cs.dfs.config.Config;
@@ -25,13 +23,15 @@ public class Controller {
 	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	private static long MAX_STORAGE_TIME_INACTIVITY = 30000;
+
+	private ConcurrentHashMap<String, List<StorageNode>> storageNodeReplicaMap;
 	
 	private static Controller controllerInstance; 
 	
 	private Controller() {
 		
 	}
-	
+
 	public ConcurrentHashMap<String, BloomFilter> getBloomFilters(){
 		return this.bloomFilterMap;
 	}
@@ -39,7 +39,10 @@ public class Controller {
 	public ConcurrentHashMap<String, StorageMessages.StorageNode> getActiveStorageNodes(){
 		return this.activeStorageNodes;
 	}
-	
+
+	public ConcurrentHashMap<String, List<StorageNode>> getStorageNodeReplicaMap() {
+		return storageNodeReplicaMap;
+	}
 	
 	public static Controller getInstance() {
 		if (controllerInstance == null){
@@ -63,7 +66,7 @@ public class Controller {
 		Timestamp ts = new Timestamp(time);
 		return ts;
 	}
-	
+
 	/*
 	 * This is called during registration of StorageNode
 	 * This will add the node metadata to activeStorageNodes

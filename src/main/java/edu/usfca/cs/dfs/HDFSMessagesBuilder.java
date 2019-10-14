@@ -2,6 +2,7 @@ package edu.usfca.cs.dfs;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HDFSMessagesBuilder {
 
@@ -129,7 +130,38 @@ public class HDFSMessagesBuilder {
 		
 		return chunkMapping;
 	}
-	
+
+	public static StorageMessages.MessageWrapper constructGetReplicationNodeRequest(String primaryNodeId) {
+		StorageMessages.GetReplicationNodeRequest getReplicationNodeRequest = StorageMessages.GetReplicationNodeRequest.newBuilder()
+				.setPrimaryNodeId(primaryNodeId)
+				.build();
+
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setGetReplicationNodeRequest(getReplicationNodeRequest)
+				.build();
+		return msgWrapper;
+	}
+
+	public static StorageMessages.MessageWrapper constructGetReplicationNodeResponse(List<StorageNode> replicas) {
+		StorageMessages.GetReplicationNodeResponse.Builder getReplicationNodeResponseBuilder = StorageMessages.GetReplicationNodeResponse.newBuilder();
+		for (int i = 0; i < replicas.size(); i++) {
+			StorageNode storageNode = replicas.get(i);
+			StorageMessages.StorageNode storageNodeMsg = StorageMessages.StorageNode.newBuilder()
+					.setStorageNodeId(storageNode.getStorageNodeId())
+					.setStorageNodeAddr(storageNode.getStorageNodeAddr())
+					.setStorageNodePort(storageNode.getStorageNodePort())
+					.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
+					.setMaxStorageCapacity(storageNode.getMaxStorageCapacity())
+					.build();
+			getReplicationNodeResponseBuilder.setReplicas(i, storageNodeMsg);
+		}
+		StorageMessages.GetReplicationNodeResponse getReplicationNodeResponse = getReplicationNodeResponseBuilder.build();
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setGetReplicationNodeResponse(getReplicationNodeResponse)
+				.build();
+		return msgWrapper;
+	}
+
     public static StorageMessages.MessageWrapper constructGetPrimaryNodeResponse() {
         return null;
     }
