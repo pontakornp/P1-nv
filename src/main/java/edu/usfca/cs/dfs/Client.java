@@ -92,6 +92,38 @@ public class Client {
 			logger.error("File Existence Check failed. Controller connection establishment failed");
 		}
     }
+
+
+    public void retrieveFile(String fileName) {
+        try {
+            EventLoopGroup workerGroup = new NioEventLoopGroup();
+            MessagePipeline pipeline = new MessagePipeline();
+
+            logger.info("Retrieve File initiated to controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+            Bootstrap bootstrap = new Bootstrap()
+                    .group(workerGroup)
+                    .channel(NioSocketChannel.class)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .handler(pipeline);
+
+            ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+            cf.syncUninterruptibly();
+
+            MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileRequest(fileName);
+
+            Channel chan = cf.channel();
+            ChannelFuture write = chan.write(msgWrapper);
+            chan.flush();
+            write.syncUninterruptibly();
+            logger.info("Retrieve File Chunks initial request sent to controller");
+            chan.closeFuture().sync();
+            workerGroup.shutdownGracefully();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("File Existence Check failed. Controller connection establishment failed");
+        }
+    }
+
     
     private static StorageMessages.Chunk updateChunkWithFileData(StorageMessages.Chunk chunk) {
     	String filePath = chunk.getFileAbsolutePath();
