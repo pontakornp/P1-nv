@@ -97,16 +97,23 @@ public class HDFSMessagesBuilder {
     	StorageMessages.GetStorageNodesForChunksRequest.Builder getStorageNodesForChunksRequestBuilder 
     		= StorageMessages.GetStorageNodesForChunksRequest.newBuilder();
     	
-    	
+    	long tempfileSize = fileSize;
     	for(int i=0; i<maxChunkNumber; i++) {
+    		long tempChunkSize;
+    		if(tempfileSize>=chunkSize) {
+    			tempChunkSize = chunkSize;
+    		}else {
+    			tempChunkSize = tempfileSize;
+    		}
     		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
     			.setChunkId(i)
     			.setFileName(fileName)
-    			.setChunkSize(chunkSize)
+    			.setChunkSize((int)tempChunkSize)
     			.setFileAbsolutePath(fileAbsolutePath)
     			.build();
     		
     		getStorageNodesForChunksRequestBuilder.addChunkList(i, chunk);
+    		tempfileSize = tempfileSize - chunkSize;
     	}
 		
 		StorageMessages.MessageWrapper msgWrapper =

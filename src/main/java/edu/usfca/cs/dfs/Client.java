@@ -127,7 +127,7 @@ public class Client {
     }
 
     
-    public static void updateChunkWithFileData(StorageMessages.Chunk chunk) {
+    private static StorageMessages.Chunk updateChunkWithFileData(StorageMessages.Chunk chunk) {
     	String filePath = chunk.getFileAbsolutePath();
     	int chunkId = chunk.getChunkId();
     	int chunkSize = chunk.getChunkSize();
@@ -136,23 +136,26 @@ public class Client {
     	RandomAccessFile aFile;
 		try {
 			aFile = new RandomAccessFile(filePath, "r");
-			aFile.seek(chunkId*chunkSize);
-			FileChannel inChannel = aFile.getChannel();
 			
-	        ByteBuffer buffer = ByteBuffer.allocate(chunkSize);
-	        while(inChannel.read(buffer) > 0){
-	            buffer.flip();
-	            byte[] arr = new byte[buffer.remaining()];
-	            buffer.get(arr);
-	            chunk.newBuilder().setData(ByteString.copyFrom(arr));
-	            buffer.clear();
+	        byte[] buffer = new byte[chunkSize];
+	        aFile.seek(chunkId*chunkSize);
+	        int readPos = 0;
+	        while (readPos < buffer.length) {
+	            int nread = aFile.read(buffer, readPos, buffer.length - readPos);
+	            if (nread < 0) {
+	                break;
+	            }
+	            readPos += nread;
 	        }
+	        System.out.println("ByteStringData" + ByteString.copyFrom(buffer));
+	        chunk = chunk.toBuilder().setData(ByteString.copyFrom(buffer)).build();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			
+			e.printStackTrace();
 		}
 		System.out.println("Chunk has been updated with file data");
+		return chunk;
     }
     
     /*
@@ -168,7 +171,9 @@ public class Client {
     	for (StorageMessages.ChunkMapping chunkMapping : chunkMappingList) {
     		StorageMessages.Chunk chunk = chunkMapping.getChunk();
     		
-    		Client.updateChunkWithFileData(chunk);
+    		chunk = Client.updateChunkWithFileData(chunk);
+    		
+    		
     		
     		System.out.println("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
 			for (StorageMessages.StorageNode storageNode : chunkMapping.getStorageNodeObjsList()) {
@@ -200,7 +205,6 @@ public class Client {
 					e.printStackTrace();
 					logger.error("Save File Chunk failed. Storage node connection establishment failed");
 				}
-			
 			}
 		}
     	ctx.close();
