@@ -193,20 +193,19 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 					// request to get chunk from each storage node one by one
 					List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
 					Client.retrieveChunk(storageNodeList, fileName, i);
-
-
 //					for(StorageMessages.StorageNode storageNode: storageNodeList) {
 //						Client.addChunkToChunkMap(fileName,chunkId,chunkMsg);
 //						Client.retrieveChunk(storageNodeList, fileName, i);
 //					}
+
 				}
 				// if a chunk is found on the storage node, sequentially move on to request next chunk from the storage node in the chunk mapping
+
 			}else{
 				// add chunk to mapping
 				Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
 			}
-
-//    		StorageMessages.Chunk chunk = retrieveChunkResponse.getChunk();
+			ctx.close();
 		}else if(messageType == 12) {
     		logger.info("Save Chunk Update request received on Controller");
     		StorageMessages.StoreChunkControllerUpdateRequest storageChunkControllerUpdateRequest 
