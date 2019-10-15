@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +40,7 @@ public class StorageNode {
 	private long availableStorageCapacity;
 	private long maxStorageCapacity;
 	private List<StorageMessages.StorageNode> replicaStorageNodes;
+	private ConcurrentHashMap<String, ChunkMetaData> chunkMapping;
 	
 	private String controllerNodeAddr;
 	private int controllerNodePort;
@@ -255,51 +257,72 @@ public class StorageNode {
 		String fileName = chunk.getFileName();
 		int chunkId = chunk.getChunkId();
 		byte[] chunkData = chunk.getData().toByteArray();
-		boolean isPrimary = storeChunkRequest.getIsPrimary();
-
-		double entropyBits = Entropy.calculateShannonEntropy(chunkData);
-		double maximumCompression = 1 - (entropyBits/8);
-
-		byte[] data = chunkData;
-		
-		File dir = new File(StorageNode.storageNodeDirectoryPath, this.storageNodeId);
-		
-		if (!dir.exists()) {
-			dir.mkdirs();
-			logger.info("Created new file directory on storage node: " + dir.toString());
-		}
+		boolean isClientInitiated = storeChunkRequest.getIsClientInitiated();
+		StorageMessages.StorageNode previousStorageNode = storeChunkRequest.getStorageNode(); 
+		boolean isNewChunk = storeChunkRequest.getIsNewChunk();
 		
 		StringBuilder filePathBuilder = new StringBuilder(); 
 		filePathBuilder.append(fileName);
 		filePathBuilder.append("_" + chunkId);
-		if (maximumCompression > 0.6) {
-			data = CompressDecompress.compress(chunkData);
-			filePathBuilder.append("_compressed");
-			if (data == null) {
-				logger.error("Fails to compress chunk");
+		String outputFileName = filePathBuilder.toString();
+		
+		// Do compression iff client is initiating the save
+		if(isClientInitiated) {
+			double entropyBits = Entropy.calculateShannonEntropy(chunkData);
+			double maximumCompression = 1 - (entropyBits/8);
+			if (maximumCompression > 0.6) {
+				chunkData = CompressDecompress.compress(chunkData);
+				if (chunkData == null) {
+					logger.error("Fails to compress chunk");
+					return false;
+				}
+			}
+		}
+		File dir = null;
+		if(isNewChunk) {
+			if(isClientInitiated) {
+				dir = new File(StorageNode.storageNodeDirectoryPath, this.storageNodeId);
+			}else {
+				dir = new File(StorageNode.storageNodeDirectoryPath, previousStorageNode.getStorageNodeId());
+			}
+			if (!dir.exists()) {
+				dir.mkdirs();
+				logger.info("Created new file directory on storage node: " + dir.toString());
+			}
+		}else {
+			//TODO: Find previous file location in base path
+			File basePath = new File(StorageNode.storageNodeDirectoryPath);
+			for(File subdirectory: basePath.listFiles()) {
+				if(subdirectory.isDirectory()) {
+					File oldVersionFile = new File(subdirectory.getAbsolutePath(), outputFileName);
+					if(oldVersionFile.exists()) {
+						dir = subdirectory;
+						logger.info("Old file version detected");
+					}
+				}
+			}
+		}
+		if(dir!=null) {
+			try {
+				File outputFile = new File(dir.toString(), outputFileName);
+				System.out.println(outputFile.toString());
+				outputFile.createNewFile();
+				FileOutputStream outputStream = new FileOutputStream(outputFile);
+				outputStream.write(chunkData);
+				//TODO: Calculate the checksum after save.
+				//TODO: Modify the file name after calculating the checksum
+				outputStream.close();
+				this.setAvailableStorageCapacity(this.getAvailableStorageCapacity()-outputFile.length());
+				this.updateControllerOnChunkSave(chunk);
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error("There is a problem when writing stream to file");
 				return false;
 			}
 		}else {
-			filePathBuilder.append("_notcompressed");
-		}
-		String outputFileName = filePathBuilder.toString();
-		
-		try {
-			File outputFile = new File(dir.toString(), outputFileName);
-			System.out.println(outputFile.toString());
-			outputFile.createNewFile();
-			FileOutputStream outputStream = new FileOutputStream(outputFile, true);
-			outputStream.write(data);
-			//TODO: Calculate the checksum after save.
-			//TODO: Modify the file name after calculating the checksum
-			outputStream.close();
-			this.setAvailableStorageCapacity(this.getAvailableStorageCapacity()-outputFile.length());
-			this.updateControllerOnChunkSave(chunk);
+			logger.info("False positive detected for previous version of file. Doing nothing");
 			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("There is a problem when writing stream to file");
-			return false;
 		}
 	}
 	
@@ -337,8 +360,8 @@ public class StorageNode {
 	 * store chunks in all of the storage node's replicas
 	 * @param chunk
 	 */
-	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk) {
-		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, false);
+	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk, StorageMessages.StorageNode storageNode) {
+		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, storageNode, false, false);
 		for (StorageMessages.StorageNode replica: this.replicaStorageNodes) {
 			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
 			if (!isReplicated) {

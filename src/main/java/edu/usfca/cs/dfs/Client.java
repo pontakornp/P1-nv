@@ -228,9 +228,14 @@ public class Client {
     		StorageMessages.Chunk chunk = chunkMapping.getChunk();
     		
     		chunk = Client.updateChunkWithFileData(chunk);
-    		
+    		List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
     		System.out.println("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
-			for (StorageMessages.StorageNode storageNode : chunkMapping.getStorageNodeObjsList()) {
+			for ( int i=0; i< storageNodeList.size(); i++) {
+				StorageMessages.StorageNode storageNode = storageNodeList.get(i);
+				boolean isNewChunk = false;
+				if (i == storageNodeList.size()-1) {
+					isNewChunk = true;
+				}
 				
 				try {
 					EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -246,7 +251,7 @@ public class Client {
 			        ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
 			        cf.syncUninterruptibly();
 			
-			        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, true);
+			        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, storageNode, true, isNewChunk);
 			
 			        Channel chan = cf.channel();
 			        ChannelFuture write = chan.write(msgWrapper);

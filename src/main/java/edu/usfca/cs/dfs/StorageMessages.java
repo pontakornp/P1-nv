@@ -7498,10 +7498,10 @@ public final class StorageMessages {
     edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder getChunkOrBuilder();
 
     /**
-     * <code>bool isPrimary = 2;</code>
-     * @return The isPrimary.
+     * <code>bool isClientInitiated = 2;</code>
+     * @return The isClientInitiated.
      */
-    boolean getIsPrimary();
+    boolean getIsClientInitiated();
 
     /**
      * <code>int32 primaryCount = 3;</code>
@@ -7514,6 +7514,27 @@ public final class StorageMessages {
      * @return The replicaCount.
      */
     int getReplicaCount();
+
+    /**
+     * <code>bool isNewChunk = 5;</code>
+     * @return The isNewChunk.
+     */
+    boolean getIsNewChunk();
+
+    /**
+     * <code>.StorageNode storageNode = 6;</code>
+     * @return Whether the storageNode field is set.
+     */
+    boolean hasStorageNode();
+    /**
+     * <code>.StorageNode storageNode = 6;</code>
+     * @return The storageNode.
+     */
+    edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode();
+    /**
+     * <code>.StorageNode storageNode = 6;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder getStorageNodeOrBuilder();
   }
   /**
    * Protobuf type {@code StoreChunkRequest}
@@ -7575,7 +7596,7 @@ public final class StorageMessages {
             }
             case 16: {
 
-              isPrimary_ = input.readBool();
+              isClientInitiated_ = input.readBool();
               break;
             }
             case 24: {
@@ -7586,6 +7607,24 @@ public final class StorageMessages {
             case 32: {
 
               replicaCount_ = input.readInt32();
+              break;
+            }
+            case 40: {
+
+              isNewChunk_ = input.readBool();
+              break;
+            }
+            case 50: {
+              edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder subBuilder = null;
+              if (storageNode_ != null) {
+                subBuilder = storageNode_.toBuilder();
+              }
+              storageNode_ = input.readMessage(edu.usfca.cs.dfs.StorageMessages.StorageNode.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(storageNode_);
+                storageNode_ = subBuilder.buildPartial();
+              }
+
               break;
             }
             default: {
@@ -7643,14 +7682,14 @@ public final class StorageMessages {
       return getChunk();
     }
 
-    public static final int ISPRIMARY_FIELD_NUMBER = 2;
-    private boolean isPrimary_;
+    public static final int ISCLIENTINITIATED_FIELD_NUMBER = 2;
+    private boolean isClientInitiated_;
     /**
-     * <code>bool isPrimary = 2;</code>
-     * @return The isPrimary.
+     * <code>bool isClientInitiated = 2;</code>
+     * @return The isClientInitiated.
      */
-    public boolean getIsPrimary() {
-      return isPrimary_;
+    public boolean getIsClientInitiated() {
+      return isClientInitiated_;
     }
 
     public static final int PRIMARYCOUNT_FIELD_NUMBER = 3;
@@ -7673,6 +7712,39 @@ public final class StorageMessages {
       return replicaCount_;
     }
 
+    public static final int ISNEWCHUNK_FIELD_NUMBER = 5;
+    private boolean isNewChunk_;
+    /**
+     * <code>bool isNewChunk = 5;</code>
+     * @return The isNewChunk.
+     */
+    public boolean getIsNewChunk() {
+      return isNewChunk_;
+    }
+
+    public static final int STORAGENODE_FIELD_NUMBER = 6;
+    private edu.usfca.cs.dfs.StorageMessages.StorageNode storageNode_;
+    /**
+     * <code>.StorageNode storageNode = 6;</code>
+     * @return Whether the storageNode field is set.
+     */
+    public boolean hasStorageNode() {
+      return storageNode_ != null;
+    }
+    /**
+     * <code>.StorageNode storageNode = 6;</code>
+     * @return The storageNode.
+     */
+    public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
+      return storageNode_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNode_;
+    }
+    /**
+     * <code>.StorageNode storageNode = 6;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder getStorageNodeOrBuilder() {
+      return getStorageNode();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -7690,14 +7762,20 @@ public final class StorageMessages {
       if (chunk_ != null) {
         output.writeMessage(1, getChunk());
       }
-      if (isPrimary_ != false) {
-        output.writeBool(2, isPrimary_);
+      if (isClientInitiated_ != false) {
+        output.writeBool(2, isClientInitiated_);
       }
       if (primaryCount_ != 0) {
         output.writeInt32(3, primaryCount_);
       }
       if (replicaCount_ != 0) {
         output.writeInt32(4, replicaCount_);
+      }
+      if (isNewChunk_ != false) {
+        output.writeBool(5, isNewChunk_);
+      }
+      if (storageNode_ != null) {
+        output.writeMessage(6, getStorageNode());
       }
       unknownFields.writeTo(output);
     }
@@ -7712,9 +7790,9 @@ public final class StorageMessages {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getChunk());
       }
-      if (isPrimary_ != false) {
+      if (isClientInitiated_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, isPrimary_);
+          .computeBoolSize(2, isClientInitiated_);
       }
       if (primaryCount_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -7723,6 +7801,14 @@ public final class StorageMessages {
       if (replicaCount_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, replicaCount_);
+      }
+      if (isNewChunk_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, isNewChunk_);
+      }
+      if (storageNode_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, getStorageNode());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -7744,12 +7830,19 @@ public final class StorageMessages {
         if (!getChunk()
             .equals(other.getChunk())) return false;
       }
-      if (getIsPrimary()
-          != other.getIsPrimary()) return false;
+      if (getIsClientInitiated()
+          != other.getIsClientInitiated()) return false;
       if (getPrimaryCount()
           != other.getPrimaryCount()) return false;
       if (getReplicaCount()
           != other.getReplicaCount()) return false;
+      if (getIsNewChunk()
+          != other.getIsNewChunk()) return false;
+      if (hasStorageNode() != other.hasStorageNode()) return false;
+      if (hasStorageNode()) {
+        if (!getStorageNode()
+            .equals(other.getStorageNode())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -7765,13 +7858,20 @@ public final class StorageMessages {
         hash = (37 * hash) + CHUNK_FIELD_NUMBER;
         hash = (53 * hash) + getChunk().hashCode();
       }
-      hash = (37 * hash) + ISPRIMARY_FIELD_NUMBER;
+      hash = (37 * hash) + ISCLIENTINITIATED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsPrimary());
+          getIsClientInitiated());
       hash = (37 * hash) + PRIMARYCOUNT_FIELD_NUMBER;
       hash = (53 * hash) + getPrimaryCount();
       hash = (37 * hash) + REPLICACOUNT_FIELD_NUMBER;
       hash = (53 * hash) + getReplicaCount();
+      hash = (37 * hash) + ISNEWCHUNK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsNewChunk());
+      if (hasStorageNode()) {
+        hash = (37 * hash) + STORAGENODE_FIELD_NUMBER;
+        hash = (53 * hash) + getStorageNode().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7911,12 +8011,20 @@ public final class StorageMessages {
           chunk_ = null;
           chunkBuilder_ = null;
         }
-        isPrimary_ = false;
+        isClientInitiated_ = false;
 
         primaryCount_ = 0;
 
         replicaCount_ = 0;
 
+        isNewChunk_ = false;
+
+        if (storageNodeBuilder_ == null) {
+          storageNode_ = null;
+        } else {
+          storageNode_ = null;
+          storageNodeBuilder_ = null;
+        }
         return this;
       }
 
@@ -7948,9 +8056,15 @@ public final class StorageMessages {
         } else {
           result.chunk_ = chunkBuilder_.build();
         }
-        result.isPrimary_ = isPrimary_;
+        result.isClientInitiated_ = isClientInitiated_;
         result.primaryCount_ = primaryCount_;
         result.replicaCount_ = replicaCount_;
+        result.isNewChunk_ = isNewChunk_;
+        if (storageNodeBuilder_ == null) {
+          result.storageNode_ = storageNode_;
+        } else {
+          result.storageNode_ = storageNodeBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -8002,14 +8116,20 @@ public final class StorageMessages {
         if (other.hasChunk()) {
           mergeChunk(other.getChunk());
         }
-        if (other.getIsPrimary() != false) {
-          setIsPrimary(other.getIsPrimary());
+        if (other.getIsClientInitiated() != false) {
+          setIsClientInitiated(other.getIsClientInitiated());
         }
         if (other.getPrimaryCount() != 0) {
           setPrimaryCount(other.getPrimaryCount());
         }
         if (other.getReplicaCount() != 0) {
           setReplicaCount(other.getReplicaCount());
+        }
+        if (other.getIsNewChunk() != false) {
+          setIsNewChunk(other.getIsNewChunk());
+        }
+        if (other.hasStorageNode()) {
+          mergeStorageNode(other.getStorageNode());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -8159,32 +8279,32 @@ public final class StorageMessages {
         return chunkBuilder_;
       }
 
-      private boolean isPrimary_ ;
+      private boolean isClientInitiated_ ;
       /**
-       * <code>bool isPrimary = 2;</code>
-       * @return The isPrimary.
+       * <code>bool isClientInitiated = 2;</code>
+       * @return The isClientInitiated.
        */
-      public boolean getIsPrimary() {
-        return isPrimary_;
+      public boolean getIsClientInitiated() {
+        return isClientInitiated_;
       }
       /**
-       * <code>bool isPrimary = 2;</code>
-       * @param value The isPrimary to set.
+       * <code>bool isClientInitiated = 2;</code>
+       * @param value The isClientInitiated to set.
        * @return This builder for chaining.
        */
-      public Builder setIsPrimary(boolean value) {
+      public Builder setIsClientInitiated(boolean value) {
         
-        isPrimary_ = value;
+        isClientInitiated_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>bool isPrimary = 2;</code>
+       * <code>bool isClientInitiated = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearIsPrimary() {
+      public Builder clearIsClientInitiated() {
         
-        isPrimary_ = false;
+        isClientInitiated_ = false;
         onChanged();
         return this;
       }
@@ -8247,6 +8367,155 @@ public final class StorageMessages {
         replicaCount_ = 0;
         onChanged();
         return this;
+      }
+
+      private boolean isNewChunk_ ;
+      /**
+       * <code>bool isNewChunk = 5;</code>
+       * @return The isNewChunk.
+       */
+      public boolean getIsNewChunk() {
+        return isNewChunk_;
+      }
+      /**
+       * <code>bool isNewChunk = 5;</code>
+       * @param value The isNewChunk to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsNewChunk(boolean value) {
+        
+        isNewChunk_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool isNewChunk = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsNewChunk() {
+        
+        isNewChunk_ = false;
+        onChanged();
+        return this;
+      }
+
+      private edu.usfca.cs.dfs.StorageMessages.StorageNode storageNode_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder> storageNodeBuilder_;
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       * @return Whether the storageNode field is set.
+       */
+      public boolean hasStorageNode() {
+        return storageNodeBuilder_ != null || storageNode_ != null;
+      }
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       * @return The storageNode.
+       */
+      public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
+        if (storageNodeBuilder_ == null) {
+          return storageNode_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNode_;
+        } else {
+          return storageNodeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       */
+      public Builder setStorageNode(edu.usfca.cs.dfs.StorageMessages.StorageNode value) {
+        if (storageNodeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          storageNode_ = value;
+          onChanged();
+        } else {
+          storageNodeBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       */
+      public Builder setStorageNode(
+          edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder builderForValue) {
+        if (storageNodeBuilder_ == null) {
+          storageNode_ = builderForValue.build();
+          onChanged();
+        } else {
+          storageNodeBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       */
+      public Builder mergeStorageNode(edu.usfca.cs.dfs.StorageMessages.StorageNode value) {
+        if (storageNodeBuilder_ == null) {
+          if (storageNode_ != null) {
+            storageNode_ =
+              edu.usfca.cs.dfs.StorageMessages.StorageNode.newBuilder(storageNode_).mergeFrom(value).buildPartial();
+          } else {
+            storageNode_ = value;
+          }
+          onChanged();
+        } else {
+          storageNodeBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       */
+      public Builder clearStorageNode() {
+        if (storageNodeBuilder_ == null) {
+          storageNode_ = null;
+          onChanged();
+        } else {
+          storageNode_ = null;
+          storageNodeBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder getStorageNodeBuilder() {
+        
+        onChanged();
+        return getStorageNodeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder getStorageNodeOrBuilder() {
+        if (storageNodeBuilder_ != null) {
+          return storageNodeBuilder_.getMessageOrBuilder();
+        } else {
+          return storageNode_ == null ?
+              edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNode_;
+        }
+      }
+      /**
+       * <code>.StorageNode storageNode = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder> 
+          getStorageNodeFieldBuilder() {
+        if (storageNodeBuilder_ == null) {
+          storageNodeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder>(
+                  getStorageNode(),
+                  getParentForChildren(),
+                  isClean());
+          storageNode_ = null;
+        }
+        return storageNodeBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -15363,39 +15632,41 @@ public final class StorageMessages {
       "ageNodesForChunksRequest\022\031\n\tchunkList\030\001 " +
       "\003(\0132\006.Chunk\"H\n GetStorageNodesForChunksR" +
       "esponse\022$\n\rchunkMappings\030\001 \003(\0132\r.ChunkMa" +
-      "pping\"i\n\021StoreChunkRequest\022\025\n\005chunk\030\001 \001(" +
-      "\0132\006.Chunk\022\021\n\tisPrimary\030\002 \001(\010\022\024\n\014primaryC" +
-      "ount\030\003 \001(\005\022\024\n\014replicaCount\030\004 \001(\005\"]\n!Stor" +
-      "eChunkControllerUpdateRequest\022\025\n\005chunk\030\001" +
-      " \001(\0132\006.Chunk\022!\n\013storageNode\030\002 \001(\0132\014.Stor" +
-      "ageNode\"j\n\022StoreChunkResponse\022\025\n\005chunk\030\001" +
-      " \001(\0132\006.Chunk\022\021\n\tisSuccess\030\002 \001(\010\022\024\n\014prima" +
-      "ryCount\030\003 \001(\005\022\024\n\014replicaCount\030\004 \001(\005\"\'\n\023R" +
-      "etrieveFileRequest\022\020\n\010fileName\030\001 \001(\t\"<\n\024" +
-      "RetrieveFileResponse\022$\n\rchunkMappings\030\001 " +
-      "\001(\0132\r.ChunkMapping\"-\n\024RetrieveChunkReque" +
-      "st\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\".\n\025RetrieveChu" +
-      "nkResponse\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\"\206\006\n\016Me" +
-      "ssageWrapper\022\023\n\013messageType\030\001 \001(\005\022?\n\032sto" +
-      "rageNodeRegisterRequest\030\002 \001(\0132\033.StorageN" +
-      "odeRegisterRequest\022A\n\033storageNodeRegiste" +
-      "rResponse\030\003 \001(\0132\034.StorageNodeRegisterRes" +
-      "ponse\022A\n\033storageNodeHeartBeatRequest\030\004 \001" +
-      "(\0132\034.StorageNodeHeartBeatRequest\022H\n\036getS" +
-      "torageNodeForChunksRequest\030\t \001(\0132 .GetSt" +
-      "orageNodesForChunksRequest\022K\n getStorage" +
-      "NodesForChunksResponse\030\n \001(\0132!.GetStorag" +
-      "eNodesForChunksResponse\022-\n\021storeChunkReq" +
-      "uest\030\013 \001(\0132\022.StoreChunkRequest\022/\n\022storeC" +
-      "hunkResponse\030\014 \001(\0132\023.StoreChunkResponse\022" +
-      "1\n\023retrieveFileRequest\030\r \001(\0132\024.RetrieveF" +
-      "ileRequest\0223\n\024retrieveFileResponse\030\016 \001(\013" +
-      "2\025.RetrieveFileResponse\0223\n\024retrieveChunk" +
-      "Request\030\017 \001(\0132\025.RetrieveChunkRequest\0225\n\025" +
-      "retrieveChunkResponse\030\020 \001(\0132\026.RetrieveCh" +
-      "unkResponse\022M\n!storeChunkControllerUpdat" +
-      "eRequest\030\021 \001(\0132\".StoreChunkControllerUpd" +
-      "ateRequestB\022\n\020edu.usfca.cs.dfsb\006proto3"
+      "pping\"\250\001\n\021StoreChunkRequest\022\025\n\005chunk\030\001 \001" +
+      "(\0132\006.Chunk\022\031\n\021isClientInitiated\030\002 \001(\010\022\024\n" +
+      "\014primaryCount\030\003 \001(\005\022\024\n\014replicaCount\030\004 \001(" +
+      "\005\022\022\n\nisNewChunk\030\005 \001(\010\022!\n\013storageNode\030\006 \001" +
+      "(\0132\014.StorageNode\"]\n!StoreChunkController" +
+      "UpdateRequest\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\022!\n\013" +
+      "storageNode\030\002 \001(\0132\014.StorageNode\"j\n\022Store" +
+      "ChunkResponse\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\022\021\n\t" +
+      "isSuccess\030\002 \001(\010\022\024\n\014primaryCount\030\003 \001(\005\022\024\n" +
+      "\014replicaCount\030\004 \001(\005\"\'\n\023RetrieveFileReque" +
+      "st\022\020\n\010fileName\030\001 \001(\t\"<\n\024RetrieveFileResp" +
+      "onse\022$\n\rchunkMappings\030\001 \001(\0132\r.ChunkMappi" +
+      "ng\"-\n\024RetrieveChunkRequest\022\025\n\005chunk\030\001 \001(" +
+      "\0132\006.Chunk\".\n\025RetrieveChunkResponse\022\025\n\005ch" +
+      "unk\030\001 \001(\0132\006.Chunk\"\206\006\n\016MessageWrapper\022\023\n\013" +
+      "messageType\030\001 \001(\005\022?\n\032storageNodeRegister" +
+      "Request\030\002 \001(\0132\033.StorageNodeRegisterReque" +
+      "st\022A\n\033storageNodeRegisterResponse\030\003 \001(\0132" +
+      "\034.StorageNodeRegisterResponse\022A\n\033storage" +
+      "NodeHeartBeatRequest\030\004 \001(\0132\034.StorageNode" +
+      "HeartBeatRequest\022H\n\036getStorageNodeForChu" +
+      "nksRequest\030\t \001(\0132 .GetStorageNodesForChu" +
+      "nksRequest\022K\n getStorageNodesForChunksRe" +
+      "sponse\030\n \001(\0132!.GetStorageNodesForChunksR" +
+      "esponse\022-\n\021storeChunkRequest\030\013 \001(\0132\022.Sto" +
+      "reChunkRequest\022/\n\022storeChunkResponse\030\014 \001" +
+      "(\0132\023.StoreChunkResponse\0221\n\023retrieveFileR" +
+      "equest\030\r \001(\0132\024.RetrieveFileRequest\0223\n\024re" +
+      "trieveFileResponse\030\016 \001(\0132\025.RetrieveFileR" +
+      "esponse\0223\n\024retrieveChunkRequest\030\017 \001(\0132\025." +
+      "RetrieveChunkRequest\0225\n\025retrieveChunkRes" +
+      "ponse\030\020 \001(\0132\026.RetrieveChunkResponse\022M\n!s" +
+      "toreChunkControllerUpdateRequest\030\021 \001(\0132\"" +
+      ".StoreChunkControllerUpdateRequestB\022\n\020ed" +
+      "u.usfca.cs.dfsb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -15460,7 +15731,7 @@ public final class StorageMessages {
     internal_static_StoreChunkRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_StoreChunkRequest_descriptor,
-        new java.lang.String[] { "Chunk", "IsPrimary", "PrimaryCount", "ReplicaCount", });
+        new java.lang.String[] { "Chunk", "IsClientInitiated", "PrimaryCount", "ReplicaCount", "IsNewChunk", "StorageNode", });
     internal_static_StoreChunkControllerUpdateRequest_descriptor =
       getDescriptor().getMessageTypes().get(10);
     internal_static_StoreChunkControllerUpdateRequest_fieldAccessorTable = new

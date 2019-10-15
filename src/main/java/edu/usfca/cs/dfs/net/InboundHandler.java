@@ -168,6 +168,9 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		logger.info("Retrieve Chunk Response: Client receive chunk from storage node");
     		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = msg.getRetrieveChunkResponse();
     		StorageMessages.Chunk chunk = retrieveChunkResponse.getChunk();
+    		//TODO: Update chunk metadata on client
+    		//TODO: Required for retries and raise errors
+    		
 		}else if(messageType == 12) {
     		logger.info("Save Chunk Update request received on Controller");
     		StorageMessages.StoreChunkControllerUpdateRequest storageChunkControllerUpdateRequest 

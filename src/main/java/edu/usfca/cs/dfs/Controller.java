@@ -217,6 +217,7 @@ public class Controller {
 		String bloomFilterKey = chunk.getFileName() + "_" + chunk.getChunkId();
 		System.out.println("Bloom Key: " + bloomFilterKey);
 		ArrayList<StorageMessages.StorageNode> containingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
+		ArrayList<StorageMessages.StorageNode> notcontainingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		boolean primaryNode = true;
 		
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
@@ -228,7 +229,7 @@ public class Controller {
 			}else if(primaryNode){
 				if(completeNodeListPQ.peek()!=null && completeNodeListPQ.peek().getAvailableStorageCapacity()>=chunk.getChunkSize()){
 					StorageMessages.StorageNode newStorageNode = completeNodeListPQ.remove();
-					containingStorageNodeList.add(newStorageNode);
+					notcontainingStorageNodeList.add(newStorageNode);
 					
 					StorageMessages.StorageNode modifiedStorageNode 
 						= StorageMessages.StorageNode.newBuilder()
@@ -243,6 +244,9 @@ public class Controller {
 				}
 				primaryNode = false;
 			}
+		}
+		if(notcontainingStorageNodeList.size()>0) {
+			containingStorageNodeList.add(notcontainingStorageNodeList.get(0));
 		}
 		
 		System.out.println("StorageNodes Identified for chunk: " + String.valueOf(containingStorageNodeList.size()));

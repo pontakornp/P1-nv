@@ -153,10 +153,13 @@ public class HDFSMessagesBuilder {
         return null;
     }
 
-    public static StorageMessages.MessageWrapper constructStoreChunkRequest(StorageMessages.Chunk chunk, boolean isPrimary) {
+    public static StorageMessages.MessageWrapper constructStoreChunkRequest(
+    		StorageMessages.Chunk chunk, StorageMessages.StorageNode storageNode, boolean isClientInitated, boolean isNewChunk) {
         StorageMessages.StoreChunkRequest storeChunkRequest = StorageMessages.StoreChunkRequest.newBuilder()
                 .setChunk(chunk)
-                .setIsPrimary(isPrimary)
+                .setStorageNode(storageNode)
+                .setIsClientInitiated(isClientInitated)
+                .setIsNewChunk(isNewChunk)
                 .build();
         StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
                 .setMessageType(4)
@@ -238,7 +241,7 @@ public class HDFSMessagesBuilder {
 				.setMessageType(8)
 				.setRetrieveFileRequest(retrieveFileRequest)
 				.build();
-        return null;
+        return msgWrapper;
     }
 
     public static StorageMessages.MessageWrapper constructRetrieveFileResponse(StorageMessages.ChunkMapping chunkMapping) {
