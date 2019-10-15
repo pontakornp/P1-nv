@@ -52,9 +52,11 @@ message GetStorageNodesForChunksResponse {
 
 message StoreChunkRequest {
     Chunk chunk = 1;
-    bool isPrimary = 2;
+    bool isClientInitiated = 2;
 	int32 primaryCount = 3;
 	int32 replicaCount = 4;
+	bool isNewChunk = 5;
+	StorageNode storageNode = 6;
 }
 
 message StoreChunkControllerUpdateRequest {
