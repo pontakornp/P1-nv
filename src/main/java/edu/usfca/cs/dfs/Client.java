@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.List;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +37,10 @@ public class Client {
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet;
 	private static HashMap<String, StorageMessages.Chunk> chunkMap;
 	private static Client clientInstance;
+
+
+
+
 
 	public Client() {
 
@@ -105,19 +110,30 @@ public class Client {
 		}
     }
 
-	public void retrieveChunk(List<StorageMessages.StorageNode> storageNodeList, String fileName, int chunkId) {
+	/**
+	 * Client contacts storage nodes to get each chunk one by one, and store the chunk in the chunk mapping data structure
+	 * @param storageNodeList
+	 * @param fileName
+	 * @param chunkId
+	 */
+	public static void retrieveChunk(List<StorageMessages.StorageNode> storageNodeList, String fileName, int chunkId) {
 		for(StorageMessages.StorageNode storageNode: storageNodeList) {
 			String addr = storageNode.getStorageNodeAddr();
 			int port = storageNode.getStorageNodePort();
-			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkRequest();
+			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkRequest(fileName, chunkId);
 			String initiateMsg = "Retrieve Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort());
 			String successMsg = "Retrieve Chunk completed at storageNode";
 			String failMsg = "Retrieve Chunk failed. Storage node connection establishment failed";
 			sendMsgWrapperToChannelFutureTemplate(addr, port, msgWrapper, initiateMsg, successMsg, failMsg);
+			// store the chunk in the chunk mapping data structure
 		}
 	}
 
-    public void retrieveFile(String fileName) {
+	public static void addChunkToChunkMap(String fileName, int chunkId, StorageMessages.Chunk chunkMsg) {
+		chunkMap.put(fileName + "_" + chunkId, chunkMsg);
+	}
+
+    public void retrieveFile(String fileName, int chunkId) {
         try {
             EventLoopGroup workerGroup = new NioEventLoopGroup();
             MessagePipeline pipeline = new MessagePipeline();
@@ -132,7 +148,7 @@ public class Client {
             ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
             cf.syncUninterruptibly();
 
-            MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileRequest(fileName);
+            MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileRequest(fileName, chunkId);
 
             Channel chan = cf.channel();
             ChannelFuture write = chan.write(msgWrapper);
@@ -198,6 +214,10 @@ public class Client {
 			chan.flush();
 			write.syncUninterruptibly();
 			logger.info(successMsg);
+
+			// wait for an object to be updated
+
+
 			chan.closeFuture().sync();
 			workerGroup.shutdownGracefully();
 		} catch (Exception e) {
@@ -229,6 +249,7 @@ public class Client {
     		
     		chunk = Client.updateChunkWithFileData(chunk);
     		List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
+
     		System.out.println("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
 			for ( int i=0; i< storageNodeList.size(); i++) {
 				StorageMessages.StorageNode storageNode = storageNodeList.get(i);

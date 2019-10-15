@@ -254,8 +254,8 @@ public class Controller {
 	}
 	
 	// find node containing file meta data
-	public synchronized StorageMessages.ChunkMapping getNodesForRetrieveFile(String fileName) {
-		String bloomFilterKey = fileName + "_0";
+	public synchronized StorageMessages.ChunkMapping getNodesForRetrieveFile(String fileName, int chunkId) {
+		String bloomFilterKey = fileName + "_" + chunkId;
 		ArrayList<StorageMessages.StorageNode> storageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
 			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());

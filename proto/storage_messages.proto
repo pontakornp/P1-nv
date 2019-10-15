@@ -72,7 +72,7 @@ message StoreChunkResponse {
 }
 
 message RetrieveFileRequest {
-	string fileName = 1;
+	Chunk chunk = 1;
 }
 
 message RetrieveFileResponse {
