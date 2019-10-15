@@ -190,15 +190,19 @@ public class HDFSMessagesBuilder {
         return null;
     }
 
-    public static StorageMessages.MessageWrapper constructRetrieveFileRequest(String fileName) {
-		StorageMessages.RetrieveFileRequest retrieveFileRequest = StorageMessages.RetrieveFileRequest.newBuilder()
+    public static StorageMessages.MessageWrapper constructRetrieveFileRequest(String fileName, int chunkId) {
+		StorageMessages.Chunk chunkMsg = StorageMessages.Chunk.newBuilder()
 				.setFileName(fileName)
+				.setChunkId(chunkId)
+				.build();
+		StorageMessages.RetrieveFileRequest retrieveFileRequest = StorageMessages.RetrieveFileRequest.newBuilder()
+				.setChunk(chunkMsg)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
 				.setMessageType(8)
 				.setRetrieveFileRequest(retrieveFileRequest)
 				.build();
-        return null;
+        return msgWrapper;
     }
 
     public static StorageMessages.MessageWrapper constructRetrieveFileResponse(StorageMessages.ChunkMapping chunkMapping) {
@@ -212,8 +216,19 @@ public class HDFSMessagesBuilder {
 		return msgWrapper;
 	}
 
-    public static StorageMessages.MessageWrapper constructRetrieveChunkRequest() {
-        return null;
+    public static StorageMessages.MessageWrapper constructRetrieveChunkRequest(String fileName, int chunkId) {
+		StorageMessages.Chunk chunkMsg = StorageMessages.Chunk.newBuilder()
+				.setFileName(fileName)
+				.setChunkId(chunkId)
+				.build();
+		StorageMessages.RetrieveChunkRequest retrieveChunkRequest = StorageMessages.RetrieveChunkRequest.newBuilder()
+				.setChunk(chunkMsg)
+				.build();
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setMessageType(8)
+				.setRetrieveChunkRequest(retrieveChunkRequest)
+				.build();
+		return msgWrapper;
     }
 
 	public static StorageMessages.MessageWrapper constructRetrieveChunkResponse(StorageMessages.Chunk chunk) {

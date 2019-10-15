@@ -131,17 +131,21 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     	}else if(messageType == 8){
 			logger.info("Retrieve File Request: Controller receives retrieve file request from client to get storage nodes that may contains the file ");
 			StorageMessages.RetrieveFileRequest retrieveFileRequest = msg.getRetrieveFileRequest();
-			String fileName = retrieveFileRequest.getFileName();
+			StorageMessages.Chunk chunk = retrieveFileRequest.getChunk();
+			String fileName = chunk.getFileName();
+			int chunkId = chunk.getChunkId();
 			Controller controller = Controller.getInstance();
-
-
-			StorageMessages.ChunkMapping chunkMapping = controller.getNodesForRetrieveFile(fileName);
+			StorageMessages.ChunkMapping chunkMapping = controller.getNodesForRetrieveFile(fileName, chunkId);
 			if(chunkMapping == null) {
 				logger.info("No storage node containing the file");
 			}
 			// controller send nodes to clients
 			controller.sendNodesToClient(chunkMapping);
 
+
+			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(chunkMapping);
+//			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
+//			future.addListener(ChannelFutureListener.CLOSE);
 		}else if(messageType == 9) {
     		logger.info("Retrieve File Response: Client receives storage nodes from Controller");
     		StorageMessages.RetrieveFileResponse retrieveFileResponse = msg.getRetrieveFileResponse();
@@ -171,8 +175,40 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 		}else if(messageType == 11) {
     		logger.info("Retrieve Chunk Response: Client receive chunk from storage node");
     		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = msg.getRetrieveChunkResponse();
-    		StorageMessages.Chunk chunk = retrieveChunkResponse.getChunk();
+    		StorageMessages.Chunk chunkMsg = retrieveChunkResponse.getChunk();
 
+			Controller controller = Controller.getInstance();
+
+    		// if chunk is null, it means chunk does not exist
+			if(chunkMsg == null) {
+
+			}
+			String fileName = chunkMsg.getFileName();
+			int chunkId = chunkMsg.getChunkId();
+
+			if(chunkId == 0) {
+				// client get maxChunk from byte array data
+				// traverse all the chunk up to max chunk, to request storage nodes from controller
+				int maxChunkNumber = chunkMsg.getMaxChunkNumber();
+				// store chunk to file
+				for(int i = 1; i <= maxChunkNumber; i++) {
+					// request storage node from controller
+					StorageMessages.ChunkMapping chunkMapping = controller.getNodesForRetrieveFile(fileName, i);
+					// request to get chunk from each storage node one by one
+					List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
+					Client.retrieveChunk(storageNodeList, fileName, i);
+
+
+//					for(StorageMessages.StorageNode storageNode: storageNodeList) {
+//						Client.addChunkToChunkMap(fileName,chunkId,chunkMsg);
+//						Client.retrieveChunk(storageNodeList, fileName, i);
+//					}
+				}
+				// if a chunk is found on the storage node, sequentially move on to request next chunk from the storage node in the chunk mapping
+			}else{
+				// add chunk to mapping
+				Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
+			}
 		}
     }
 

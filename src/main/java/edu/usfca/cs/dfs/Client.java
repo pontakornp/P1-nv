@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
 
+import edu.usfca.cs.dfs.metadata.ChunkZero;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,6 +36,10 @@ public class Client {
 	private static HashMap<String, StorageMessages.Chunk> chunkMap;
 
 	private static Client clientInstance;
+
+
+
+
 
 	public Client() {
 
@@ -103,16 +109,27 @@ public class Client {
 		}
     }
 
-	public void retrieveChunk(List<StorageMessages.StorageNode> storageNodeList, String fileName, int chunkId) {
+	/**
+	 * Client contacts storage nodes to get each chunk one by one, and store the chunk in the chunk mapping data structure
+	 * @param storageNodeList
+	 * @param fileName
+	 * @param chunkId
+	 */
+	public static void retrieveChunk(List<StorageMessages.StorageNode> storageNodeList, String fileName, int chunkId) {
 		for(StorageMessages.StorageNode storageNode: storageNodeList) {
 			String addr = storageNode.getStorageNodeAddr();
 			int port = storageNode.getStorageNodePort();
-			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkRequest();
+			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkRequest(fileName, chunkId);
 			String initiateMsg = "Retrieve Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort());
 			String successMsg = "Retrieve Chunk completed at storageNode";
 			String failMsg = "Retrieve Chunk failed. Storage node connection establishment failed";
 			sendMsgWrapperToChannelFutureTemplate(addr, port, msgWrapper, initiateMsg, successMsg, failMsg);
+			// store the chunk in the chunk mapping data structure
 		}
+	}
+
+	public static void addChunkToChunkMap(String fileName, int chunkId, StorageMessages.Chunk chunkMsg) {
+		chunkMap.put(fileName + "_" + chunkId, chunkMsg);
 	}
 
     public void retrieveFile(String fileName) {
@@ -196,6 +213,10 @@ public class Client {
 			chan.flush();
 			write.syncUninterruptibly();
 			logger.info(successMsg);
+
+			// wait for an object to be updated
+
+
 			chan.closeFuture().sync();
 			workerGroup.shutdownGracefully();
 		} catch (Exception e) {
@@ -218,9 +239,7 @@ public class Client {
     		StorageMessages.Chunk chunk = chunkMapping.getChunk();
     		
     		chunk = Client.updateChunkWithFileData(chunk);
-    		
-    		
-    		
+
     		System.out.println("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
 			for (StorageMessages.StorageNode storageNode : chunkMapping.getStorageNodeObjsList()) {
 				
