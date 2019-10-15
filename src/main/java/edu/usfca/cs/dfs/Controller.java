@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -94,15 +95,16 @@ public class Controller {
 			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
 			this.getReplicaNodesByMaxAvailableSize();
 			logger.info("Storage Node registered with controller");
-			this.printStorageNodeIds();
 		}else {
 			logger.error("Storage Node already registered with controller");
 		}
 	}
 	
-	public synchronized void printStorageNodeIds() {
+	public void printStorageNodeReplicaIds() {
 		for (Map.Entry<String, StorageMessages.StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
-			System.out.println(existingStorageNode.getValue().getStorageNodeId());
+			for(StorageMessages.StorageNode replicaStorageNode: existingStorageNode.getValue().getReplicaNodesList()) {
+				logger.info(replicaStorageNode.getStorageNodeId() + " is replica of " + existingStorageNode.getValue().getStorageNodeId());
+			}
 		}
 	}
 	
@@ -111,37 +113,46 @@ public class Controller {
 	 * Implemented a priority queue which compares(desc) by available storage capacity of node
 	 */
 	private void getReplicaNodesByMaxAvailableSize() {
-		int maxStorageNodesCount = this.activeStorageNodes.values().size()-1;
-		int maxReplicas = Math.min(maxStorageNodesCount, Controller.MAX_REPLICAS);
-		
-		for (StorageMessages.StorageNode activeStorageNode : this.activeStorageNodes.values()) {
-			if(activeStorageNode.getReplicaNodesCount()< maxReplicas) {
-				PriorityQueue<StorageMessages.StorageNode> completeNodeListPQ 
-					= new PriorityQueue<StorageMessages.StorageNode>(maxStorageNodesCount, new Comparator<StorageMessages.StorageNode>() {
-						@Override 
-						public int compare(StorageMessages.StorageNode p1, StorageMessages.StorageNode p2) {
-				            return (int)p2.getAvailableStorageCapacity() - (int)p1.getAvailableStorageCapacity(); // Descending
-				        }
-					});
-				
-				for (StorageMessages.StorageNode existingStorageNode : this.activeStorageNodes.values()) {
-					completeNodeListPQ.add(existingStorageNode);
-				}
-				
-				ArrayList<StorageMessages.StorageNode> outputNodeList = new ArrayList<StorageMessages.StorageNode>();
-				for(int i=0; i<maxReplicas; i++) {
-					StorageMessages.StorageNode currentNode = completeNodeListPQ.peek();
-					if(activeStorageNode.getStorageNodeId()==currentNode.getStorageNodeId()) {
-						completeNodeListPQ.remove();
-						currentNode = completeNodeListPQ.peek();
+		if(this.activeStorageNodes.values().size()>1) {
+			int maxStorageNodesCount = this.activeStorageNodes.values().size()-1;
+			int maxReplicas = Math.min(maxStorageNodesCount, Controller.MAX_REPLICAS);
+			HashMap<String, ArrayList<String>> existingReplicaMap = new HashMap<String, ArrayList<String>>();
+			
+			for (StorageMessages.StorageNode activeStorageNode : this.activeStorageNodes.values()) {
+				if(activeStorageNode.getReplicaNodesCount()<=maxReplicas) {
+					PriorityQueue<StorageMessages.StorageNode> completeNodeListPQ 
+						= new PriorityQueue<StorageMessages.StorageNode>(maxStorageNodesCount, new Comparator<StorageMessages.StorageNode>() {
+							@Override 
+							public int compare(StorageMessages.StorageNode p1, StorageMessages.StorageNode p2) {
+					            return (int)p2.getAvailableStorageCapacity() - (int)p1.getAvailableStorageCapacity(); // Descending
+					        }
+						});
+					
+					for (StorageMessages.StorageNode existingStorageNode : this.activeStorageNodes.values()) {
+						completeNodeListPQ.add(existingStorageNode);
+						ArrayList<String> existingReplicaNodeIdList = new ArrayList<String>();
+						for(StorageMessages.StorageNode replicaNode: existingStorageNode.getReplicaNodesList()) {
+							existingReplicaNodeIdList.add(replicaNode.getStorageNodeId());
+						}
+						existingReplicaMap.put(existingStorageNode.getStorageNodeId(), existingReplicaNodeIdList);
 					}
-					logger.info("Storage Node: " + currentNode.getStorageNodeId() + " added as repica for " + activeStorageNode.getStorageNodeId());
-					outputNodeList.add(completeNodeListPQ.remove());
+					
+					ArrayList<StorageMessages.StorageNode> outputNodeList = new ArrayList<StorageMessages.StorageNode>();
+					for(int i=0; i<maxReplicas-existingReplicaMap.get(activeStorageNode.getStorageNodeId()).size(); i++) {
+						StorageMessages.StorageNode currentNode = completeNodeListPQ.peek();
+						while(activeStorageNode.getStorageNodeId() == currentNode.getStorageNodeId()
+								|| existingReplicaMap.get(activeStorageNode.getStorageNodeId()).contains(currentNode.getStorageNodeId())){
+							completeNodeListPQ.remove();
+							currentNode = completeNodeListPQ.peek();
+						}
+						logger.info("Storage Node: " + currentNode.getStorageNodeId() + " added as replica for " + activeStorageNode.getStorageNodeId());
+						outputNodeList.add(completeNodeListPQ.remove());
+					}
+					activeStorageNode = activeStorageNode.toBuilder().addAllReplicaNodes(outputNodeList).build();
+					this.activeStorageNodes.put(activeStorageNode.getStorageNodeId(), activeStorageNode);
 				}
-				activeStorageNode.toBuilder().addAllReplicaNodes(outputNodeList).build();
 			}
 		}
-			
 	}
 	
 	/*
@@ -176,11 +187,25 @@ public class Controller {
 	 *  if file chunk exists return the node containing the previous version chunk
 	 *  if file chunk does not exist return new storage node that can save the file chunk 
 	 */
-	public synchronized StorageMessages.ChunkMapping getNodesForChunkSave(StorageMessages.Chunk chunk) {
-		String bloomFilterKey = chunk.getFileName() + "_" + chunk.getChunkId();
-		System.out.println("Bloom Key: " + bloomFilterKey);
-		ArrayList<StorageMessages.StorageNode> storageNodeList = this.findNodesContainingFileChunk(chunk, bloomFilterKey);
-		return HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
+	public synchronized ArrayList<StorageMessages.ChunkMapping> getNodesForChunkSave(List<StorageMessages.Chunk> chunkList) {
+		PriorityQueue<StorageMessages.StorageNode> completeNodeListPQ 
+			= new PriorityQueue<StorageMessages.StorageNode>(this.activeStorageNodes.keySet().size(), new Comparator<StorageMessages.StorageNode>() {
+			@Override 
+			public int compare(StorageMessages.StorageNode p1, StorageMessages.StorageNode p2) {
+	            return (int)p2.getAvailableStorageCapacity() - (int)p1.getAvailableStorageCapacity(); // Descending
+	        }
+		});
+	
+		for (StorageMessages.StorageNode existingStorageNode : this.activeStorageNodes.values()) {
+			completeNodeListPQ.add(existingStorageNode);
+		}
+		ArrayList<StorageMessages.ChunkMapping> chunkMappingList = new ArrayList<StorageMessages.ChunkMapping>();
+		for (StorageMessages.Chunk chunk : chunkList) {
+			ArrayList<StorageMessages.StorageNode> storageNodeList = this.findNodesContainingFileChunk(chunk, completeNodeListPQ);
+			StorageMessages.ChunkMapping chunkMapping = HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
+			chunkMappingList.add(chunkMapping);
+		}
+		return chunkMappingList;
 	}
 
 	/*
@@ -188,24 +213,38 @@ public class Controller {
 	 * Adds one not containing node to ensure atleast one non containing node is returned
 	 * This ensures the handling of storage node for files with different versions and bloom filter false positives
 	 */
-	public ArrayList<StorageMessages.StorageNode> findNodesContainingFileChunk(StorageMessages.Chunk chunk, String bloomKey){
+	public ArrayList<StorageMessages.StorageNode> findNodesContainingFileChunk(StorageMessages.Chunk chunk, PriorityQueue<StorageMessages.StorageNode> completeNodeListPQ){
+		String bloomFilterKey = chunk.getFileName() + "_" + chunk.getChunkId();
+		System.out.println("Bloom Key: " + bloomFilterKey);
 		ArrayList<StorageMessages.StorageNode> containingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
-		ArrayList<StorageMessages.StorageNode> notContainingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
+		boolean primaryNode = true;
 		
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
 			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
 			System.out.println("Iterating bloom filter for storage node" + storageNode.getStorageNodeId());
 			System.out.println("Current capacity of storagenode: " + +storageNode.getAvailableStorageCapacity());
-			if(storageNodeBloomFilter.getValue().getBloomKey(bloomKey.getBytes())) {
+			if(storageNodeBloomFilter.getValue().getBloomKey(bloomFilterKey.getBytes())) {
 				containingStorageNodeList.add(storageNode);
-			}else if(storageNode.getAvailableStorageCapacity()-chunk.getChunkSize()>0) {
-				notContainingStorageNodeList.add(storageNode);
+			}else if(primaryNode){
+				if(completeNodeListPQ.peek()!=null && completeNodeListPQ.peek().getAvailableStorageCapacity()>=chunk.getChunkSize()){
+					StorageMessages.StorageNode newStorageNode = completeNodeListPQ.remove();
+					containingStorageNodeList.add(newStorageNode);
+					
+					StorageMessages.StorageNode modifiedStorageNode 
+						= StorageMessages.StorageNode.newBuilder()
+						.setStorageNodeId(newStorageNode.getStorageNodeId())
+		                .setStorageNodeAddr(newStorageNode.getStorageNodeAddr())
+		                .setStorageNodePort(newStorageNode.getStorageNodePort())
+		                .setAvailableStorageCapacity(newStorageNode.getAvailableStorageCapacity()-chunk.getChunkSize())
+		                .setMaxStorageCapacity(newStorageNode.getMaxStorageCapacity())
+		                .addAllReplicaNodes(newStorageNode.getReplicaNodesList())
+		                .build();
+					completeNodeListPQ.add(modifiedStorageNode);
+				}
+				primaryNode = false;
 			}
 		}
 		
-		if(notContainingStorageNodeList.size()>0) {
-			containingStorageNodeList.add(notContainingStorageNodeList.get(0));
-		}
 		System.out.println("StorageNodes Identified for chunk: " + String.valueOf(containingStorageNodeList.size()));
 		return containingStorageNodeList;
 	}
@@ -286,7 +325,9 @@ public class Controller {
 	 * 
 	 */
 	public synchronized void handleInactiveStorageNode() {
-		
+		// TODO: Copy all chunks from replica  of failed node to new nodes.
+		// TODO: Identify all nodes that have this storage node as replica.
+		// TODO: Copy all chunks from primary of these nodes to new nodes.
 	}
 	
 	public synchronized void detectFileExistence(String fileName) {

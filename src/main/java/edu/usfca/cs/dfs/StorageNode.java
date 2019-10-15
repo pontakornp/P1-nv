@@ -435,7 +435,7 @@ public class StorageNode {
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
 		try {
-			storageNode.sendHeartBeat();
+			//storageNode.handleHeartBeats();
 			storageNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start storage node");

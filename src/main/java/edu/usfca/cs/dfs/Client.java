@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +31,8 @@ public class Client {
 	private String controllerNodeAddr;
 	private Integer controllerNodePort;
 	private String fileDestinationPath;
-	private static HashMap<String, StorageMessages.Chunk> chunkMap;
+	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut;
+	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet;
 	
     public Client() {
 
