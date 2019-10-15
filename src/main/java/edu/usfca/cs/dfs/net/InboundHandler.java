@@ -139,14 +139,36 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			controller.sendNodesToClient(chunkMapping);
 
 		}else if(messageType == 9) {
-    		logger.info("Retrieve Chunk Request: Storage Node receive request from client");
-    		StorageMessages.RetrieveChunkRequest retrieveChunkRequest = msg.getRetrieveChunkRequest();
-    		StorageMessages.Chunk chunk = retrieveChunkRequest.getChunk();
+    		logger.info("Retrieve File Response: Client receives storage nodes from Controller");
+    		StorageMessages.RetrieveFileResponse retrieveFileResponse = msg.getRetrieveFileResponse();
+    		StorageMessages.ChunkMapping chunkMapping = retrieveFileResponse.getChunkMappings();
+    		StorageMessages.Chunk chunk = chunkMapping.getChunk();
+    		List<StorageMessages.StorageNode> storageNodeObjsList = chunkMapping.getStorageNodeObjsList();
     		String fileName = chunk.getFileName();
     		int chunkId = chunk.getChunkId();
-    		// return the chunk to the client
+    		// get client instance
+			Client client = Client.getInstance();
+			// call retrieve chunk from storage node
+			client.retrieveChunk(storageNodeObjsList, fileName, chunkId);
+
+		}else if(messageType == 10) {
+			logger.info("Retrieve Chunk Request: Storage Node receive request from client");
+			StorageMessages.RetrieveChunkRequest retrieveChunkRequest = msg.getRetrieveChunkRequest();
+			StorageMessages.Chunk chunk = retrieveChunkRequest.getChunk();
+			String fileName = chunk.getFileName();
+			int chunkId = chunk.getChunkId();
+			// return the chunk to the client
 			StorageNode storageNode = StorageNode.getInstance();
 			storageNode.retrieveChunk(fileName, chunkId);
+			// construct retrieve chunk response storage message
+			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkResponse(chunk);
+			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
+			future.addListener(ChannelFutureListener.CLOSE);
+		}else if(messageType == 11) {
+    		logger.info("Retrieve Chunk Response: Client receive chunk from storage node");
+    		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = msg.getRetrieveChunkResponse();
+    		StorageMessages.Chunk chunk = retrieveChunkResponse.getChunk();
+
 		}
     }
 

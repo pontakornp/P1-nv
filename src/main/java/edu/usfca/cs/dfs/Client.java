@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,11 +34,21 @@ public class Client {
 	private String fileDestinationPath;
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut;
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet;
-	
-    public Client() {
+	private static HashMap<String, StorageMessages.Chunk> chunkMap;
+	private static Client clientInstance;
+
+	public Client() {
 
     }
-    
+
+	public static Client getInstance() {
+		if (clientInstance == null){
+			System.out.println("New controller instance instantiated");
+			clientInstance = new Client();
+		}
+		return clientInstance;
+	}
+
     private void setVariables(Config config) {
 		this.chunkSize = config.getChunkSize();
 		this.controllerNodeAddr = config.getControllerNodeAddr();
@@ -94,6 +105,17 @@ public class Client {
 		}
     }
 
+	public void retrieveChunk(List<StorageMessages.StorageNode> storageNodeList, String fileName, int chunkId) {
+		for(StorageMessages.StorageNode storageNode: storageNodeList) {
+			String addr = storageNode.getStorageNodeAddr();
+			int port = storageNode.getStorageNodePort();
+			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkRequest();
+			String initiateMsg = "Retrieve Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort());
+			String successMsg = "Retrieve Chunk completed at storageNode";
+			String failMsg = "Retrieve Chunk failed. Storage node connection establishment failed";
+			sendMsgWrapperToChannelFutureTemplate(addr, port, msgWrapper, initiateMsg, successMsg, failMsg);
+		}
+	}
 
     public void retrieveFile(String fileName) {
         try {
@@ -156,7 +178,34 @@ public class Client {
 		System.out.println("Chunk has been updated with file data");
 		return chunk;
     }
-    
+
+    public static void sendMsgWrapperToChannelFutureTemplate(String addr, int port, StorageMessages.MessageWrapper msgWrapper, String initiatedMsg, String successMsg, String failMsg) {
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+			MessagePipeline pipeline = new MessagePipeline();
+			logger.info(initiatedMsg);
+			Bootstrap bootstrap = new Bootstrap()
+					.group(workerGroup)
+					.channel(NioSocketChannel.class)
+					.option(ChannelOption.SO_KEEPALIVE, true)
+					.handler(pipeline);
+
+			ChannelFuture cf = bootstrap.connect(addr, port);
+			cf.syncUninterruptibly();
+			// write msgWrapper to Channel Future
+			Channel chan = cf.channel();
+			ChannelFuture write = chan.write(msgWrapper);
+			chan.flush();
+			write.syncUninterruptibly();
+			logger.info(successMsg);
+			chan.closeFuture().sync();
+			workerGroup.shutdownGracefully();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(failMsg);
+		}
+	}
+
     /*
      * This will update the chunk with file byte data
      * This method will save each chunk in seperate thread.
