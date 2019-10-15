@@ -57,7 +57,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
      * MessageType = 7 response from controller to client for getting list of storage nodes for chunk save 
      */
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, StorageMessages.MessageWrapper msg) {
+    public void channelRead0(ChannelHandlerContext ctx, StorageMessages.MessageWrapper msg) throws Exception {
     	int messageType = msg.getMessageType();
     	if(messageType == 1){
 			logger.info("Received Storage Node Registration Message");
@@ -89,13 +89,24 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.StoreChunkRequest storeChunkRequest = msg.getStoreChunkRequest();
 			StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 			StorageNode storageNode = StorageNode.getInstance();
-			boolean isSuccess = storageNode.storeChunk(storeChunkRequest);
-			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(chunk, isSuccess);
+			StorageMessages.Chunk updatedChunk = storageNode.storeChunk(storeChunkRequest);
+			MessageWrapper msgWrapper;
+			
+			if(updatedChunk!=null) {
+				msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(updatedChunk, true);
+			}else {
+				msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(chunk, false);
+			}
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			future.addListener(ChannelFutureListener.CLOSE);
     	}else if(messageType == 5){
 			logger.info("Client receives store chunk ack");
-
+			if(msg.getStoreChunkResponse().getIsSuccess()) {
+				Client.updateChunkSaveStatus(msg.getStoreChunkResponse().getChunk());
+			}else {
+				throw new Exception("Failed to save chunk on storage Node");
+			}
+			ctx.close();
     	}else if(messageType == 6){
     		logger.info("Get Storage Nodes for saving file chunks received on controller");
     		StorageMessages.GetStorageNodesForChunksRequest getStorageNodesForChunksRequest = msg.getGetStorageNodeForChunksRequest();

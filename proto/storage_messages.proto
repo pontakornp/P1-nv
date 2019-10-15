@@ -35,6 +35,8 @@ message Chunk {
 	bytes data = 5;
 	int32 maxChunkNumber = 6;
 	string fileAbsolutePath = 7;
+	int32 primaryCount = 8;
+	int32 replicaCount = 9;
 }
 
 message ChunkMapping {
@@ -53,8 +55,6 @@ message GetStorageNodesForChunksResponse {
 message StoreChunkRequest {
     Chunk chunk = 1;
     bool isClientInitiated = 2;
-	int32 primaryCount = 3;
-	int32 replicaCount = 4;
 	bool isNewChunk = 5;
 	StorageNode storageNode = 6;
 }
@@ -67,8 +67,6 @@ message StoreChunkControllerUpdateRequest {
 message StoreChunkResponse {
 	Chunk chunk = 1;
 	bool isSuccess = 2;
-	int32 primaryCount = 3;
-	int32 replicaCount = 4;
 }
 
 message RetrieveFileRequest {

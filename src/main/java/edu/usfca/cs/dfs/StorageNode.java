@@ -252,7 +252,7 @@ public class StorageNode {
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
-	public boolean storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
+	public StorageMessages.Chunk storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
 		StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 		String fileName = chunk.getFileName();
 		int chunkId = chunk.getChunkId();
@@ -260,6 +260,8 @@ public class StorageNode {
 		boolean isClientInitiated = storeChunkRequest.getIsClientInitiated();
 		StorageMessages.StorageNode previousStorageNode = storeChunkRequest.getStorageNode(); 
 		boolean isNewChunk = storeChunkRequest.getIsNewChunk();
+		int primaryCount = chunk.getPrimaryCount();
+		int replicaCount = chunk.getReplicaCount();
 		
 		StringBuilder filePathBuilder = new StringBuilder(); 
 		filePathBuilder.append(fileName);
@@ -274,9 +276,11 @@ public class StorageNode {
 				chunkData = CompressDecompress.compress(chunkData);
 				if (chunkData == null) {
 					logger.error("Fails to compress chunk");
-					return false;
+					return null;
 				}
 			}
+		}else {
+			replicaCount = replicaCount + 1;
 		}
 		File dir = null;
 		if(isNewChunk) {
@@ -289,6 +293,7 @@ public class StorageNode {
 				dir.mkdirs();
 				logger.info("Created new file directory on storage node: " + dir.toString());
 			}
+			primaryCount = primaryCount + 1;
 		}else {
 			//TODO: Find previous file location in base path
 			File basePath = new File(StorageNode.storageNodeDirectoryPath);
@@ -298,6 +303,11 @@ public class StorageNode {
 					if(oldVersionFile.exists()) {
 						dir = subdirectory;
 						logger.info("Old file version detected");
+						if(subdirectory.getName()==this.storageNodeId) {
+							primaryCount = primaryCount + 1;
+						}else {
+							replicaCount = replicaCount + 1;
+						}
 					}
 				}
 			}
@@ -314,15 +324,19 @@ public class StorageNode {
 				outputStream.close();
 				this.setAvailableStorageCapacity(this.getAvailableStorageCapacity()-outputFile.length());
 				this.updateControllerOnChunkSave(chunk);
-				return true;
+				chunk = chunk.toBuilder()
+						.setPrimaryCount(primaryCount)
+						.setReplicaCount(replicaCount)
+						.build();
+				return chunk;
 			} catch (IOException e) {
 				e.printStackTrace();
 				logger.error("There is a problem when writing stream to file");
-				return false;
+				return null;
 			}
 		}else {
-			logger.info("False positive detected for previous version of file. Doing nothing");
-			return true;
+			logger.info("False positive detected for previous version of file. Doing nothing" + fileName);
+			return chunk;
 		}
 	}
 	

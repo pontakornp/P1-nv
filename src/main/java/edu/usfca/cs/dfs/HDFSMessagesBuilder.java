@@ -177,6 +177,8 @@ public class HDFSMessagesBuilder {
     			.setChecksum(chunk.getChecksum())
     			.setMaxChunkNumber(chunk.getMaxChunkNumber())
     			.setFileAbsolutePath(chunk.getFileAbsolutePath())
+    			.setPrimaryCount(chunk.getPrimaryCount())
+    			.setReplicaCount(chunk.getReplicaCount())
     			.build();
     	
         StorageMessages.StoreChunkResponse storeChunkResponse = StorageMessages.StoreChunkResponse.newBuilder()

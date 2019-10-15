@@ -33,10 +33,11 @@ public class Client {
 	private String controllerNodeAddr;
 	private Integer controllerNodePort;
 	private String fileDestinationPath;
-	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut;
-	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet;
+	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut = new ConcurrentHashMap<String, StorageMessages.Chunk>();
+	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet = new ConcurrentHashMap<String, StorageMessages.Chunk>() ;
 	private static HashMap<String, StorageMessages.Chunk> chunkMap;
 	private static Client clientInstance;
+	private static int MAX_REPLICAS = 2;
 
 
 
@@ -130,7 +131,7 @@ public class Client {
 	}
 
 	public static void addChunkToChunkMap(String fileName, int chunkId, StorageMessages.Chunk chunkMsg) {
-		chunkMap.put(fileName + "_" + chunkId, chunkMsg);
+		Client.chunkMap.put(fileName + "_" + chunkId, chunkMsg);
 	}
 
     public void retrieveFile(String fileName, int chunkId) {
@@ -247,47 +248,64 @@ public class Client {
     	for (StorageMessages.ChunkMapping chunkMapping : chunkMappingList) {
     		StorageMessages.Chunk chunk = chunkMapping.getChunk();
     		
+    		// Update client metadata about current file chunk transfers
+    		String chunkKey = chunk.getFileName() + "_" + chunk.getChunkId();
+    		chunk = chunk.toBuilder()
+    					.setPrimaryCount(0)
+    					.setReplicaCount(0)
+    					.build();
+    		
+    		Client.chunkMapPut.put(chunkKey, chunk);
     		chunk = Client.updateChunkWithFileData(chunk);
     		List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
 
     		System.out.println("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
 			for ( int i=0; i< storageNodeList.size(); i++) {
-				StorageMessages.StorageNode storageNode = storageNodeList.get(i);
-				boolean isNewChunk = false;
-				if (i == storageNodeList.size()-1) {
-					isNewChunk = true;
-				}
+				if(Client.chunkMapPut.get(chunkKey).getPrimaryCount()<1 
+						|| Client.chunkMapPut.get(chunkKey).getReplicaCount()<Client.MAX_REPLICAS) {
+					StorageMessages.StorageNode storageNode = storageNodeList.get(i);
+					boolean isNewChunk = false;
+					if (i == storageNodeList.size()-1) {
+						isNewChunk = true;
+					}
+					
+					try {
+						EventLoopGroup workerGroup = new NioEventLoopGroup();
+				        MessagePipeline pipeline = new MessagePipeline();
+				        
+				        logger.info("Save File Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort()));
+				        Bootstrap bootstrap = new Bootstrap()
+				            .group(workerGroup)
+				            .channel(NioSocketChannel.class)
+				            .option(ChannelOption.SO_KEEPALIVE, true)
+				            .handler(pipeline);
+				        
+				        ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
+				        cf.syncUninterruptibly();
 				
-				try {
-					EventLoopGroup workerGroup = new NioEventLoopGroup();
-			        MessagePipeline pipeline = new MessagePipeline();
-			        
-			        logger.info("Save File Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort()));
-			        Bootstrap bootstrap = new Bootstrap()
-			            .group(workerGroup)
-			            .channel(NioSocketChannel.class)
-			            .option(ChannelOption.SO_KEEPALIVE, true)
-			            .handler(pipeline);
-			        
-			        ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
-			        cf.syncUninterruptibly();
-			
-			        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, storageNode, true, isNewChunk);
-			
-			        Channel chan = cf.channel();
-			        ChannelFuture write = chan.write(msgWrapper);
-			        chan.flush();
-			        write.syncUninterruptibly();
-			        logger.info("Save File Chunks completed at storageNode: " + storageNode.getStorageNodeId());
-			        chan.closeFuture().sync();
-			        workerGroup.shutdownGracefully();
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error("Save File Chunk failed. Storage node connection establishment failed");
+				        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, storageNode, true, isNewChunk);
+				
+				        Channel chan = cf.channel();
+				        ChannelFuture write = chan.write(msgWrapper);
+				        chan.flush();
+				        write.syncUninterruptibly();
+				        logger.info("Save File Chunks completed at storageNode: " + storageNode.getStorageNodeId());
+				        chan.closeFuture().sync();
+				        workerGroup.shutdownGracefully();
+					} catch (Exception e) {
+						e.printStackTrace();
+						logger.error("Save File Chunk failed. Storage node connection establishment failed");
+					}
 				}
 			}
 		}
     	ctx.close();
+    }
+    
+    public static void updateChunkSaveStatus(StorageMessages.Chunk chunk) {
+    	String fileKey = chunk.getFileName() + "_" + chunk.getChunkId();
+    	Client.chunkMapPut.put(fileKey, chunk);
+    	logger.info("Updated chunkmap after saving chunk");
     }
     
     
