@@ -168,7 +168,17 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		logger.info("Retrieve Chunk Response: Client receive chunk from storage node");
     		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = msg.getRetrieveChunkResponse();
     		StorageMessages.Chunk chunk = retrieveChunkResponse.getChunk();
-
+		}else if(messageType == 12) {
+    		logger.info("Save Chunk Update request received on Controller");
+    		StorageMessages.StoreChunkControllerUpdateRequest storageChunkControllerUpdateRequest 
+    			= msg.getStoreChunkControllerUpdateRequest();
+    		
+    		StorageMessages.Chunk chunk = storageChunkControllerUpdateRequest.getChunk();
+    		StorageMessages.StorageNode storageNode = storageChunkControllerUpdateRequest.getStorageNode();
+    		Controller controller = Controller.getInstance();
+    		controller.updateChunkSaveonController(storageNode, chunk);
+    		logger.info("Save chunk update request handled in controller. Updated metadata");
+    		ctx.close();
 		}
     }
 

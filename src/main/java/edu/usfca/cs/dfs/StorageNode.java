@@ -294,12 +294,43 @@ public class StorageNode {
 			//TODO: Modify the file name after calculating the checksum
 			outputStream.close();
 			this.setAvailableStorageCapacity(this.getAvailableStorageCapacity()-outputFile.length());
+			this.updateControllerOnChunkSave(chunk);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error("There is a problem when writing stream to file");
 			return false;
 		}
+	}
+	
+	public void updateControllerOnChunkSave(StorageMessages.Chunk chunk) {
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+	        MessagePipeline pipeline = new MessagePipeline();
+	        Bootstrap bootstrap = new Bootstrap()
+	            .group(workerGroup)
+	            .channel(NioSocketChannel.class)
+	            .option(ChannelOption.SO_KEEPALIVE, true)
+	            .handler(pipeline);
+	        
+	        logger.info("Chunk save update send to controller initiated: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+	        cf.syncUninterruptibly();
+	
+	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkControllerUpdateRequest(chunk, StorageNode.getInstance());
+	
+	        Channel chan = cf.channel();
+	        ChannelFuture write = chan.write(msgWrapper);
+	        chan.flush();
+	        write.syncUninterruptibly();
+	        chan.closeFuture().sync();
+	        workerGroup.shutdownGracefully();
+	        logger.info("Heartbeat send to controller completed");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Heartbeat send of storage node failed. Controller connetion establishment failed");
+		}
+		
 	}
 
 	/**

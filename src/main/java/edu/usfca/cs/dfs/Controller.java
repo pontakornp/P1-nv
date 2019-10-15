@@ -270,8 +270,21 @@ public class Controller {
 				.build();
 		return HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
 	}
+	
+	/*
+	 * This will update the chunk save from storagenode on controller
+	 * This will add the filename_chunkid to bloom filter of storageNode
+	 * This will update the storageNode max Storage value on controller
+	 */
+	public void updateChunkSaveonController(StorageMessages.StorageNode storageNode, StorageMessages.Chunk chunk) {
+		String bloomKey = chunk.getFileName() + "_" + chunk.getChunkId();
+		String storageNodeId = storageNode.getStorageNodeId();
+		this.bloomFilterMap.get(storageNodeId).putBloomKey(bloomKey.getBytes());
+		this.activeStorageNodes.put(storageNodeId, storageNode);
+	}
 
 	public void sendNodesToClient(StorageMessages.ChunkMapping chunkMapping) {
+	
 	}
 
 

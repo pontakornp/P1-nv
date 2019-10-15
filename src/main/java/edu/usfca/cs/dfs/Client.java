@@ -205,7 +205,15 @@ public class Client {
 			logger.error(failMsg);
 		}
 	}
-
+    
+    /*
+     * 
+     */
+    private static void updatePutChunkMetadata() {
+    	
+    }
+    
+    
     /*
      * This will update the chunk with file byte data
      * This method will save each chunk in seperate thread.
@@ -220,8 +228,6 @@ public class Client {
     		StorageMessages.Chunk chunk = chunkMapping.getChunk();
     		
     		chunk = Client.updateChunkWithFileData(chunk);
-    		
-    		
     		
     		System.out.println("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
 			for (StorageMessages.StorageNode storageNode : chunkMapping.getStorageNodeObjsList()) {
@@ -246,7 +252,7 @@ public class Client {
 			        ChannelFuture write = chan.write(msgWrapper);
 			        chan.flush();
 			        write.syncUninterruptibly();
-			        logger.info("Save File Chunks completed at storageNode");
+			        logger.info("Save File Chunks completed at storageNode: " + storageNode.getStorageNodeId());
 			        chan.closeFuture().sync();
 			        workerGroup.shutdownGracefully();
 				} catch (Exception e) {
