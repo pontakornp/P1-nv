@@ -57,6 +57,11 @@ message StoreChunkRequest {
 	int32 replicaCount = 4;
 }
 
+message StoreChunkControllerUpdateRequest {
+	Chunk chunk = 1;
+	StorageNode storageNode = 2;
+}
+
 message StoreChunkResponse {
 	Chunk chunk = 1;
 	bool isSuccess = 2;
@@ -93,4 +98,5 @@ message MessageWrapper {
     RetrieveFileResponse retrieveFileResponse = 14;
     RetrieveChunkRequest retrieveChunkRequest = 15;
     RetrieveChunkResponse retrieveChunkResponse = 16;
+    StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;
 }

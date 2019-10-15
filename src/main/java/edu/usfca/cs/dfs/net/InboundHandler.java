@@ -104,11 +104,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		StorageMessages.GetStorageNodesForChunksResponse.Builder responseMsg = StorageMessages.GetStorageNodesForChunksResponse.newBuilder();
     		List<StorageMessages.Chunk> chunkList = getStorageNodesForChunksRequest.getChunkListList();
     		
-    		ArrayList<StorageMessages.ChunkMapping> chunkMappingList = new ArrayList<StorageMessages.ChunkMapping>();
-    		for (int i=0; i< chunkList.size(); i++) {
-    			StorageMessages.ChunkMapping chunkMapping = controller.getNodesForChunkSave(chunkList.get(i));
-    			chunkMappingList.add(chunkMapping);
-    		}
+    		ArrayList<StorageMessages.ChunkMapping> chunkMappingList = controller.getNodesForChunkSave(chunkList);
     		responseMsg.addAllChunkMappings(chunkMappingList);
     		
     		StorageMessages.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = responseMsg.build();
@@ -209,6 +205,20 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 				// add chunk to mapping
 				Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
 			}
+
+//    		StorageMessages.Chunk chunk = retrieveChunkResponse.getChunk();
+		}else if(messageType == 12) {
+    		logger.info("Save Chunk Update request received on Controller");
+    		StorageMessages.StoreChunkControllerUpdateRequest storageChunkControllerUpdateRequest 
+    			= msg.getStoreChunkControllerUpdateRequest();
+    		
+    		StorageMessages.Chunk chunk = storageChunkControllerUpdateRequest.getChunk();
+    		StorageMessages.StorageNode storageNode = storageChunkControllerUpdateRequest.getStorageNode();
+    		Controller controller = Controller.getInstance();
+    		controller.updateChunkSaveonController(storageNode, chunk);
+    		logger.info("Save chunk update request handled in controller. Updated metadata");
+    		ctx.close();
+
 		}
     }
 

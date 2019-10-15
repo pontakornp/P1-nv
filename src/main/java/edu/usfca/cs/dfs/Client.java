@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Future;
 
-import edu.usfca.cs.dfs.metadata.ChunkZero;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,8 +33,9 @@ public class Client {
 	private String controllerNodeAddr;
 	private Integer controllerNodePort;
 	private String fileDestinationPath;
+	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut;
+	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet;
 	private static HashMap<String, StorageMessages.Chunk> chunkMap;
-
 	private static Client clientInstance;
 
 
@@ -132,7 +133,7 @@ public class Client {
 		chunkMap.put(fileName + "_" + chunkId, chunkMsg);
 	}
 
-    public void retrieveFile(String fileName) {
+    public void retrieveFile(String fileName, int chunkId) {
         try {
             EventLoopGroup workerGroup = new NioEventLoopGroup();
             MessagePipeline pipeline = new MessagePipeline();
@@ -147,7 +148,7 @@ public class Client {
             ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
             cf.syncUninterruptibly();
 
-            MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileRequest(fileName);
+            MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileRequest(fileName, chunkId);
 
             Channel chan = cf.channel();
             ChannelFuture write = chan.write(msgWrapper);
@@ -224,7 +225,15 @@ public class Client {
 			logger.error(failMsg);
 		}
 	}
-
+    
+    /*
+     * 
+     */
+    private static void updatePutChunkMetadata() {
+    	
+    }
+    
+    
     /*
      * This will update the chunk with file byte data
      * This method will save each chunk in seperate thread.
@@ -263,7 +272,7 @@ public class Client {
 			        ChannelFuture write = chan.write(msgWrapper);
 			        chan.flush();
 			        write.syncUninterruptibly();
-			        logger.info("Save File Chunks completed at storageNode");
+			        logger.info("Save File Chunks completed at storageNode: " + storageNode.getStorageNodeId());
 			        chan.closeFuture().sync();
 			        workerGroup.shutdownGracefully();
 				} catch (Exception e) {

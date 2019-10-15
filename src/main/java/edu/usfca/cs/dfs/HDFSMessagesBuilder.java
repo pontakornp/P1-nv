@@ -2,7 +2,6 @@ package edu.usfca.cs.dfs;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class HDFSMessagesBuilder {
 
@@ -167,8 +166,18 @@ public class HDFSMessagesBuilder {
     }
 
     public static StorageMessages.MessageWrapper constructStoreChunkAck(StorageMessages.Chunk chunk, boolean isSuccess) {
+    	StorageMessages.Chunk chunkMsg 
+    		= StorageMessages.Chunk.newBuilder()
+    			.setChunkId(chunk.getChunkId())
+    			.setChunkSize(chunk.getChunkSize())
+    			.setFileName(chunk.getFileName())
+    			.setChecksum(chunk.getChecksum())
+    			.setMaxChunkNumber(chunk.getMaxChunkNumber())
+    			.setFileAbsolutePath(chunk.getFileAbsolutePath())
+    			.build();
+    	
         StorageMessages.StoreChunkResponse storeChunkResponse = StorageMessages.StoreChunkResponse.newBuilder()
-                .setChunk(chunk)
+                .setChunk(chunkMsg)
                 .setIsSuccess(isSuccess)
                 .build();
         StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
@@ -177,6 +186,37 @@ public class HDFSMessagesBuilder {
                 .build();
 	    return msgWrapper;
     }
+    
+    public static StorageMessages.MessageWrapper constructStoreChunkControllerUpdateRequest(StorageMessages.Chunk chunk, StorageNode storageNode) {
+    	StorageMessages.Chunk chunkMsg 
+    		= StorageMessages.Chunk.newBuilder()
+    			.setChunkId(chunk.getChunkId())
+    			.setFileName(chunk.getFileName())
+    			.build();
+    	
+    	StorageMessages.StorageNode storageNodeMsg 
+			= StorageMessages.StorageNode.newBuilder()
+			.setStorageNodeId(storageNode.getStorageNodeId())
+			.setStorageNodeAddr(storageNode.getStorageNodeAddr())
+			.setStorageNodePort(storageNode.getStorageNodePort())
+			.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
+			.setMaxStorageCapacity(storageNode.getMaxStorageCapacity())
+			.addAllReplicaNodes(storageNode.getReplicaStorageNodes())
+			.build();
+    	
+        StorageMessages.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequestMsg 
+        	= StorageMessages.StoreChunkControllerUpdateRequest.newBuilder()
+                .setChunk(chunkMsg)
+                .setStorageNode(storageNodeMsg)
+                .build();
+        
+        StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+                .setMessageType(12)
+                .setStoreChunkControllerUpdateRequest(storeChunkControllerUpdateRequestMsg)
+                .build();
+	    return msgWrapper;
+    }
+    
 
     public static StorageMessages.MessageWrapper constructAllStorageNodeRequest() {
         return null;
