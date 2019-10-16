@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.List;
-
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +29,8 @@ public class Client {
 	
 	static Logger logger = LogManager.getLogger(Client.class);
 	private int chunkSize; // This is chunk size in bytes
-	private String controllerNodeAddr;
-	private Integer controllerNodePort;
+	private static String controllerNodeAddr;
+	private static Integer controllerNodePort;
 	private String fileDestinationPath;
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut = new ConcurrentHashMap<String, StorageMessages.Chunk>();
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet = new ConcurrentHashMap<String, StorageMessages.Chunk>() ;
@@ -86,14 +85,14 @@ public class Client {
 			EventLoopGroup workerGroup = new NioEventLoopGroup();
 	        MessagePipeline pipeline = new MessagePipeline();
 	        
-	        logger.info("Save File initiated to controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+	        logger.info("Save File initiated to controller: " + Client.controllerNodeAddr + String.valueOf(Client.controllerNodePort));
 	        Bootstrap bootstrap = new Bootstrap()
 	            .group(workerGroup)
 	            .channel(NioSocketChannel.class)
 	            .option(ChannelOption.SO_KEEPALIVE, true)
 	            .handler(pipeline);
 	        
-	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+	        ChannelFuture cf = bootstrap.connect(Client.controllerNodeAddr, Client.controllerNodePort);
 	        cf.syncUninterruptibly();
 	
 	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetStorageNodesForChunksRequest(file, this.chunkSize);
@@ -149,14 +148,14 @@ public class Client {
             EventLoopGroup workerGroup = new NioEventLoopGroup();
             MessagePipeline pipeline = new MessagePipeline();
 
-            logger.info("Retrieve File initiated to controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+            logger.info("Retrieve File initiated to controller: " + controllerNodeAddr + String.valueOf(controllerNodePort));
             Bootstrap bootstrap = new Bootstrap()
                     .group(workerGroup)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(pipeline);
 
-            ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+            ChannelFuture cf = bootstrap.connect(Client.controllerNodeAddr, Client.controllerNodePort);
             cf.syncUninterruptibly();
 
             MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileRequest(fileName, maxChunkNumber);
