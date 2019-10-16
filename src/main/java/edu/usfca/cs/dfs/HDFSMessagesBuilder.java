@@ -98,6 +98,31 @@ public class HDFSMessagesBuilder {
 	
 	
 	/*
+     * This will use protobuf message to send heartbeat response from controller to storage node
+     * Sets message type as 13 for inbound handler to identify as heartbeat response message
+     */
+	public static synchronized StorageMessages.MessageWrapper constructHeartBeatResponse(StorageMessages.StorageNode storageNode) {
+		StorageMessages.StorageNodeHeartbeat StorageNodeHeartBeatMsg
+			= StorageMessages.StorageNodeHeartbeat.newBuilder()
+			.setStorageNode(storageNode)
+			.build();
+		
+		
+		StorageMessages.StorageNodeHeartBeatResponse storageNodeHeartBeatResponseMsg
+	    	= StorageMessages.StorageNodeHeartBeatResponse.newBuilder()
+	    	.setStorageNodeHeartbeat(StorageNodeHeartBeatMsg)
+	    	.build();
+		
+		StorageMessages.MessageWrapper msgWrapper =
+		        StorageMessages.MessageWrapper.newBuilder()
+		                .setMessageType(13)
+		                .setStorageNodeHeartBeatResponse(storageNodeHeartBeatResponseMsg)
+		                .build();
+		return msgWrapper;
+    }
+	
+	
+	/*
      * This will use protobuf message from client to controller requesting storageNodes for file
      * Sets message type as 6 for inbound handler to identify as GetStorageNodesForChunksRequest
      */

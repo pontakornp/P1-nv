@@ -223,9 +223,9 @@ public class StorageNode {
 			public void run() {
 				while(true) {
 					try {
+						Thread.sleep(5000);
 						logger.info("HeartbeatThread running");
 						StorageNode.getInstance().sendHeartBeat();
-			            Thread.sleep(5000);
 			            logger.info("HeartbeatThread sleeping");
 			        } catch (InterruptedException e) {
 			            e.printStackTrace();
@@ -530,7 +530,7 @@ public class StorageNode {
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
 		try {
-			//storageNode.handleHeartBeats();
+			storageNode.handleHeartBeats();
 			storageNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start storage node");

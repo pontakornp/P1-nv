@@ -81,8 +81,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		StorageMessages.StorageNodeHeartbeat storageNodeHeartBeat = msg.getStorageNodeHeartBeatRequest().getStorageNodeHeartbeat();
     		StorageMessages.StorageNode storageNodeMsg = storageNodeHeartBeat.getStorageNode();
     		Controller controller = Controller.getInstance();
-    		controller.receiveHeartBeat(storageNodeMsg);
-			logger.info("Heartbeat updated on controller for storageNodeId: " + storageNodeMsg.getStorageNodeId());
+    		StorageMessages.StorageNode updatedstorageNodeMsg = controller.receiveHeartBeat(storageNodeMsg);
     		ctx.close();
     	}else if(messageType == 4){
 			logger.info("Storage node receives chunk to be stored from client");
@@ -209,6 +208,12 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		controller.updateChunkSaveonController(storageNode, chunk);
     		logger.info("Save chunk update request handled in controller. Updated metadata");
     		ctx.close();
+		}else if(messageType==13) {
+			logger.info("HeartBeat Response received on StorageNode");
+			StorageMessages.StorageNodeHeartbeat storageNodeHeartBeat = msg.getStorageNodeHeartBeatResponse().getStorageNodeHeartbeat();
+			StorageMessages.StorageNode storageNodeMsg = storageNodeHeartBeat.getStorageNode();
+			StorageNode storageNode = StorageNode.getInstance();
+			storageNode.setReplicaStorageNodes(storageNodeMsg.getReplicaNodesList());
 		}
     }
 

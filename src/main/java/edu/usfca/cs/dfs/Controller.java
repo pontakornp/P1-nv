@@ -162,7 +162,7 @@ public class Controller {
 	 * This will be called when StorageNode send HeartBeat to controller
 	 * This will need to update metadata of chunk on controller
 	 */
-	public synchronized void receiveHeartBeat(StorageMessages.StorageNode storageNode) {
+	public synchronized StorageMessages.StorageNode receiveHeartBeat(StorageMessages.StorageNode storageNode) {
 		String storageNodeId = storageNode.getStorageNodeId();
 		
 		if(this.timeStamps.containsKey(storageNodeId)) {
@@ -175,8 +175,10 @@ public class Controller {
 			// TODO: Respond to heartbeat with new replication nodes
 			// TODO: Storage nodes needs to update replication nodes with changes in replication nodes
 			logger.info("Storage Node Heartbeat has been updated");
+			return activeStorageNode;
 		}else {
 			logger.error("Storage Node not registered on controller. Heartbeat will not be updated");
+			return null;
 		}
 	}
 	

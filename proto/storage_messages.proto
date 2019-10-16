@@ -33,6 +33,10 @@ message StorageNodeHeartBeatRequest {
 	StorageNodeHeartbeat storageNodeHeartbeat = 1;
 }
 
+message StorageNodeHeartBeatResponse {
+	StorageNodeHeartbeat storageNodeHeartbeat = 1;
+}
+
 message Chunk {
 	string fileName = 1;
 	int32 chunkId = 2;
@@ -100,6 +104,7 @@ message MessageWrapper {
     StorageNodeRegisterRequest storageNodeRegisterRequest = 2;
     StorageNodeRegisterResponse storageNodeRegisterResponse = 3;
     StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;
+    StorageNodeHeartBeatResponse storageNodeHeartBeatResponse = 5;
     GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;
     GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;
     StoreChunkRequest storeChunkRequest = 11;
