@@ -186,8 +186,19 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			if(chunkMsg == null) {
 				ctx.close();
 			}
-			Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
+			if(chunkId == 0) {
+				// get maxChunkNumber
+				int maxChunkNumber = chunkMsg.getMaxChunkNumber();
+				// request to controller to get the rest of the chunks
+				Client.retrieveFileRequestToController(fileName, maxChunkNumber);
+			} else {
+				Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
+			}
+			
+			// merge and write it to file later
     		ctx.close();
+
+
 
     		// if chunk is null, it means chunk does not exist
 //			if(chunkMsg == null) {

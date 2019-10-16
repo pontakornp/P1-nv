@@ -145,7 +145,7 @@ public class Client {
 	}
 
 	//
-    public void retrieveFileRequestToController(String fileName, int maxChunkNumber) {
+    public static void retrieveFileRequestToController(String fileName, int maxChunkNumber) {
         try {
             EventLoopGroup workerGroup = new NioEventLoopGroup();
             MessagePipeline pipeline = new MessagePipeline();
