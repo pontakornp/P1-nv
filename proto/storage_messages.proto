@@ -88,7 +88,7 @@ message RetrieveFileRequest {
 }
 
 message RetrieveFileResponse {
-	repeated ChunkMapping chunkMappings = 2;
+	repeated ChunkMapping chunkMappings = 1;
 }
 
 message RetrieveChunkRequest {

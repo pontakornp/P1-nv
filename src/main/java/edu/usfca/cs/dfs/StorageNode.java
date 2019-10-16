@@ -470,12 +470,31 @@ public class StorageNode {
 	}
 
 	// get chunk location
-	public synchronized String getChunkLocation(String fileName, Integer chunkNumber) {
+	public synchronized String getChunkLocation(String fileName, Integer chunkNumber){
 		String filePath = StorageNode.storageNodeDirectoryPath + fileName + '_' + chunkNumber;
+		String metaPath = filePath + ".meta";
+
 		File file = new File(filePath);
-		if (file.exists()) {
-			return filePath;
+		if (!file.exists()) {
+			return null;
 		}
+		try {
+			byte[] chunkData = Files.readAllBytes(Paths.get(metaPath));
+			ChunkMetaData chunkMetaData = new ChunkMetaData();
+			chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
+			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkZero(chunkMetaData, chunkData);
+
+			if(chunkMetaData.isCompressed) {
+
+			}
+
+
+		} catch (IOException e) {
+			logger.error("File not exist");
+		}
+
+
+
 		String compressedFilePath = filePath + "_compressed";
 		// add _{checksum} then check if the file exist or not
 		File compressedFile = new File(compressedFilePath);
@@ -486,28 +505,26 @@ public class StorageNode {
 	}
 
 	// retrieve chunk from a file
-	public synchronized byte[] retrieveChunk(String fileName, int chunkId) {
-		// 1. get chunk location
-		String filePath = getChunkLocation(fileName, chunkId);
-		// 2. if file does not exist returns null
-		if (filePath == null) {
+	public synchronized StorageMessages.MessageWrapper retrieveChunk(String fileName, int chunkNumber) {
+		String filePath = StorageNode.storageNodeDirectoryPath + fileName + '_' + chunkNumber;
+		String metaPath = filePath + ".meta";
+		File file = new File(filePath);
+		if (!file.exists()) {
 			return null;
 		}
-		boolean isCompressed = false;
-		if (filePath.contains("_compressed")) {
-			isCompressed = true;
-		}
-		// 3. if chunk is compressed, need to decompress the byte array data before returning it
-		// else return the byte array data right away
 		try {
-			byte[] chunkData = Files.readAllBytes(Paths.get(filePath));
-			// if chunk is compressed
-			if (isCompressed) {
+			byte[] chunkData = Files.readAllBytes(Paths.get(metaPath));
+			ChunkMetaData chunkMetaData = new ChunkMetaData();
+			chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
+			//if chunk is compressed, need to decompress the byte array data before returning it
+			// else return the byte array data right away
+			if (chunkMetaData.isCompressed) {
 				chunkData = CompressDecompress.decompress(chunkData);
 			}
-			return chunkData;
+			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkZero(chunkMetaData, chunkData);
+			return msgWrapper;
 		} catch (IOException e) {
-			System.out.println("Fail to retrieve chunk.");
+			logger.error("File not exist");
 			return null;
 		}
 	}

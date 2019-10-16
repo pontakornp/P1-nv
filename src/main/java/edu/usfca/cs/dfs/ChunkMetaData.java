@@ -1,5 +1,13 @@
 package edu.usfca.cs.dfs;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+import edu.usfca.cs.dfs.config.Config;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class ChunkMetaData {
     public String fileName;
     public int chunkId;
@@ -9,6 +17,10 @@ public class ChunkMetaData {
     public boolean isCompressed;
     public boolean isPrimary;
 
+    public ChunkMetaData() {
+
+    }
+
     public ChunkMetaData(String fileName, int chunkId, int chunkSize, int maxChunkId, String checkSum, boolean isCompressed) {
     	this.fileName = fileName;
     	this.chunkId = chunkId;
@@ -17,6 +29,37 @@ public class ChunkMetaData {
     	this.checkSum = checkSum;
         this.isCompressed = isCompressed;
     }
+
+    public void setChunkMetaDataWithFilePath(String filePath) {
+        this.setVariables(filePath);
+    }
+
+    public boolean setVariables(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            System.out.println("Config file not found at given path : "+ filePath);
+        }
+        System.out.println("Config file found at given path : "+ filePath);
+
+        try {
+            JsonReader jsonReader = new JsonReader(new FileReader(filePath));
+            Gson gson = new Gson();
+            ChunkMetaData chunkMetaData = gson.fromJson(jsonReader, ChunkMetaData.class);
+            System.out.println(chunkMetaData.toString());
+            this.fileName = chunkMetaData.fileName;
+            this.chunkId = chunkMetaData.chunkId;
+            this.chunkSize = chunkMetaData.chunkSize;
+            this.maxChunkId = chunkMetaData.maxChunkId;
+            this.checkSum = chunkMetaData.checkSum;
+            this.isCompressed = chunkMetaData.isCompressed;
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+            System.out.println("Please try again with correct meta data file.");
+            return false;
+        }
+        return true;
+    }
+
     public String getFileName() {
     	return this.fileName;
     }

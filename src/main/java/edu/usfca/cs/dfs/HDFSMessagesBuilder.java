@@ -321,4 +321,23 @@ public class HDFSMessagesBuilder {
     public static synchronized StorageMessages.MessageWrapper constructRetrieveChunkAck() {
         return null;
     }
+
+
+    public static synchronized  StorageMessages.MessageWrapper constructChunkZero(ChunkMetaData chunkMetaData, byte[] data) {
+		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
+				.setFileName(chunkMetaData.fileName)
+				.setChunkId(chunkMetaData.chunkId)
+				.setChunkSize(chunkMetaData.chunkSize)
+				.setMaxChunkNumber(chunkMetaData.maxChunkId)
+				.setChecksum(chunkMetaData.checkSum)
+//				.setData()
+				.build();
+		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = StorageMessages.RetrieveChunkResponse.newBuilder()
+				.setChunk(chunk)
+				.build();
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setRetrieveChunkResponse(retrieveChunkResponse)
+				.build();
+		return msgWrapper;
+	}
 }

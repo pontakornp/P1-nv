@@ -169,9 +169,8 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			int chunkId = chunk.getChunkId();
 			// return the chunk to the client
 			StorageNode storageNode = StorageNode.getInstance();
-			storageNode.retrieveChunk(fileName, chunkId);
 			// construct retrieve chunk response storage message
-			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkResponse(chunk);
+			MessageWrapper msgWrapper = storageNode.retrieveChunk(fileName, chunkId);
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			future.addListener(ChannelFutureListener.CLOSE);
 		}else if(messageType == 11) {
@@ -185,18 +184,22 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		//store the chunk
 			// if chunk is null, it means chunk does not exist
 			if(chunkMsg != null) {
-				ctx.close();
 				if(chunkId == 0) {
 					// get maxChunkNumber
-					int maxChunkNumber = chunkMsg.getMaxChunkNumber();
-					// request to controller to get the rest of the chunks
-					Client.retrieveFileRequestToController(fileName, maxChunkNumber);
-				} else {
 					Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
 					// mock writing to file
 					Client.writeToFile(fileName, chunkId, chunkMsg.getData().toByteArray());
+					int maxChunkNumber = chunkMsg.getMaxChunkNumber();
+					// request to controller to get the rest of the chunks
+					if(maxChunkNumber > 1) {
+						Client.retrieveFileRequestToController(fileName, maxChunkNumber);
+					}
+				} else {
+					Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
+
 				}
 			}
+			ctx.close();
 			// merge and write it to file later
 		}else if(messageType == 12) {
     		logger.info("Save Chunk Update request received on Controller");
