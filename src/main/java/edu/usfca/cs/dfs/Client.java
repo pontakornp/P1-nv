@@ -1,9 +1,6 @@
 package edu.usfca.cs.dfs;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,11 +107,14 @@ public class Client {
     }
 
     public static void retrieveFile(List<StorageMessages.ChunkMapping> chunkMappings) {
+    	logger.info("got the chunk mapping yes!");
+    	logger.info("Chunk mapping size: " + chunkMappings.size());
 		for(StorageMessages.ChunkMapping chunkMapping: chunkMappings) {
 			List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
 			StorageMessages.Chunk chunk = chunkMapping.getChunk();
 			String fileName = chunk.getFileName();
 			int chunkId = chunk.getChunkId();
+			logger.info("got the chunk with file name: " + fileName + " chunkId: " + chunkId);
 			// retrieve chunk from storage node and store it
 			retrieveChunk(storageNodeList, fileName, chunkId);
 		}
@@ -126,9 +126,11 @@ public class Client {
 	 * @param chunkId
 	 */
 	public static void retrieveChunk(List<StorageMessages.StorageNode> storageNodeList, String fileName, int chunkId) {
+		logger.info("client retrieves chunk from storage node");
 		for(StorageMessages.StorageNode storageNode: storageNodeList) {
 			String addr = storageNode.getStorageNodeAddr();
 			int port = storageNode.getStorageNodePort();
+			logger.info("storage addr: " + addr + " storage port: " + port);
 			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkRequest(fileName, chunkId);
 			String initiateMsg = "Retrieve Chunk initiated to storageNode: " + storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort());
 			String successMsg = "Retrieve Chunk completed at storageNode";
@@ -142,6 +144,21 @@ public class Client {
 		Client.chunkMap.put(fileName + "_" + chunkId, chunkMsg);
 	}
 
+	public static void writeToFile(String fileName, int chunkId, byte[] data) {
+		String outputFile = fileName + "_" + chunkId;
+		File dir = new File(Client.fileDestinationPath, outputFile);
+		if(dir != null) {
+			FileOutputStream outputStream = null;
+			try {
+				outputStream = new FileOutputStream(outputFile);
+				outputStream.write(data);
+			} catch (IOException e) {
+				logger.error("Fail to write file");
+			}
+		} else {
+			logger.error("Folder not created");
+		}
+	}
 	//
     public static void retrieveFileRequestToController(String fileName, int maxChunkNumber) {
         try {
@@ -167,6 +184,7 @@ public class Client {
             logger.info("Retrieve File Chunks initial request sent to controller");
             chan.closeFuture().sync();
             workerGroup.shutdownGracefully();
+
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("File Existence Check failed. Controller connection establishment failed");
@@ -324,6 +342,7 @@ public class Client {
      * fileName, chunkId, chunksize
      */
     public void getFile(String fileName) {
+		retrieveFileRequestToController(fileName, 0);
     }
     
     /*
