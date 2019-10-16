@@ -1,15 +1,15 @@
 package edu.usfca.cs.dfs;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import edu.usfca.cs.dfs.config.Config;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
 public class ChunkMetaData {
     public String fileName;
+    public long fileSize;
     public int chunkId;
     public int chunkSize;
     public int maxChunkId;
@@ -21,8 +21,9 @@ public class ChunkMetaData {
 
     }
 
-    public ChunkMetaData(String fileName, int chunkId, int chunkSize, int maxChunkId, String checkSum, boolean isCompressed) {
+    public ChunkMetaData(String fileName, long fileSize, int chunkId, int chunkSize, int maxChunkId, String checkSum, boolean isCompressed) {
     	this.fileName = fileName;
+    	this.fileSize = fileSize;
     	this.chunkId = chunkId;
     	this.chunkSize = chunkSize;
     	this.maxChunkId = maxChunkId;
@@ -37,9 +38,9 @@ public class ChunkMetaData {
     public boolean setVariables(String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {
-            System.out.println("Config file not found at given path : "+ filePath);
+            System.out.println("Meta file not found at given path : "+ filePath);
         }
-        System.out.println("Config file found at given path : "+ filePath);
+        System.out.println("Meta file found at given path : "+ filePath);
 
         try {
             JsonReader jsonReader = new JsonReader(new FileReader(filePath));
@@ -66,6 +67,14 @@ public class ChunkMetaData {
     
     public void setFileName(String fileName) {
     	this.fileName = fileName;
+    }
+    
+    public long getFileSize() {
+    	return this.fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+    	this.fileSize = fileSize;
     }
     
     public int getchunkId() {

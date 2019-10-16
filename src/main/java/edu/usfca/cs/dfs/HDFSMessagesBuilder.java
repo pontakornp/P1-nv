@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.protobuf.ByteString;
+
 public class HDFSMessagesBuilder {
 	static Logger logger = LogManager.getLogger(HDFSMessagesBuilder.class);
 
@@ -323,20 +325,21 @@ public class HDFSMessagesBuilder {
     }
 
 
-    public static synchronized  StorageMessages.MessageWrapper constructChunkZero(ChunkMetaData chunkMetaData, byte[] data) {
+    public static synchronized  StorageMessages.MessageWrapper constructChunkFromFile(ChunkMetaData chunkMetaData, byte[] data) {
 		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
 				.setFileName(chunkMetaData.fileName)
 				.setChunkId(chunkMetaData.chunkId)
 				.setChunkSize(chunkMetaData.chunkSize)
 				.setMaxChunkNumber(chunkMetaData.maxChunkId)
 				.setChecksum(chunkMetaData.checkSum)
-//				.setData()
+				.setData(ByteString.copyFrom(data))
 				.build();
 		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = StorageMessages.RetrieveChunkResponse.newBuilder()
 				.setChunk(chunk)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
 				.setRetrieveChunkResponse(retrieveChunkResponse)
+				.setMessageType(11)
 				.build();
 		return msgWrapper;
 	}

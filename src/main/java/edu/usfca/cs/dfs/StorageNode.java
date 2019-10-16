@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +44,6 @@ public class StorageNode {
 	private long availableStorageCapacity;
 	private long maxStorageCapacity;
 	private List<StorageMessages.ReplicaNode> replicaStorageNodes;
-	private ConcurrentHashMap<String, ChunkMetaData> chunkMapping;
 	
 	private String controllerNodeAddr;
 	private int controllerNodePort;
@@ -338,12 +336,9 @@ public class StorageNode {
 				outputStream.write(chunkData);
 				outputStream.close();
 				ChunkMetaData chunkMetaData = new ChunkMetaData(
-						chunk.getFileName(), chunk.getChunkId(),
-						chunk.getChunkSize(),
-						chunk.getMaxChunkNumber(),
-						checksum,
-						isCompressed
-						);
+					chunk.getFileName(), chunk.getFileSize(), 
+					chunk.getChunkId(), chunk.getChunkSize(),
+					chunk.getMaxChunkNumber(), checksum, isCompressed);
 				
 				Gson gson = new Gson();
 				Writer writer = new FileWriter(metaoutputFile);
@@ -482,7 +477,7 @@ public class StorageNode {
 			byte[] chunkData = Files.readAllBytes(Paths.get(metaPath));
 			ChunkMetaData chunkMetaData = new ChunkMetaData();
 			chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
-			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkZero(chunkMetaData, chunkData);
+			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData);
 
 			if(chunkMetaData.isCompressed) {
 
@@ -506,26 +501,40 @@ public class StorageNode {
 
 	// retrieve chunk from a file
 	public synchronized StorageMessages.MessageWrapper retrieveChunk(String fileName, int chunkNumber) {
-		String filePath = StorageNode.storageNodeDirectoryPath + fileName + '_' + chunkNumber;
-		String metaPath = filePath + ".meta";
-		File file = new File(filePath);
-		if (!file.exists()) {
-			return null;
-		}
-		try {
-			byte[] chunkData = Files.readAllBytes(Paths.get(metaPath));
-			ChunkMetaData chunkMetaData = new ChunkMetaData();
-			chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
-			//if chunk is compressed, need to decompress the byte array data before returning it
-			// else return the byte array data right away
-			if (chunkMetaData.isCompressed) {
-				chunkData = CompressDecompress.decompress(chunkData);
+		String file_key = fileName + '_' + chunkNumber;
+		// Finds file location in base path
+		File basePath = new File(StorageNode.storageNodeDirectoryPath);
+		File filePath = null;
+		for(File subdirectory: basePath.listFiles()) {
+			if(subdirectory.isDirectory()) {
+				filePath = new File(subdirectory.getAbsolutePath(), file_key);
+				if(filePath.exists()) {
+					logger.info("File existence detected for chunk retreiveal on Node with storage id : " + this.storageNodeId);
+				}
+				break;
 			}
-			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkZero(chunkMetaData, chunkData);
-			return msgWrapper;
-		} catch (IOException e) {
-			logger.error("File not exist");
+		}
+		
+		if (filePath ==null) {
+			logger.info("False positive detected for file retreival. No file found on storage node");
 			return null;
+		}else {
+			String metaPath = filePath + ".meta";
+			try {
+				byte[] chunkData = Files.readAllBytes(Paths.get(metaPath));
+				ChunkMetaData chunkMetaData = new ChunkMetaData();
+				chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
+				//if chunk is compressed, need to decompress the byte array data before returning it
+				// else return the byte array data right away
+				if (chunkMetaData.isCompressed) {
+					chunkData = CompressDecompress.decompress(chunkData);
+				}
+				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData);
+				return msgWrapper;
+			} catch (IOException e) {
+				logger.error("File not exist");
+				return null;
+			}
 		}
 	}
 

@@ -146,21 +146,19 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			if(chunkMappings != null) {
 				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(chunkMappings);
 				ChannelFuture future = ctx.writeAndFlush(msgWrapper);
-				future.addListener(ChannelFutureListener.CLOSE);
 			} else {
-				logger.info("If there are one or more chunk that could not be found on any storage node, stop");
+				logger.error("If there are one or more chunk that could not be found on any storage node, stop");
+				throw new Exception("One or more chunks does not even have one replica on storage nodes");
 			}
-//			ctx.close();
-			// controller send nodes to clients
-
+			ctx.close();
 		}else if(messageType == 9) {
-    		logger.info("Retrieve File Response: Client receives storage nodes from Controller");
+    		logger.info("Retrieve File Response: Client receives storage nodes mappings from Controller");
     		StorageMessages.RetrieveFileResponse retrieveFileResponse = msg.getRetrieveFileResponse();
     		List<StorageMessages.ChunkMapping> chunkMappings =  retrieveFileResponse.getChunkMappingsList();
+    		Client.retrieveFile(chunkMappings);
     		// done getting storage nodes
     		ctx.close();
     		// client retrieve file from storage nodes chunk by chunk
-    		Client.retrieveFile(chunkMappings);
 		}else if(messageType == 10) {
 			logger.info("Retrieve Chunk Request: Storage Node receive request from client");
 			StorageMessages.RetrieveChunkRequest retrieveChunkRequest = msg.getRetrieveChunkRequest();

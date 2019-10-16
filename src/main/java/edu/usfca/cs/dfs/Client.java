@@ -1,6 +1,9 @@
 package edu.usfca.cs.dfs;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,9 +37,6 @@ public class Client {
 	private static HashMap<String, StorageMessages.Chunk> chunkMap;
 	private static Client clientInstance;
 	private static int MAX_REPLICAS = 2;
-
-
-
 
 
 	public Client() {
@@ -146,17 +146,16 @@ public class Client {
 
 	public static void writeToFile(String fileName, int chunkId, byte[] data) {
 		String outputFile = fileName + "_" + chunkId;
-		File dir = new File(Client.fileDestinationPath, outputFile);
-		if(dir != null) {
-			FileOutputStream outputStream = null;
-			try {
-				outputStream = new FileOutputStream(outputFile);
-				outputStream.write(data);
-			} catch (IOException e) {
-				logger.error("Fail to write file");
+		File outputFilePath = new File(Client.fileDestinationPath, outputFile);
+		
+		try {
+			if(!outputFilePath.exists()) {
+				outputFilePath.createNewFile();
 			}
-		} else {
-			logger.error("Folder not created");
+			RandomAccessFile aFile = new RandomAccessFile(outputFilePath, "r");
+			
+		} catch (IOException e) {
+			logger.error("Fail to write file");
 		}
 	}
 	//
@@ -242,10 +241,7 @@ public class Client {
 			chan.flush();
 			write.syncUninterruptibly();
 			logger.info(successMsg);
-
 			// wait for an object to be updated
-
-
 			chan.closeFuture().sync();
 			workerGroup.shutdownGracefully();
 		} catch (Exception e) {
@@ -343,32 +339,6 @@ public class Client {
      */
     public void getFile(String fileName) {
 		retrieveFileRequestToController(fileName, 0);
-    }
-    
-    /*
-     * This sends a request to controller to get list of storage nodes
-     * to save for each chunk. Opens a channel to controller with 
-     * fileName, chunkId, chunksize
-     */
-    private StorageNode getPrimaryStorageNode(Bootstrap bootstrap, MessageWrapper message) {
-        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
-        cf.syncUninterruptibly();
-        Channel chan = cf.channel();
-        ChannelFuture write = chan.write(message);
-        chan.flush();
-        write.syncUninterruptibly();
-        // TODO: Need to create a two way communication between controller and client
-        return null;
-    }
-    
-    private void saveChunkOnPrimary(Bootstrap bootstrap, MessageWrapper message, StorageNode storageNode) {
-    	ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
-        cf.syncUninterruptibly();
-        Channel chan = cf.channel();
-        ChannelFuture write = chan.write(message);
-        chan.flush();
-        write.syncUninterruptibly();
-        // TODO: Need to create a two way communication between client and storageNode
     }
 
     public static void main(String[] args) throws IOException {
