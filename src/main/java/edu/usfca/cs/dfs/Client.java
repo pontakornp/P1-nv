@@ -68,7 +68,7 @@ public class Client {
      * to save for each chunk. Opens a channel to controller with 
      * fileName, chunkId, chunksize
      */
-    public void sendFile(String filePath) {
+    public synchronized void sendFile(String filePath) {
     	File file = new File(filePath);
     	if (!file.exists()) {
     		System.out.println("File with the given path: " +   filePath +  " does not exists");
@@ -97,7 +97,6 @@ public class Client {
 	        cf.syncUninterruptibly();
 	
 	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetStorageNodesForChunksRequest(file, this.chunkSize);
-	
 	        Channel chan = cf.channel();
 	        ChannelFuture write = chan.write(msgWrapper);
 	        chan.flush();

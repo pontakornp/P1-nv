@@ -30,13 +30,13 @@ public class BloomFilter {
      * 
      */
     private int[] getBitLocations(byte[] data) {
-    	int[] results = new int[hashCount];
+    	int[] results = new int[this.hashCount];
     	
-    	int prevHash = Math.abs((int) Murmur3.hash_x64_128(data, data.length, MURMUR_SEED)[0]%hashCount);
-    	int nextHash = Math.abs((int) Murmur3.hash_x64_128(data, data.length, prevHash)[0]%hashCount);
+    	int prevHash = Math.abs((int) Murmur3.hash_x64_128(data, data.length, MURMUR_SEED)[0]%this.bitCount);
+    	int nextHash = Math.abs((int) Murmur3.hash_x64_128(data, data.length, prevHash)[0]%this.bitCount);
     	
         for (int i = 0; i < this.hashCount; i++) {
-            results[i] = (int) (prevHash + i*nextHash) % hashCount;
+            results[i] = (int) (prevHash + i*nextHash) % this.bitCount;
         }
         return results;
     }
@@ -49,7 +49,7 @@ public class BloomFilter {
      * 3. If any one location is 0 return false else return true!	
      * 
      */
-    public boolean getBloomKey(byte[] data) {
+    public synchronized boolean getBloomKey(byte[] data) {
         int[] bitLocationArray = this.getBitLocations(data);
 
         for (int i = 0; i < bitLocationArray.length; i++) {
@@ -67,7 +67,7 @@ public class BloomFilter {
      * 3. Increments the element count
      * 
      */
-    public void putBloomKey(byte[] data) {
+    public synchronized void putBloomKey(byte[] data) {
         int[] bitLocations = this.getBitLocations(data);
         for (int i = 0; i < bitLocations.length; i++) {
             this.bloomFilterArray[bitLocations[i]] = 1;
@@ -79,7 +79,7 @@ public class BloomFilter {
      * 1. Generate the current false positive probability of bloom filter
      * false positve formula: p = pow(1 - exp(-k / (m / numberOfItems)), k)
      */
-    public float falsePositive() {
+    public synchronized float falsePositive() {
         double exp = Math.exp((double) -this.hashCount / (this.bitCount / this.elementCount));
         double p = Math.pow(1 - exp, this.hashCount);
         return (float) p;

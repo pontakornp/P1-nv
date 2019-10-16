@@ -252,7 +252,7 @@ public class StorageNode {
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
-	public StorageMessages.Chunk storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
+	public synchronized StorageMessages.Chunk storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
 		StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 		String fileName = chunk.getFileName();
 		int chunkId = chunk.getChunkId();

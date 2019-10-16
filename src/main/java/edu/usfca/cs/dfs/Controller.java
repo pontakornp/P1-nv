@@ -31,7 +31,7 @@ public class Controller {
 	private ConcurrentHashMap<String, StorageMessages.StorageNode> activeStorageNodes;
 	private ConcurrentHashMap<String, BloomFilter> bloomFilterMap;
 	private ConcurrentHashMap<String, Timestamp> timeStamps;
-	private static Integer BLOOM_FILTER_SIZE = 1024;
+	private static Integer BLOOM_FILTER_SIZE = 4096;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	private static long MAX_STORAGE_TIME_INACTIVITY = 30000;
 	private static int MAX_REPLICAS = 2;
@@ -167,7 +167,13 @@ public class Controller {
 		
 		if(this.timeStamps.containsKey(storageNodeId)) {
 			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
-			//this.activeStorageNodes.put(storageNodeId, storageNode);
+			StorageMessages.StorageNode activeStorageNode = this.activeStorageNodes.get(storageNodeId);
+			activeStorageNode = activeStorageNode.toBuilder()
+					.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
+					.build();
+			this.activeStorageNodes.put(storageNodeId, activeStorageNode);
+			// TODO: Respond to heartbeat with new replication nodes
+			// TODO: Storage nodes needs to update replication nodes with changes in replication nodes
 			logger.info("Storage Node Heartbeat has been updated");
 		}else {
 			logger.error("Storage Node not registered on controller. Heartbeat will not be updated");
@@ -251,7 +257,7 @@ public class Controller {
 				primaryNode = false;
 			}
 		}
-		if(notcontainingStorageNodeList.size()>0) {
+		if(notcontainingStorageNodeList.size()>0 && containingStorageNodeList.size()==0) {
 			containingStorageNodeList.add(notcontainingStorageNodeList.get(0));
 		}
 		
