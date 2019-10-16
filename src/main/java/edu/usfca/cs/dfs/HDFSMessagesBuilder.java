@@ -2,6 +2,7 @@ package edu.usfca.cs.dfs;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HDFSMessagesBuilder {
 
@@ -235,10 +236,10 @@ public class HDFSMessagesBuilder {
         return null;
     }
 
-    public static StorageMessages.MessageWrapper constructRetrieveFileRequest(String fileName, int chunkId) {
+    public static StorageMessages.MessageWrapper constructRetrieveFileRequest(String fileName, int maxChunkNumber) {
 		StorageMessages.Chunk chunkMsg = StorageMessages.Chunk.newBuilder()
 				.setFileName(fileName)
-				.setChunkId(chunkId)
+				.setMaxChunkNumber(maxChunkNumber)
 				.build();
 		StorageMessages.RetrieveFileRequest retrieveFileRequest = StorageMessages.RetrieveFileRequest.newBuilder()
 				.setChunk(chunkMsg)
@@ -250,9 +251,14 @@ public class HDFSMessagesBuilder {
         return msgWrapper;
     }
 
-    public static StorageMessages.MessageWrapper constructRetrieveFileResponse(StorageMessages.ChunkMapping chunkMapping) {
+    public static StorageMessages.MessageWrapper constructRetrieveFileResponse(String fileName, int maxChunkNumber, List<StorageMessages.ChunkMapping> chunkMappings) {
+		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
+				.setFileName(fileName)
+				.setMaxChunkNumber(maxChunkNumber)
+				.build();
 		StorageMessages.RetrieveFileResponse retrieveFileResponse = StorageMessages.RetrieveFileResponse.newBuilder()
-				.setChunkMappings(chunkMapping)
+				.setChunk(chunk)
+				.addAllChunkMappings(chunkMappings)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
 				.setMessageType(9)
@@ -270,7 +276,7 @@ public class HDFSMessagesBuilder {
 				.setChunk(chunkMsg)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-				.setMessageType(8)
+				.setMessageType(10)
 				.setRetrieveChunkRequest(retrieveChunkRequest)
 				.build();
 		return msgWrapper;
@@ -282,7 +288,7 @@ public class HDFSMessagesBuilder {
 				.build();
 
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-				.setMessageType(10)
+				.setMessageType(11)
 				.setRetrieveChunkResponse(retrieveChunkResponse)
 				.build();
 		return msgWrapper;

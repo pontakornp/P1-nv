@@ -111,6 +111,21 @@ public class Client {
 		}
     }
 
+    public static void retrieveFile(StorageMessages.Chunk chunkMsg, List<StorageMessages.ChunkMapping> chunkMappings) {
+    	String fileName = chunkMsg.getFileName();
+    	int maxChunkNumber = chunkMsg.getMaxChunkNumber();
+
+
+    	for(StorageMessages.ChunkMapping chunkMapping: chunkMappings) {
+    		List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
+    		StorageMessages.Chunk chunk = chunkMapping.getChunk();
+    		int chunkId = chunk.getChunkId();
+    		// retrieve chunk from storage node and store it
+    		retrieveChunk(storageNodeList, fileName, chunkId);
+
+		}
+
+	}
 	/**
 	 * Client contacts storage nodes to get each chunk one by one, and store the chunk in the chunk mapping data structure
 	 * @param storageNodeList
@@ -134,7 +149,8 @@ public class Client {
 		Client.chunkMap.put(fileName + "_" + chunkId, chunkMsg);
 	}
 
-    public void retrieveFile(String fileName, int chunkId) {
+	//
+    public void retrieveFileRequestToController(String fileName, int maxChunkNumber) {
         try {
             EventLoopGroup workerGroup = new NioEventLoopGroup();
             MessagePipeline pipeline = new MessagePipeline();
@@ -149,7 +165,7 @@ public class Client {
             ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
             cf.syncUninterruptibly();
 
-            MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileRequest(fileName, chunkId);
+            MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileRequest(fileName, maxChunkNumber);
 
             Channel chan = cf.channel();
             ChannelFuture write = chan.write(msgWrapper);
