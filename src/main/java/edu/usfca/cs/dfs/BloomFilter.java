@@ -8,17 +8,17 @@ import com.sangupta.murmur.Murmur3;
 public class BloomFilter {
 	private int bitCount;
 	private int hashCount;
-	private int[] bloomFilterArray;
+	private byte[] bloomFilterArray;
 	private int elementCount;
 	private static final long MURMUR_SEED = 0;
 	
 	public BloomFilter(Integer bitCount, Integer hashCount) {
 		this.bitCount = bitCount;
 		this.hashCount = hashCount;
-		this.bloomFilterArray = new int[bitCount];
+		this.bloomFilterArray = new byte[bitCount];
 	}
 
-	public int[] getBloomFilterArray() {
+	public byte[] getBloomFilterArray() {
 		return this.bloomFilterArray;
 	}
 	
@@ -29,21 +29,14 @@ public class BloomFilter {
      * 3. Iterates for the number of hashCount
      * 
      */
-    private long[] getBitLocations(byte[] data) {
-    	Long prevHash = null;
-    	Long number;
-    	long[] results = new long[hashCount];
+    private int[] getBitLocations(byte[] data) {
+    	int[] results = new int[hashCount];
+    	
+    	int prevHash = Math.abs((int) Murmur3.hash_x64_128(data, data.length, MURMUR_SEED)[0]%hashCount);
+    	int nextHash = Math.abs((int) Murmur3.hash_x64_128(data, data.length, prevHash)[0]%hashCount);
     	
         for (int i = 0; i < this.hashCount; i++) {
-        	if (prevHash == null) {
-        		Long hash = Murmur3.hash_x86_32(data, data.length, BloomFilter.MURMUR_SEED);
-        		number = hash;
-        	}else {
-        		Long hash = Murmur3.hash_x86_32(data, data.length, prevHash);
-        		number = hash + i*prevHash;
-        		prevHash = hash;
-        	}
-            results[i] = (number%(long)hashCount);
+            results[i] = (int) (prevHash + i*nextHash) % hashCount;
         }
         return results;
     }
@@ -57,10 +50,10 @@ public class BloomFilter {
      * 
      */
     public boolean getBloomKey(byte[] data) {
-        long[] bitLocationArray = this.getBitLocations(data);
+        int[] bitLocationArray = this.getBitLocations(data);
 
         for (int i = 0; i < bitLocationArray.length; i++) {
-            if (this.bloomFilterArray[(int) bitLocationArray[i]] == 0) {
+            if (this.bloomFilterArray[bitLocationArray[i]] == 0) {
                 return false;
             }
         }
@@ -75,9 +68,9 @@ public class BloomFilter {
      * 
      */
     public void putBloomKey(byte[] data) {
-        long[] bitLocations = this.getBitLocations(data);
+        int[] bitLocations = this.getBitLocations(data);
         for (int i = 0; i < bitLocations.length; i++) {
-            this.bloomFilterArray[(int) bitLocations[i]] = 1;
+            this.bloomFilterArray[bitLocations[i]] = 1;
         }
         this.elementCount++;
     }

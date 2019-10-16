@@ -71,7 +71,6 @@ public class HDFSMessagesBuilder {
 			.setStorageNodePort(storageNode.getStorageNodePort())
 			.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
 			.setMaxStorageCapacity(storageNode.getMaxStorageCapacity())
-			.addAllReplicaNodes(storageNode.getReplicaStorageNodes())
 			.build();
 		
 		StorageMessages.StorageNodeHeartbeat StorageNodeHeartBeatMsg
@@ -206,7 +205,6 @@ public class HDFSMessagesBuilder {
 			.setStorageNodePort(storageNode.getStorageNodePort())
 			.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
 			.setMaxStorageCapacity(storageNode.getMaxStorageCapacity())
-			.addAllReplicaNodes(storageNode.getReplicaStorageNodes())
 			.build();
     	
         StorageMessages.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequestMsg 

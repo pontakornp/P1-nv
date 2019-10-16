@@ -3,13 +3,19 @@ option java_package = "edu.usfca.cs.dfs";
 
 // 1. Register Storage Node
 
+message ReplicaNode {
+	string storageNodeId = 1;
+	string storageNodeAddr = 2;
+	int32 storageNodePort = 3;
+}
+
 message StorageNode {
 	string storageNodeId = 1;
 	string storageNodeAddr = 2;
 	int32 storageNodePort = 3;
 	int64 availableStorageCapacity = 4;
 	int64 maxStorageCapacity = 5;
-	repeated StorageNode replicaNodes = 6;
+	repeated ReplicaNode replicaNodes = 6;
 }
 
 message StorageNodeRegisterRequest {

@@ -39,7 +39,7 @@ public class StorageNode {
 	private int storageNodePort;
 	private long availableStorageCapacity;
 	private long maxStorageCapacity;
-	private List<StorageMessages.StorageNode> replicaStorageNodes;
+	private List<StorageMessages.ReplicaNode> replicaStorageNodes;
 	private ConcurrentHashMap<String, ChunkMetaData> chunkMapping;
 	
 	private String controllerNodeAddr;
@@ -77,11 +77,11 @@ public class StorageNode {
 		return this.maxStorageCapacity;
 	}
 
-	public List<StorageMessages.StorageNode> getReplicaStorageNodes() {
+	public List<StorageMessages.ReplicaNode> getReplicaStorageNodes() {
 		return this.replicaStorageNodes;
 	}
 
-	public void setReplicaStorageNodes(List<StorageMessages.StorageNode> replicaStorageNodes) {
+	public void setReplicaStorageNodes(List<StorageMessages.ReplicaNode> replicaStorageNodes) {
 		this.replicaStorageNodes = replicaStorageNodes;
 	}
 
@@ -130,7 +130,7 @@ public class StorageNode {
 		StorageNode.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
 		this.maxStorageCapacity = config.getMaxStorageCapacity();
 		this.availableStorageCapacity = this.maxStorageCapacity;
-		this.replicaStorageNodes = new ArrayList<StorageMessages.StorageNode>();
+		this.replicaStorageNodes = new ArrayList<StorageMessages.ReplicaNode>();
 		
 		this.controllerNodeAddr = config.getControllerNodeAddr();
 		this.controllerNodePort = config.getControllerNodePort();
@@ -376,7 +376,7 @@ public class StorageNode {
 	 */
 	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk, StorageMessages.StorageNode storageNode) {
 		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, storageNode, false, false);
-		for (StorageMessages.StorageNode replica: this.replicaStorageNodes) {
+		for (StorageMessages.ReplicaNode replica: this.replicaStorageNodes) {
 			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
 			if (!isReplicated) {
 				return false;
@@ -386,7 +386,7 @@ public class StorageNode {
 	}
 
 
-	private boolean storeChunkOnReplicaHelper(MessageWrapper message, StorageMessages.StorageNode storageNode) {
+	private boolean storeChunkOnReplicaHelper(MessageWrapper message, StorageMessages.ReplicaNode storageNode) {
 		try {
 			EventLoopGroup workerGroup = new NioEventLoopGroup();
 			MessagePipeline pipeline = new MessagePipeline();

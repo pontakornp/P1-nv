@@ -63,8 +63,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			logger.info("Received Storage Node Registration Message");
             StorageMessages.StorageNode storageNode = msg.getStorageNodeRegisterRequest().getStorageNode();
     		Controller controller = Controller.getInstance();
-    		controller.addStorageNode(storageNode);
-    		
+    		storageNode = controller.addStorageNode(storageNode);
     		MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeResponse(storageNode);
     		logger.info("Sending Storage Node Registration Response Message");
     		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
@@ -74,6 +73,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponse = msg.getStorageNodeRegisterResponse();
     		StorageMessages.StorageNode storageNodeMsg = storageNodeRegisterResponse.getStorageNode();
     		StorageNode storageNode = StorageNode.getInstance();
+    		logger.info(storageNodeMsg.toString());
     		storageNode.setReplicaStorageNodes(storageNodeMsg.getReplicaNodesList());
     		ctx.close();
     	}else if(messageType == 3){
@@ -230,7 +230,6 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		controller.updateChunkSaveonController(storageNode, chunk);
     		logger.info("Save chunk update request handled in controller. Updated metadata");
     		ctx.close();
-
 		}
     }
 

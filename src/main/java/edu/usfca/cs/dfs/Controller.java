@@ -36,8 +36,6 @@ public class Controller {
 	private static long MAX_STORAGE_TIME_INACTIVITY = 30000;
 	private static int MAX_REPLICAS = 2;
 
-	private ConcurrentHashMap<String, List<StorageNode>> storageNodeReplicaMap;
-	
 	private static Controller controllerInstance; 
 	
 	private Controller() {
@@ -52,10 +50,6 @@ public class Controller {
 		return this.activeStorageNodes;
 	}
 
-	public ConcurrentHashMap<String, List<StorageNode>> getStorageNodeReplicaMap() {
-		return storageNodeReplicaMap;
-	}
-	
 	public static Controller getInstance() {
 		if (controllerInstance == null){
 			System.out.println("New controller instance instantiated");
@@ -85,9 +79,9 @@ public class Controller {
 	 * This will add the node metadata to activeStorageNodes
 	 * Takes the Storage 
 	 */
-	public synchronized void addStorageNode(StorageMessages.StorageNode storageNode) {
+	public synchronized StorageMessages.StorageNode addStorageNode(StorageMessages.StorageNode storageNode) {
 		String storageNodeId = storageNode.getStorageNodeId();
-		System.out.println("Storage Node Received on controller for registration"
+		logger.info("Storage Node Received on controller for registration"
 				+ storageNodeId +  " StorageNode Size: " + storageNode.getAvailableStorageCapacity());
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
 			this.activeStorageNodes.put(storageNodeId, storageNode);
@@ -98,13 +92,15 @@ public class Controller {
 		}else {
 			logger.error("Storage Node already registered with controller");
 		}
+		storageNode = this.activeStorageNodes.get(storageNode.getStorageNodeId());
+		logger.info("Current state after registration");
+		this.printStorageNodes();
+		return storageNode;
 	}
 	
-	public void printStorageNodeReplicaIds() {
-		for (Map.Entry<String, StorageMessages.StorageNode> existingStorageNode : this.activeStorageNodes.entrySet()) {
-			for(StorageMessages.StorageNode replicaStorageNode: existingStorageNode.getValue().getReplicaNodesList()) {
-				logger.info(replicaStorageNode.getStorageNodeId() + " is replica of " + existingStorageNode.getValue().getStorageNodeId());
-			}
+	public void printStorageNodes() {
+		for (Map.Entry<String, StorageMessages.StorageNode> activeStorageNode : this.activeStorageNodes.entrySet()) {
+			logger.info(activeStorageNode.toString());
 		}
 	}
 	
@@ -131,13 +127,13 @@ public class Controller {
 					for (StorageMessages.StorageNode existingStorageNode : this.activeStorageNodes.values()) {
 						completeNodeListPQ.add(existingStorageNode);
 						ArrayList<String> existingReplicaNodeIdList = new ArrayList<String>();
-						for(StorageMessages.StorageNode replicaNode: existingStorageNode.getReplicaNodesList()) {
+						for(StorageMessages.ReplicaNode replicaNode: existingStorageNode.getReplicaNodesList()) {
 							existingReplicaNodeIdList.add(replicaNode.getStorageNodeId());
 						}
 						existingReplicaMap.put(existingStorageNode.getStorageNodeId(), existingReplicaNodeIdList);
 					}
 					
-					ArrayList<StorageMessages.StorageNode> outputNodeList = new ArrayList<StorageMessages.StorageNode>();
+					ArrayList<StorageMessages.ReplicaNode> outputNodeList = new ArrayList<StorageMessages.ReplicaNode>();
 					for(int i=0; i<maxReplicas-existingReplicaMap.get(activeStorageNode.getStorageNodeId()).size(); i++) {
 						StorageMessages.StorageNode currentNode = completeNodeListPQ.peek();
 						while(activeStorageNode.getStorageNodeId() == currentNode.getStorageNodeId()
@@ -146,7 +142,14 @@ public class Controller {
 							currentNode = completeNodeListPQ.peek();
 						}
 						logger.info("Storage Node: " + currentNode.getStorageNodeId() + " added as replica for " + activeStorageNode.getStorageNodeId());
-						outputNodeList.add(completeNodeListPQ.remove());
+						StorageMessages.StorageNode tempSN = completeNodeListPQ.remove();
+						StorageMessages.ReplicaNode replicaNodeMsg 
+							= StorageMessages.ReplicaNode.newBuilder()
+							.setStorageNodeId(tempSN.getStorageNodeId())
+							.setStorageNodeAddr(tempSN.getStorageNodeAddr())
+							.setStorageNodePort(tempSN.getStorageNodePort())
+							.build();
+						outputNodeList.add(replicaNodeMsg);
 					}
 					activeStorageNode = activeStorageNode.toBuilder().addAllReplicaNodes(outputNodeList).build();
 					this.activeStorageNodes.put(activeStorageNode.getStorageNodeId(), activeStorageNode);
@@ -164,7 +167,7 @@ public class Controller {
 		
 		if(this.timeStamps.containsKey(storageNodeId)) {
 			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
-			this.activeStorageNodes.put(storageNodeId, storageNode);
+			//this.activeStorageNodes.put(storageNodeId, storageNode);
 			logger.info("Storage Node Heartbeat has been updated");
 		}else {
 			logger.error("Storage Node not registered on controller. Heartbeat will not be updated");
@@ -222,10 +225,11 @@ public class Controller {
 		
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
 			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
-			System.out.println("Iterating bloom filter for storage node" + storageNode.getStorageNodeId());
-			System.out.println("Current capacity of storagenode: " + +storageNode.getAvailableStorageCapacity());
+			logger.info("Iterating bloom filter for storage node: " + storageNode.getStorageNodeId());
 			if(storageNodeBloomFilter.getValue().getBloomKey(bloomFilterKey.getBytes())) {
 				containingStorageNodeList.add(storageNode);
+				logger.info("Storagenode Identified containing bloom key: " 
+						+ bloomFilterKey + " " + storageNode.getStorageNodeId());
 			}else if(primaryNode){
 				if(completeNodeListPQ.peek()!=null && completeNodeListPQ.peek().getAvailableStorageCapacity()>=chunk.getChunkSize()){
 					StorageMessages.StorageNode newStorageNode = completeNodeListPQ.remove();
@@ -240,6 +244,8 @@ public class Controller {
 		                .setMaxStorageCapacity(newStorageNode.getMaxStorageCapacity())
 		                .addAllReplicaNodes(newStorageNode.getReplicaNodesList())
 		                .build();
+					
+					logger.info("New Storagenode Identified for new bloom key: " + bloomFilterKey + storageNode.getStorageNodeId());
 					completeNodeListPQ.add(modifiedStorageNode);
 				}
 				primaryNode = false;
@@ -249,7 +255,7 @@ public class Controller {
 			containingStorageNodeList.add(notcontainingStorageNodeList.get(0));
 		}
 		
-		System.out.println("StorageNodes Identified for chunk: " + String.valueOf(containingStorageNodeList.size()));
+		System.out.println("StorageNodes Count Identified for chunk: " + String.valueOf(containingStorageNodeList.size()));
 		return containingStorageNodeList;
 	}
 	
@@ -280,11 +286,12 @@ public class Controller {
 	 * This will add the filename_chunkid to bloom filter of storageNode
 	 * This will update the storageNode max Storage value on controller
 	 */
-	public void updateChunkSaveonController(StorageMessages.StorageNode storageNode, StorageMessages.Chunk chunk) {
+	public synchronized void updateChunkSaveonController(StorageMessages.StorageNode storageNode, StorageMessages.Chunk chunk) {
 		String bloomKey = chunk.getFileName() + "_" + chunk.getChunkId();
 		String storageNodeId = storageNode.getStorageNodeId();
 		this.bloomFilterMap.get(storageNodeId).putBloomKey(bloomKey.getBytes());
 		this.activeStorageNodes.put(storageNodeId, storageNode);
+		logger.info(bloomKey + " : Bloom key added on controller with storageNodeid: " + storageNode.getStorageNodeId());
 	}
 
 	public void sendNodesToClient(StorageMessages.ChunkMapping chunkMapping) {
