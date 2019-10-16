@@ -147,8 +147,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			if(chunkMappings == null) {
 				logger.info("If there are one or more chunk that could not be found on any storage node, stop");
 			}
-			// controller send nodes to clients
-			ctx.close();
+//			ctx.close();
 			// controller send nodes to clients
 			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(chunkMappings);
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
@@ -185,8 +184,9 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		//store the chunk
 			// if chunk is null, it means chunk does not exist
 			if(chunkMsg == null) {
-				ctx.close();
+//				ctx.close();
 			}
+			ctx.close();
 			if(chunkId == 0) {
 				// get maxChunkNumber
 				int maxChunkNumber = chunkMsg.getMaxChunkNumber();
@@ -194,10 +194,11 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 				Client.retrieveFileRequestToController(fileName, maxChunkNumber);
 			} else {
 				Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
+				// mock writing to file
+				Client.writeToFile(fileName, chunkId, chunkMsg.getData().toByteArray());
 			}
 
 			// merge and write it to file later
-    		ctx.close();
 		}else if(messageType == 12) {
     		logger.info("Save Chunk Update request received on Controller");
     		StorageMessages.StoreChunkControllerUpdateRequest storageChunkControllerUpdateRequest 

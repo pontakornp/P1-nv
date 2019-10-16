@@ -268,6 +268,7 @@ public class Controller {
 	public synchronized List<StorageMessages.ChunkMapping> getNodesForRetrieveFile(String fileName, int maxChunkNumber) {
 		// traverse the chunkId and put those chunk and list of storage nodes in Chunk Mapping
 		// key = chunk, value = list of storage nodes
+		logger.info("Client gets nodes for retrieve file from client");
 		List<StorageMessages.ChunkMapping> chunkMappingList = new ArrayList<StorageMessages.ChunkMapping>();
 		for(int i = 1; i < maxChunkNumber; i++) {
 			String bloomFilterKey = fileName + "_" + i;
