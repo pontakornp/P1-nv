@@ -144,14 +144,16 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			int maxChunkNumber = chunk.getMaxChunkNumber();
 			Controller controller = Controller.getInstance();
 			List<StorageMessages.ChunkMapping> chunkMappings = controller.getNodesForRetrieveFile(fileName, maxChunkNumber);
-			if(chunkMappings == null) {
+			if(chunkMappings != null) {
+				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(chunkMappings);
+				ChannelFuture future = ctx.writeAndFlush(msgWrapper);
+				future.addListener(ChannelFutureListener.CLOSE);
+			} else {
 				logger.info("If there are one or more chunk that could not be found on any storage node, stop");
 			}
 //			ctx.close();
 			// controller send nodes to clients
-			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(chunkMappings);
-			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
-			future.addListener(ChannelFutureListener.CLOSE);
+
 		}else if(messageType == 9) {
     		logger.info("Retrieve File Response: Client receives storage nodes from Controller");
     		StorageMessages.RetrieveFileResponse retrieveFileResponse = msg.getRetrieveFileResponse();
@@ -183,21 +185,19 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			int chunkId = chunkMsg.getChunkId();
     		//store the chunk
 			// if chunk is null, it means chunk does not exist
-			if(chunkMsg == null) {
-//				ctx.close();
+			if(chunkMsg != null) {
+				ctx.close();
+				if(chunkId == 0) {
+					// get maxChunkNumber
+					int maxChunkNumber = chunkMsg.getMaxChunkNumber();
+					// request to controller to get the rest of the chunks
+					Client.retrieveFileRequestToController(fileName, maxChunkNumber);
+				} else {
+					Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
+					// mock writing to file
+					Client.writeToFile(fileName, chunkId, chunkMsg.getData().toByteArray());
+				}
 			}
-			ctx.close();
-			if(chunkId == 0) {
-				// get maxChunkNumber
-				int maxChunkNumber = chunkMsg.getMaxChunkNumber();
-				// request to controller to get the rest of the chunks
-				Client.retrieveFileRequestToController(fileName, maxChunkNumber);
-			} else {
-				Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
-				// mock writing to file
-				Client.writeToFile(fileName, chunkId, chunkMsg.getData().toByteArray());
-			}
-
 			// merge and write it to file later
 		}else if(messageType == 12) {
     		logger.info("Save Chunk Update request received on Controller");
