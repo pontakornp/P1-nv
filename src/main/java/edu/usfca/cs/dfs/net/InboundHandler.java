@@ -149,18 +149,17 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			// controller send nodes to clients
 			ctx.close();
 			// controller send nodes to clients
-			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(fileName, maxChunkNumber, chunkMappings);
+			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(chunkMappings);
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			future.addListener(ChannelFutureListener.CLOSE);
 		}else if(messageType == 9) {
     		logger.info("Retrieve File Response: Client receives storage nodes from Controller");
     		StorageMessages.RetrieveFileResponse retrieveFileResponse = msg.getRetrieveFileResponse();
-    		StorageMessages.Chunk chunk = retrieveFileResponse.getChunk();
     		List<StorageMessages.ChunkMapping> chunkMappings =  retrieveFileResponse.getChunkMappingsList();
     		// done getting storage nodes
     		ctx.close();
     		// client retrieve file from storage nodes chunk by chunk
-    		Client.retrieveFile(chunk, chunkMappings);
+    		Client.retrieveFile(chunkMappings);
 		}else if(messageType == 10) {
 			logger.info("Retrieve Chunk Request: Storage Node receive request from client");
 			StorageMessages.RetrieveChunkRequest retrieveChunkRequest = msg.getRetrieveChunkRequest();

@@ -251,13 +251,8 @@ public class HDFSMessagesBuilder {
         return msgWrapper;
     }
 
-    public static StorageMessages.MessageWrapper constructRetrieveFileResponse(String fileName, int maxChunkNumber, List<StorageMessages.ChunkMapping> chunkMappings) {
-		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
-				.setFileName(fileName)
-				.setMaxChunkNumber(maxChunkNumber)
-				.build();
+    public static StorageMessages.MessageWrapper constructRetrieveFileResponse(List<StorageMessages.ChunkMapping> chunkMappings) {
 		StorageMessages.RetrieveFileResponse retrieveFileResponse = StorageMessages.RetrieveFileResponse.newBuilder()
-				.setChunk(chunk)
 				.addAllChunkMappings(chunkMappings)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()

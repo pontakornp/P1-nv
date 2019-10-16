@@ -111,20 +111,15 @@ public class Client {
 		}
     }
 
-    public static void retrieveFile(StorageMessages.Chunk chunkMsg, List<StorageMessages.ChunkMapping> chunkMappings) {
-    	String fileName = chunkMsg.getFileName();
-    	int maxChunkNumber = chunkMsg.getMaxChunkNumber();
-
-
-    	for(StorageMessages.ChunkMapping chunkMapping: chunkMappings) {
-    		List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
-    		StorageMessages.Chunk chunk = chunkMapping.getChunk();
-    		int chunkId = chunk.getChunkId();
-    		// retrieve chunk from storage node and store it
-    		retrieveChunk(storageNodeList, fileName, chunkId);
-
+    public static void retrieveFile(List<StorageMessages.ChunkMapping> chunkMappings) {
+		for(StorageMessages.ChunkMapping chunkMapping: chunkMappings) {
+			List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
+			StorageMessages.Chunk chunk = chunkMapping.getChunk();
+			String fileName = chunk.getFileName();
+			int chunkId = chunk.getChunkId();
+			// retrieve chunk from storage node and store it
+			retrieveChunk(storageNodeList, fileName, chunkId);
 		}
-
 	}
 	/**
 	 * Client contacts storage nodes to get each chunk one by one, and store the chunk in the chunk mapping data structure

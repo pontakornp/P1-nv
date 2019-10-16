@@ -74,7 +74,6 @@ message RetrieveFileRequest {
 }
 
 message RetrieveFileResponse {
-    Chunk chunk = 1; // fileName and maxChunk
 	repeated ChunkMapping chunkMappings = 2;
 }
 
