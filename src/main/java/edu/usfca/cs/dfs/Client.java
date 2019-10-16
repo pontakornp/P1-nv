@@ -31,7 +31,7 @@ public class Client {
 	private int chunkSize; // This is chunk size in bytes
 	private static String controllerNodeAddr;
 	private static Integer controllerNodePort;
-	private String fileDestinationPath;
+	private static String fileDestinationPath;
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut = new ConcurrentHashMap<String, StorageMessages.Chunk>();
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet = new ConcurrentHashMap<String, StorageMessages.Chunk>() ;
 	private static HashMap<String, StorageMessages.Chunk> chunkMap;
@@ -56,9 +56,9 @@ public class Client {
 
     private void setVariables(Config config) {
 		this.chunkSize = config.getChunkSize();
-		this.controllerNodeAddr = config.getControllerNodeAddr();
-		this.controllerNodePort = config.getControllerNodePort();
-		this.fileDestinationPath = config.getClientDirectoryPath();
+		Client.controllerNodeAddr = config.getControllerNodeAddr();
+		Client.controllerNodePort = config.getControllerNodePort();
+		Client.fileDestinationPath = config.getClientDirectoryPath();
 		System.out.println("Client Node config updated.");
 	}
     

@@ -31,7 +31,7 @@ public class Controller {
 	private ConcurrentHashMap<String, StorageMessages.StorageNode> activeStorageNodes;
 	private ConcurrentHashMap<String, BloomFilter> bloomFilterMap;
 	private ConcurrentHashMap<String, Timestamp> timeStamps;
-	private static Integer BLOOM_FILTER_SIZE = 4096;
+	private static Integer BLOOM_FILTER_SIZE = 1024;
 	private static Integer BLOOM_HASH_COUNT = 3;
 	private static long MAX_STORAGE_TIME_INACTIVITY = 30000;
 	private static int MAX_REPLICAS = 2;
@@ -224,14 +224,12 @@ public class Controller {
 	 */
 	public ArrayList<StorageMessages.StorageNode> findNodesContainingFileChunk(StorageMessages.Chunk chunk, PriorityQueue<StorageMessages.StorageNode> completeNodeListPQ){
 		String bloomFilterKey = chunk.getFileName() + "_" + chunk.getChunkId();
-		System.out.println("Bloom Key: " + bloomFilterKey);
 		ArrayList<StorageMessages.StorageNode> containingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		ArrayList<StorageMessages.StorageNode> notcontainingStorageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		boolean primaryNode = true;
 		
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
 			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
-			logger.info("Iterating bloom filter for storage node: " + storageNode.getStorageNodeId());
 			if(storageNodeBloomFilter.getValue().getBloomKey(bloomFilterKey.getBytes())) {
 				containingStorageNodeList.add(storageNode);
 				logger.info("Storagenode Identified containing bloom key: " 
@@ -257,7 +255,8 @@ public class Controller {
 				primaryNode = false;
 			}
 		}
-		if(notcontainingStorageNodeList.size()>0 && containingStorageNodeList.size()==0) {
+		// This is added so that we can send atleast one node to save assuming false positives
+		if(notcontainingStorageNodeList.size()>0) {
 			containingStorageNodeList.add(notcontainingStorageNodeList.get(0));
 		}
 		

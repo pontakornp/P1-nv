@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.protobuf.ByteString;
+
 import edu.usfca.cs.dfs.StorageMessages.MessageWrapper;
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
@@ -252,40 +254,29 @@ public class StorageNode {
 	// 2. store the chunk
 	// 3. do check sum if the it is corrupted or not
 	// return true if the chunk is not corrupted, else return false
-	public synchronized StorageMessages.Chunk storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
+	public synchronized StorageMessages.StoreChunkRequest storeChunk(StorageMessages.StoreChunkRequest storeChunkRequest) {
 		StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 		String fileName = chunk.getFileName();
 		int chunkId = chunk.getChunkId();
 		byte[] chunkData = chunk.getData().toByteArray();
+		
 		boolean isClientInitiated = storeChunkRequest.getIsClientInitiated();
-		StorageMessages.StorageNode previousStorageNode = storeChunkRequest.getStorageNode(); 
+		StorageMessages.StorageNode previousStorageNode = storeChunkRequest.getStorageNode();
+		
 		boolean isNewChunk = storeChunkRequest.getIsNewChunk();
-		int primaryCount = chunk.getPrimaryCount();
-		int replicaCount = chunk.getReplicaCount();
+		boolean isPrimaryNode = false;
+		boolean isPreviousVersion = storeChunkRequest.getFileExists();
 		
 		StringBuilder filePathBuilder = new StringBuilder(); 
 		filePathBuilder.append(fileName);
 		filePathBuilder.append("_" + chunkId);
 		String outputFileName = filePathBuilder.toString();
 		
-		// Do compression iff client is initiating the save
-		if(isClientInitiated) {
-			double entropyBits = Entropy.calculateShannonEntropy(chunkData);
-			double maximumCompression = 1 - (entropyBits/8);
-			if (maximumCompression > 0.6) {
-				chunkData = CompressDecompress.compress(chunkData);
-				if (chunkData == null) {
-					logger.error("Fails to compress chunk");
-					return null;
-				}
-			}
-		}else {
-			replicaCount = replicaCount + 1;
-		}
 		File dir = null;
-		if(isNewChunk) {
+		if(isNewChunk && !isPreviousVersion) {
 			if(isClientInitiated) {
 				dir = new File(StorageNode.storageNodeDirectoryPath, this.storageNodeId);
+				isPrimaryNode = true;
 			}else {
 				dir = new File(StorageNode.storageNodeDirectoryPath, previousStorageNode.getStorageNodeId());
 			}
@@ -293,50 +284,80 @@ public class StorageNode {
 				dir.mkdirs();
 				logger.info("Created new file directory on storage node: " + dir.toString());
 			}
-			primaryCount = primaryCount + 1;
 		}else {
-			//TODO: Find previous file location in base path
+			// This is the case for false positives or multiple versions
+			// Finds previous file location in base path
 			File basePath = new File(StorageNode.storageNodeDirectoryPath);
 			for(File subdirectory: basePath.listFiles()) {
 				if(subdirectory.isDirectory()) {
 					File oldVersionFile = new File(subdirectory.getAbsolutePath(), outputFileName);
 					if(oldVersionFile.exists()) {
 						dir = subdirectory;
+						isPreviousVersion = true;
 						logger.info("Old file version detected");
 						if(subdirectory.getName()==this.storageNodeId) {
-							primaryCount = primaryCount + 1;
+							isPrimaryNode = true;
+							logger.info("Old file version detected as primary");
 						}else {
-							replicaCount = replicaCount + 1;
+							logger.info("Old file version detected as replica");
 						}
 					}
 				}
 			}
 		}
+		
 		if(dir!=null) {
+			// Do compression iff client is initiating the save
+			if(isClientInitiated) {
+				double entropyBits = Entropy.calculateShannonEntropy(chunkData);
+				double maximumCompression = 1 - (entropyBits/8);
+				if (maximumCompression > 0.6) {
+					chunkData = CompressDecompress.compress(chunkData);
+					if (chunkData == null) {
+						logger.error("Fails to compress chunk");
+						return null;
+					}
+					chunk = chunk.toBuilder().setData(ByteString.copyFrom(chunkData)).build();
+				}
+			}
+			
 			try {
 				File outputFile = new File(dir.toString(), outputFileName);
-				System.out.println(outputFile.toString());
+				logger.info("File getting saved at path: " + outputFile.toString());
 				outputFile.createNewFile();
 				FileOutputStream outputStream = new FileOutputStream(outputFile);
 				outputStream.write(chunkData);
-				//TODO: Calculate the checksum after save.
-				//TODO: Modify the file name after calculating the checksum
 				outputStream.close();
 				this.setAvailableStorageCapacity(this.getAvailableStorageCapacity()-outputFile.length());
-				this.updateControllerOnChunkSave(chunk);
-				chunk = chunk.toBuilder()
-						.setPrimaryCount(primaryCount)
-						.setReplicaCount(replicaCount)
+				if(isPrimaryNode && chunk.getPrimaryCount()==0) {
+					chunk = chunk.toBuilder().setPrimaryCount(chunk.getPrimaryCount()+1).build();
+				}else {
+					chunk = chunk.toBuilder().setReplicaCount(chunk.getPrimaryCount()+1).build();
+				}
+				
+				// TODO: Create metachunk file and save to file directory
+				storeChunkRequest = storeChunkRequest.toBuilder()
+						.setChunk(chunk)
+						.setIsClientInitiated(false)
+						.setIsNewChunk(isNewChunk)
+						.setFileExists(isPreviousVersion)
 						.build();
-				return chunk;
+				
+				if(!isPreviousVersion) {
+					logger.info("Previous version do not exists. Replicating chunks and updating controller");
+					//TODO: this needs to be executed in separate thread each
+					this.storeChunkOnReplica(storeChunkRequest);
+					this.updateControllerOnChunkSave(chunk);
+				}
+				return storeChunkRequest;
 			} catch (IOException e) {
 				e.printStackTrace();
 				logger.error("There is a problem when writing stream to file");
 				return null;
 			}
 		}else {
-			logger.info("False positive detected for previous version of file. Doing nothing" + fileName);
-			return chunk;
+			logger.info("False positive detected for file. Doing nothing" + fileName);
+			return storeChunkRequest;
 		}
 	}
 	
@@ -374,8 +395,13 @@ public class StorageNode {
 	 * store chunks in all of the storage node's replicas
 	 * @param chunk
 	 */
-	public boolean storeChunkOnReplica(StorageMessages.Chunk chunk, StorageMessages.StorageNode storageNode) {
-		StorageMessages.MessageWrapper message = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, storageNode, false, false);
+	public boolean storeChunkOnReplica(StorageMessages.StoreChunkRequest storeChunkRequest) {
+		StorageMessages.MessageWrapper message = 
+				HDFSMessagesBuilder.constructStoreChunkRequest(
+						storeChunkRequest.getChunk(), 
+						storeChunkRequest.getStorageNode(), 
+						storeChunkRequest.getIsClientInitiated(), 
+						storeChunkRequest.getIsNewChunk());
 		for (StorageMessages.ReplicaNode replica: this.replicaStorageNodes) {
 			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
 			if (!isReplicated) {
@@ -391,7 +417,8 @@ public class StorageNode {
 			EventLoopGroup workerGroup = new NioEventLoopGroup();
 			MessagePipeline pipeline = new MessagePipeline();
 
-			logger.info("Connection initiated to storage node replica: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+			logger.info("Connection initiated to replica node replica: " 
+					+ storageNode.getStorageNodeAddr() + String.valueOf(storageNode.getStorageNodePort()));
 			Bootstrap bootstrap = new Bootstrap()
 					.group(workerGroup)
 					.channel(NioSocketChannel.class)

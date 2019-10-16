@@ -3,7 +3,7 @@
 	"controllerNodeAddr": "127.0.0.1",
 	"controllerNodePort": 8000,
 	"storageNodeAddr": "127.0.0.1",
-	"storageNodePort": 7003,
+	"storageNodePort": 7001,
 	"storageNodeDirectoryPath": "/tmp/hdfs/",
 	"maxStorageCapacity": 10000000000,
 	"chunkSize": 10000000

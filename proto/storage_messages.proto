@@ -61,6 +61,7 @@ message GetStorageNodesForChunksResponse {
 message StoreChunkRequest {
     Chunk chunk = 1;
     bool isClientInitiated = 2;
+    bool fileExists = 3;
 	bool isNewChunk = 5;
 	StorageNode storageNode = 6;
 }
@@ -72,7 +73,10 @@ message StoreChunkControllerUpdateRequest {
 
 message StoreChunkResponse {
 	Chunk chunk = 1;
-	bool isSuccess = 2;
+	bool isClientInitiated = 2;
+    bool fileExists = 3;
+	bool isNewChunk = 4;
+	bool isSuccess = 5;
 }
 
 message RetrieveFileRequest {

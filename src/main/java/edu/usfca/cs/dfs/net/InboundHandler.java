@@ -89,13 +89,13 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.StoreChunkRequest storeChunkRequest = msg.getStoreChunkRequest();
 			StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 			StorageNode storageNode = StorageNode.getInstance();
-			StorageMessages.Chunk updatedChunk = storageNode.storeChunk(storeChunkRequest);
+			StorageMessages.StoreChunkRequest updatedStoreChunkRequest= storageNode.storeChunk(storeChunkRequest);
 			MessageWrapper msgWrapper;
 			
-			if(updatedChunk!=null) {
-				msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(updatedChunk, true);
+			if(updatedStoreChunkRequest!=null) {
+				msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(updatedStoreChunkRequest, true);
 			}else {
-				msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(chunk, false);
+				msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(storeChunkRequest, false);
 			}
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			future.addListener(ChannelFutureListener.CLOSE);

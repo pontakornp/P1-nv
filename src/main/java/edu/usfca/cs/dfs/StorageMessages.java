@@ -8422,6 +8422,12 @@ public final class StorageMessages {
     boolean getIsClientInitiated();
 
     /**
+     * <code>bool fileExists = 3;</code>
+     * @return The fileExists.
+     */
+    boolean getFileExists();
+
+    /**
      * <code>bool isNewChunk = 5;</code>
      * @return The isNewChunk.
      */
@@ -8503,6 +8509,11 @@ public final class StorageMessages {
             case 16: {
 
               isClientInitiated_ = input.readBool();
+              break;
+            }
+            case 24: {
+
+              fileExists_ = input.readBool();
               break;
             }
             case 40: {
@@ -8588,6 +8599,16 @@ public final class StorageMessages {
       return isClientInitiated_;
     }
 
+    public static final int FILEEXISTS_FIELD_NUMBER = 3;
+    private boolean fileExists_;
+    /**
+     * <code>bool fileExists = 3;</code>
+     * @return The fileExists.
+     */
+    public boolean getFileExists() {
+      return fileExists_;
+    }
+
     public static final int ISNEWCHUNK_FIELD_NUMBER = 5;
     private boolean isNewChunk_;
     /**
@@ -8641,6 +8662,9 @@ public final class StorageMessages {
       if (isClientInitiated_ != false) {
         output.writeBool(2, isClientInitiated_);
       }
+      if (fileExists_ != false) {
+        output.writeBool(3, fileExists_);
+      }
       if (isNewChunk_ != false) {
         output.writeBool(5, isNewChunk_);
       }
@@ -8663,6 +8687,10 @@ public final class StorageMessages {
       if (isClientInitiated_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, isClientInitiated_);
+      }
+      if (fileExists_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, fileExists_);
       }
       if (isNewChunk_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -8694,6 +8722,8 @@ public final class StorageMessages {
       }
       if (getIsClientInitiated()
           != other.getIsClientInitiated()) return false;
+      if (getFileExists()
+          != other.getFileExists()) return false;
       if (getIsNewChunk()
           != other.getIsNewChunk()) return false;
       if (hasStorageNode() != other.hasStorageNode()) return false;
@@ -8719,6 +8749,9 @@ public final class StorageMessages {
       hash = (37 * hash) + ISCLIENTINITIATED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getIsClientInitiated());
+      hash = (37 * hash) + FILEEXISTS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getFileExists());
       hash = (37 * hash) + ISNEWCHUNK_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getIsNewChunk());
@@ -8867,6 +8900,8 @@ public final class StorageMessages {
         }
         isClientInitiated_ = false;
 
+        fileExists_ = false;
+
         isNewChunk_ = false;
 
         if (storageNodeBuilder_ == null) {
@@ -8907,6 +8942,7 @@ public final class StorageMessages {
           result.chunk_ = chunkBuilder_.build();
         }
         result.isClientInitiated_ = isClientInitiated_;
+        result.fileExists_ = fileExists_;
         result.isNewChunk_ = isNewChunk_;
         if (storageNodeBuilder_ == null) {
           result.storageNode_ = storageNode_;
@@ -8966,6 +9002,9 @@ public final class StorageMessages {
         }
         if (other.getIsClientInitiated() != false) {
           setIsClientInitiated(other.getIsClientInitiated());
+        }
+        if (other.getFileExists() != false) {
+          setFileExists(other.getFileExists());
         }
         if (other.getIsNewChunk() != false) {
           setIsNewChunk(other.getIsNewChunk());
@@ -9147,6 +9186,36 @@ public final class StorageMessages {
       public Builder clearIsClientInitiated() {
         
         isClientInitiated_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean fileExists_ ;
+      /**
+       * <code>bool fileExists = 3;</code>
+       * @return The fileExists.
+       */
+      public boolean getFileExists() {
+        return fileExists_;
+      }
+      /**
+       * <code>bool fileExists = 3;</code>
+       * @param value The fileExists to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFileExists(boolean value) {
+        
+        fileExists_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool fileExists = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFileExists() {
+        
+        fileExists_ = false;
         onChanged();
         return this;
       }
@@ -10190,7 +10259,25 @@ public final class StorageMessages {
     edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder getChunkOrBuilder();
 
     /**
-     * <code>bool isSuccess = 2;</code>
+     * <code>bool isClientInitiated = 2;</code>
+     * @return The isClientInitiated.
+     */
+    boolean getIsClientInitiated();
+
+    /**
+     * <code>bool fileExists = 3;</code>
+     * @return The fileExists.
+     */
+    boolean getFileExists();
+
+    /**
+     * <code>bool isNewChunk = 4;</code>
+     * @return The isNewChunk.
+     */
+    boolean getIsNewChunk();
+
+    /**
+     * <code>bool isSuccess = 5;</code>
      * @return The isSuccess.
      */
     boolean getIsSuccess();
@@ -10255,6 +10342,21 @@ public final class StorageMessages {
             }
             case 16: {
 
+              isClientInitiated_ = input.readBool();
+              break;
+            }
+            case 24: {
+
+              fileExists_ = input.readBool();
+              break;
+            }
+            case 32: {
+
+              isNewChunk_ = input.readBool();
+              break;
+            }
+            case 40: {
+
               isSuccess_ = input.readBool();
               break;
             }
@@ -10313,10 +10415,40 @@ public final class StorageMessages {
       return getChunk();
     }
 
-    public static final int ISSUCCESS_FIELD_NUMBER = 2;
+    public static final int ISCLIENTINITIATED_FIELD_NUMBER = 2;
+    private boolean isClientInitiated_;
+    /**
+     * <code>bool isClientInitiated = 2;</code>
+     * @return The isClientInitiated.
+     */
+    public boolean getIsClientInitiated() {
+      return isClientInitiated_;
+    }
+
+    public static final int FILEEXISTS_FIELD_NUMBER = 3;
+    private boolean fileExists_;
+    /**
+     * <code>bool fileExists = 3;</code>
+     * @return The fileExists.
+     */
+    public boolean getFileExists() {
+      return fileExists_;
+    }
+
+    public static final int ISNEWCHUNK_FIELD_NUMBER = 4;
+    private boolean isNewChunk_;
+    /**
+     * <code>bool isNewChunk = 4;</code>
+     * @return The isNewChunk.
+     */
+    public boolean getIsNewChunk() {
+      return isNewChunk_;
+    }
+
+    public static final int ISSUCCESS_FIELD_NUMBER = 5;
     private boolean isSuccess_;
     /**
-     * <code>bool isSuccess = 2;</code>
+     * <code>bool isSuccess = 5;</code>
      * @return The isSuccess.
      */
     public boolean getIsSuccess() {
@@ -10340,8 +10472,17 @@ public final class StorageMessages {
       if (chunk_ != null) {
         output.writeMessage(1, getChunk());
       }
+      if (isClientInitiated_ != false) {
+        output.writeBool(2, isClientInitiated_);
+      }
+      if (fileExists_ != false) {
+        output.writeBool(3, fileExists_);
+      }
+      if (isNewChunk_ != false) {
+        output.writeBool(4, isNewChunk_);
+      }
       if (isSuccess_ != false) {
-        output.writeBool(2, isSuccess_);
+        output.writeBool(5, isSuccess_);
       }
       unknownFields.writeTo(output);
     }
@@ -10356,9 +10497,21 @@ public final class StorageMessages {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getChunk());
       }
+      if (isClientInitiated_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, isClientInitiated_);
+      }
+      if (fileExists_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, fileExists_);
+      }
+      if (isNewChunk_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, isNewChunk_);
+      }
       if (isSuccess_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, isSuccess_);
+          .computeBoolSize(5, isSuccess_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -10380,6 +10533,12 @@ public final class StorageMessages {
         if (!getChunk()
             .equals(other.getChunk())) return false;
       }
+      if (getIsClientInitiated()
+          != other.getIsClientInitiated()) return false;
+      if (getFileExists()
+          != other.getFileExists()) return false;
+      if (getIsNewChunk()
+          != other.getIsNewChunk()) return false;
       if (getIsSuccess()
           != other.getIsSuccess()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -10397,6 +10556,15 @@ public final class StorageMessages {
         hash = (37 * hash) + CHUNK_FIELD_NUMBER;
         hash = (53 * hash) + getChunk().hashCode();
       }
+      hash = (37 * hash) + ISCLIENTINITIATED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsClientInitiated());
+      hash = (37 * hash) + FILEEXISTS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getFileExists());
+      hash = (37 * hash) + ISNEWCHUNK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsNewChunk());
       hash = (37 * hash) + ISSUCCESS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getIsSuccess());
@@ -10539,6 +10707,12 @@ public final class StorageMessages {
           chunk_ = null;
           chunkBuilder_ = null;
         }
+        isClientInitiated_ = false;
+
+        fileExists_ = false;
+
+        isNewChunk_ = false;
+
         isSuccess_ = false;
 
         return this;
@@ -10572,6 +10746,9 @@ public final class StorageMessages {
         } else {
           result.chunk_ = chunkBuilder_.build();
         }
+        result.isClientInitiated_ = isClientInitiated_;
+        result.fileExists_ = fileExists_;
+        result.isNewChunk_ = isNewChunk_;
         result.isSuccess_ = isSuccess_;
         onBuilt();
         return result;
@@ -10623,6 +10800,15 @@ public final class StorageMessages {
         if (other == edu.usfca.cs.dfs.StorageMessages.StoreChunkResponse.getDefaultInstance()) return this;
         if (other.hasChunk()) {
           mergeChunk(other.getChunk());
+        }
+        if (other.getIsClientInitiated() != false) {
+          setIsClientInitiated(other.getIsClientInitiated());
+        }
+        if (other.getFileExists() != false) {
+          setFileExists(other.getFileExists());
+        }
+        if (other.getIsNewChunk() != false) {
+          setIsNewChunk(other.getIsNewChunk());
         }
         if (other.getIsSuccess() != false) {
           setIsSuccess(other.getIsSuccess());
@@ -10775,16 +10961,106 @@ public final class StorageMessages {
         return chunkBuilder_;
       }
 
+      private boolean isClientInitiated_ ;
+      /**
+       * <code>bool isClientInitiated = 2;</code>
+       * @return The isClientInitiated.
+       */
+      public boolean getIsClientInitiated() {
+        return isClientInitiated_;
+      }
+      /**
+       * <code>bool isClientInitiated = 2;</code>
+       * @param value The isClientInitiated to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsClientInitiated(boolean value) {
+        
+        isClientInitiated_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool isClientInitiated = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsClientInitiated() {
+        
+        isClientInitiated_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean fileExists_ ;
+      /**
+       * <code>bool fileExists = 3;</code>
+       * @return The fileExists.
+       */
+      public boolean getFileExists() {
+        return fileExists_;
+      }
+      /**
+       * <code>bool fileExists = 3;</code>
+       * @param value The fileExists to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFileExists(boolean value) {
+        
+        fileExists_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool fileExists = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFileExists() {
+        
+        fileExists_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isNewChunk_ ;
+      /**
+       * <code>bool isNewChunk = 4;</code>
+       * @return The isNewChunk.
+       */
+      public boolean getIsNewChunk() {
+        return isNewChunk_;
+      }
+      /**
+       * <code>bool isNewChunk = 4;</code>
+       * @param value The isNewChunk to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsNewChunk(boolean value) {
+        
+        isNewChunk_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool isNewChunk = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsNewChunk() {
+        
+        isNewChunk_ = false;
+        onChanged();
+        return this;
+      }
+
       private boolean isSuccess_ ;
       /**
-       * <code>bool isSuccess = 2;</code>
+       * <code>bool isSuccess = 5;</code>
        * @return The isSuccess.
        */
       public boolean getIsSuccess() {
         return isSuccess_;
       }
       /**
-       * <code>bool isSuccess = 2;</code>
+       * <code>bool isSuccess = 5;</code>
        * @param value The isSuccess to set.
        * @return This builder for chaining.
        */
@@ -10795,7 +11071,7 @@ public final class StorageMessages {
         return this;
       }
       /**
-       * <code>bool isSuccess = 2;</code>
+       * <code>bool isSuccess = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearIsSuccess() {
@@ -16508,39 +16784,41 @@ public final class StorageMessages {
       "e\"<\n\037GetStorageNodesForChunksRequest\022\031\n\t" +
       "chunkList\030\001 \003(\0132\006.Chunk\"H\n GetStorageNod" +
       "esForChunksResponse\022$\n\rchunkMappings\030\001 \003" +
-      "(\0132\r.ChunkMapping\"|\n\021StoreChunkRequest\022\025" +
-      "\n\005chunk\030\001 \001(\0132\006.Chunk\022\031\n\021isClientInitiat" +
-      "ed\030\002 \001(\010\022\022\n\nisNewChunk\030\005 \001(\010\022!\n\013storageN" +
-      "ode\030\006 \001(\0132\014.StorageNode\"]\n!StoreChunkCon" +
-      "trollerUpdateRequest\022\025\n\005chunk\030\001 \001(\0132\006.Ch" +
-      "unk\022!\n\013storageNode\030\002 \001(\0132\014.StorageNode\">" +
-      "\n\022StoreChunkResponse\022\025\n\005chunk\030\001 \001(\0132\006.Ch" +
-      "unk\022\021\n\tisSuccess\030\002 \001(\010\",\n\023RetrieveFileRe" +
-      "quest\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\"<\n\024Retrieve" +
-      "FileResponse\022$\n\rchunkMappings\030\002 \003(\0132\r.Ch" +
-      "unkMapping\"-\n\024RetrieveChunkRequest\022\025\n\005ch" +
-      "unk\030\001 \001(\0132\006.Chunk\".\n\025RetrieveChunkRespon" +
-      "se\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\"\206\006\n\016MessageWra" +
-      "pper\022\023\n\013messageType\030\001 \001(\005\022?\n\032storageNode" +
-      "RegisterRequest\030\002 \001(\0132\033.StorageNodeRegis" +
-      "terRequest\022A\n\033storageNodeRegisterRespons" +
-      "e\030\003 \001(\0132\034.StorageNodeRegisterResponse\022A\n" +
-      "\033storageNodeHeartBeatRequest\030\004 \001(\0132\034.Sto" +
-      "rageNodeHeartBeatRequest\022H\n\036getStorageNo" +
-      "deForChunksRequest\030\t \001(\0132 .GetStorageNod" +
-      "esForChunksRequest\022K\n getStorageNodesFor" +
-      "ChunksResponse\030\n \001(\0132!.GetStorageNodesFo" +
-      "rChunksResponse\022-\n\021storeChunkRequest\030\013 \001" +
-      "(\0132\022.StoreChunkRequest\022/\n\022storeChunkResp" +
-      "onse\030\014 \001(\0132\023.StoreChunkResponse\0221\n\023retri" +
-      "eveFileRequest\030\r \001(\0132\024.RetrieveFileReque" +
-      "st\0223\n\024retrieveFileResponse\030\016 \001(\0132\025.Retri" +
-      "eveFileResponse\0223\n\024retrieveChunkRequest\030" +
-      "\017 \001(\0132\025.RetrieveChunkRequest\0225\n\025retrieve" +
-      "ChunkResponse\030\020 \001(\0132\026.RetrieveChunkRespo" +
-      "nse\022M\n!storeChunkControllerUpdateRequest" +
-      "\030\021 \001(\0132\".StoreChunkControllerUpdateReque" +
-      "stB\022\n\020edu.usfca.cs.dfsb\006proto3"
+      "(\0132\r.ChunkMapping\"\220\001\n\021StoreChunkRequest\022" +
+      "\025\n\005chunk\030\001 \001(\0132\006.Chunk\022\031\n\021isClientInitia" +
+      "ted\030\002 \001(\010\022\022\n\nfileExists\030\003 \001(\010\022\022\n\nisNewCh" +
+      "unk\030\005 \001(\010\022!\n\013storageNode\030\006 \001(\0132\014.Storage" +
+      "Node\"]\n!StoreChunkControllerUpdateReques" +
+      "t\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\022!\n\013storageNode\030" +
+      "\002 \001(\0132\014.StorageNode\"\201\001\n\022StoreChunkRespon" +
+      "se\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\022\031\n\021isClientIni" +
+      "tiated\030\002 \001(\010\022\022\n\nfileExists\030\003 \001(\010\022\022\n\nisNe" +
+      "wChunk\030\004 \001(\010\022\021\n\tisSuccess\030\005 \001(\010\",\n\023Retri" +
+      "eveFileRequest\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\"<\n" +
+      "\024RetrieveFileResponse\022$\n\rchunkMappings\030\002" +
+      " \003(\0132\r.ChunkMapping\"-\n\024RetrieveChunkRequ" +
+      "est\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\".\n\025RetrieveCh" +
+      "unkResponse\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\"\206\006\n\016M" +
+      "essageWrapper\022\023\n\013messageType\030\001 \001(\005\022?\n\032st" +
+      "orageNodeRegisterRequest\030\002 \001(\0132\033.Storage" +
+      "NodeRegisterRequest\022A\n\033storageNodeRegist" +
+      "erResponse\030\003 \001(\0132\034.StorageNodeRegisterRe" +
+      "sponse\022A\n\033storageNodeHeartBeatRequest\030\004 " +
+      "\001(\0132\034.StorageNodeHeartBeatRequest\022H\n\036get" +
+      "StorageNodeForChunksRequest\030\t \001(\0132 .GetS" +
+      "torageNodesForChunksRequest\022K\n getStorag" +
+      "eNodesForChunksResponse\030\n \001(\0132!.GetStora" +
+      "geNodesForChunksResponse\022-\n\021storeChunkRe" +
+      "quest\030\013 \001(\0132\022.StoreChunkRequest\022/\n\022store" +
+      "ChunkResponse\030\014 \001(\0132\023.StoreChunkResponse" +
+      "\0221\n\023retrieveFileRequest\030\r \001(\0132\024.Retrieve" +
+      "FileRequest\0223\n\024retrieveFileResponse\030\016 \001(" +
+      "\0132\025.RetrieveFileResponse\0223\n\024retrieveChun" +
+      "kRequest\030\017 \001(\0132\025.RetrieveChunkRequest\0225\n" +
+      "\025retrieveChunkResponse\030\020 \001(\0132\026.RetrieveC" +
+      "hunkResponse\022M\n!storeChunkControllerUpda" +
+      "teRequest\030\021 \001(\0132\".StoreChunkControllerUp" +
+      "dateRequestB\022\n\020edu.usfca.cs.dfsb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -16611,7 +16889,7 @@ public final class StorageMessages {
     internal_static_StoreChunkRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_StoreChunkRequest_descriptor,
-        new java.lang.String[] { "Chunk", "IsClientInitiated", "IsNewChunk", "StorageNode", });
+        new java.lang.String[] { "Chunk", "IsClientInitiated", "FileExists", "IsNewChunk", "StorageNode", });
     internal_static_StoreChunkControllerUpdateRequest_descriptor =
       getDescriptor().getMessageTypes().get(11);
     internal_static_StoreChunkControllerUpdateRequest_fieldAccessorTable = new
@@ -16623,7 +16901,7 @@ public final class StorageMessages {
     internal_static_StoreChunkResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_StoreChunkResponse_descriptor,
-        new java.lang.String[] { "Chunk", "IsSuccess", });
+        new java.lang.String[] { "Chunk", "IsClientInitiated", "FileExists", "IsNewChunk", "IsSuccess", });
     internal_static_RetrieveFileRequest_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_RetrieveFileRequest_fieldAccessorTable = new

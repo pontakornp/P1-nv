@@ -167,7 +167,11 @@ public class HDFSMessagesBuilder {
         return msgWrapper;
     }
 
-    public static synchronized StorageMessages.MessageWrapper constructStoreChunkAck(StorageMessages.Chunk chunk, boolean isSuccess) {
+    public static synchronized StorageMessages.MessageWrapper constructStoreChunkAck(
+    		StorageMessages.StoreChunkRequest storeChunkRequest, boolean isSuccess) {
+    	
+    	StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
+    	
     	StorageMessages.Chunk chunkMsg 
     		= StorageMessages.Chunk.newBuilder()
     			.setChunkId(chunk.getChunkId())
@@ -183,6 +187,9 @@ public class HDFSMessagesBuilder {
         StorageMessages.StoreChunkResponse storeChunkResponse = StorageMessages.StoreChunkResponse.newBuilder()
                 .setChunk(chunkMsg)
                 .setIsSuccess(isSuccess)
+                .setIsNewChunk(storeChunkRequest.getIsNewChunk())
+                .setFileExists(storeChunkRequest.getFileExists())
+                .setIsClientInitiated(storeChunkRequest.getIsClientInitiated())
                 .build();
         StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
                 .setMessageType(5)
