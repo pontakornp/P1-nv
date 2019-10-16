@@ -265,26 +265,37 @@ public class Controller {
 		return containingStorageNodeList;
 	}
 	
-	// find node containing file meta data
-	public synchronized StorageMessages.ChunkMapping getNodesForRetrieveFile(String fileName, int chunkId) {
-		String bloomFilterKey = fileName + "_" + chunkId;
-		ArrayList<StorageMessages.StorageNode> storageNodeList = new ArrayList<StorageMessages.StorageNode>();
-		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
-			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
-			System.out.println("Iterating bloom filter for storage node" + storageNode.getStorageNodeId());
-			System.out.println("Current capacity of storagenode: " + +storageNode.getAvailableStorageCapacity());
-			if(storageNodeBloomFilter.getValue().getBloomKey(bloomFilterKey.getBytes())) {
-				storageNodeList.add(storageNode);
+	// get storage nodes from controller
+	public synchronized List<StorageMessages.ChunkMapping> getNodesForRetrieveFile(String fileName, int maxChunkNumber) {
+		// traverse the chunkId and put those chunk and list of storage nodes in Chunk Mapping
+		// key = chunk, value = list of storage nodes
+		List<StorageMessages.ChunkMapping> chunkMappingList = new ArrayList<StorageMessages.ChunkMapping>();
+		for(int i = 1; i < maxChunkNumber; i++) {
+			String bloomFilterKey = fileName + "_" + i;
+			ArrayList<StorageMessages.StorageNode> storageNodeList = new ArrayList<StorageMessages.StorageNode>();
+			for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
+				StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
+				System.out.println("Iterating bloom filter for storage node" + storageNode.getStorageNodeId());
+				System.out.println("Current capacity of storage node: " + +storageNode.getAvailableStorageCapacity());
+				if(storageNodeBloomFilter.getValue().getBloomKey(bloomFilterKey.getBytes())) {
+					storageNodeList.add(storageNode);
+				}
 			}
+			// if no storage node potentially contain the file, return null
+			if(storageNodeList.isEmpty()) {
+				return null;
+			}
+			StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
+					.setFileName(fileName)
+					.build();
+			StorageMessages.ChunkMapping chunkMapping = StorageMessages.ChunkMapping.newBuilder()
+					.setChunk(chunk)
+					.addAllStorageNodeObjs(storageNodeList)
+					.build();
+			chunkMappingList.add(chunkMapping);
 		}
-		// if no storage node potentially contain the file, return null
-		if(storageNodeList.isEmpty()) {
-			return null;
-		}
-		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
-				.setFileName(fileName)
-				.build();
-		return HDFSMessagesBuilder.constructChunkMapping(chunk, storageNodeList);
+
+		return chunkMappingList;
 	}
 	
 	/*
@@ -300,8 +311,8 @@ public class Controller {
 		logger.info(bloomKey + " : Bloom key added on controller with storageNodeid: " + storageNode.getStorageNodeId());
 	}
 
-	public void sendNodesToClient(StorageMessages.ChunkMapping chunkMapping) {
-	
+	public void sendNodesToClient(List<StorageMessages.ChunkMapping> chunkMappings) {
+
 	}
 
 

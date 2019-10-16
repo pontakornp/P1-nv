@@ -11480,19 +11480,28 @@ public final class StorageMessages {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.ChunkMapping chunkMappings = 1;</code>
-     * @return Whether the chunkMappings field is set.
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
      */
-    boolean hasChunkMappings();
+    java.util.List<edu.usfca.cs.dfs.StorageMessages.ChunkMapping> 
+        getChunkMappingsList();
     /**
-     * <code>.ChunkMapping chunkMappings = 1;</code>
-     * @return The chunkMappings.
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
      */
-    edu.usfca.cs.dfs.StorageMessages.ChunkMapping getChunkMappings();
+    edu.usfca.cs.dfs.StorageMessages.ChunkMapping getChunkMappings(int index);
     /**
-     * <code>.ChunkMapping chunkMappings = 1;</code>
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
      */
-    edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder getChunkMappingsOrBuilder();
+    int getChunkMappingsCount();
+    /**
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+     */
+    java.util.List<? extends edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder> 
+        getChunkMappingsOrBuilderList();
+    /**
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder getChunkMappingsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code RetrieveFileResponse}
@@ -11507,6 +11516,7 @@ public final class StorageMessages {
       super(builder);
     }
     private RetrieveFileResponse() {
+      chunkMappings_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -11529,6 +11539,7 @@ public final class StorageMessages {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -11539,17 +11550,13 @@ public final class StorageMessages {
             case 0:
               done = true;
               break;
-            case 10: {
-              edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder subBuilder = null;
-              if (chunkMappings_ != null) {
-                subBuilder = chunkMappings_.toBuilder();
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                chunkMappings_ = new java.util.ArrayList<edu.usfca.cs.dfs.StorageMessages.ChunkMapping>();
+                mutable_bitField0_ |= 0x00000001;
               }
-              chunkMappings_ = input.readMessage(edu.usfca.cs.dfs.StorageMessages.ChunkMapping.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(chunkMappings_);
-                chunkMappings_ = subBuilder.buildPartial();
-              }
-
+              chunkMappings_.add(
+                  input.readMessage(edu.usfca.cs.dfs.StorageMessages.ChunkMapping.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -11567,6 +11574,9 @@ public final class StorageMessages {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          chunkMappings_ = java.util.Collections.unmodifiableList(chunkMappings_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -11584,27 +11594,39 @@ public final class StorageMessages {
               edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse.class, edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse.Builder.class);
     }
 
-    public static final int CHUNKMAPPINGS_FIELD_NUMBER = 1;
-    private edu.usfca.cs.dfs.StorageMessages.ChunkMapping chunkMappings_;
+    public static final int CHUNKMAPPINGS_FIELD_NUMBER = 2;
+    private java.util.List<edu.usfca.cs.dfs.StorageMessages.ChunkMapping> chunkMappings_;
     /**
-     * <code>.ChunkMapping chunkMappings = 1;</code>
-     * @return Whether the chunkMappings field is set.
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
      */
-    public boolean hasChunkMappings() {
-      return chunkMappings_ != null;
+    public java.util.List<edu.usfca.cs.dfs.StorageMessages.ChunkMapping> getChunkMappingsList() {
+      return chunkMappings_;
     }
     /**
-     * <code>.ChunkMapping chunkMappings = 1;</code>
-     * @return The chunkMappings.
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
      */
-    public edu.usfca.cs.dfs.StorageMessages.ChunkMapping getChunkMappings() {
-      return chunkMappings_ == null ? edu.usfca.cs.dfs.StorageMessages.ChunkMapping.getDefaultInstance() : chunkMappings_;
+    public java.util.List<? extends edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder> 
+        getChunkMappingsOrBuilderList() {
+      return chunkMappings_;
     }
     /**
-     * <code>.ChunkMapping chunkMappings = 1;</code>
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
      */
-    public edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder getChunkMappingsOrBuilder() {
-      return getChunkMappings();
+    public int getChunkMappingsCount() {
+      return chunkMappings_.size();
+    }
+    /**
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.ChunkMapping getChunkMappings(int index) {
+      return chunkMappings_.get(index);
+    }
+    /**
+     * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder getChunkMappingsOrBuilder(
+        int index) {
+      return chunkMappings_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -11621,8 +11643,8 @@ public final class StorageMessages {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (chunkMappings_ != null) {
-        output.writeMessage(1, getChunkMappings());
+      for (int i = 0; i < chunkMappings_.size(); i++) {
+        output.writeMessage(2, chunkMappings_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -11633,9 +11655,9 @@ public final class StorageMessages {
       if (size != -1) return size;
 
       size = 0;
-      if (chunkMappings_ != null) {
+      for (int i = 0; i < chunkMappings_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getChunkMappings());
+          .computeMessageSize(2, chunkMappings_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -11652,11 +11674,8 @@ public final class StorageMessages {
       }
       edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse other = (edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse) obj;
 
-      if (hasChunkMappings() != other.hasChunkMappings()) return false;
-      if (hasChunkMappings()) {
-        if (!getChunkMappings()
-            .equals(other.getChunkMappings())) return false;
-      }
+      if (!getChunkMappingsList()
+          .equals(other.getChunkMappingsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -11668,9 +11687,9 @@ public final class StorageMessages {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasChunkMappings()) {
+      if (getChunkMappingsCount() > 0) {
         hash = (37 * hash) + CHUNKMAPPINGS_FIELD_NUMBER;
-        hash = (53 * hash) + getChunkMappings().hashCode();
+        hash = (53 * hash) + getChunkMappingsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -11800,16 +11819,17 @@ public final class StorageMessages {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getChunkMappingsFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
         if (chunkMappingsBuilder_ == null) {
-          chunkMappings_ = null;
+          chunkMappings_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          chunkMappings_ = null;
-          chunkMappingsBuilder_ = null;
+          chunkMappingsBuilder_.clear();
         }
         return this;
       }
@@ -11837,7 +11857,12 @@ public final class StorageMessages {
       @java.lang.Override
       public edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse buildPartial() {
         edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse result = new edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse(this);
+        int from_bitField0_ = bitField0_;
         if (chunkMappingsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            chunkMappings_ = java.util.Collections.unmodifiableList(chunkMappings_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
           result.chunkMappings_ = chunkMappings_;
         } else {
           result.chunkMappings_ = chunkMappingsBuilder_.build();
@@ -11890,8 +11915,31 @@ public final class StorageMessages {
 
       public Builder mergeFrom(edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse other) {
         if (other == edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse.getDefaultInstance()) return this;
-        if (other.hasChunkMappings()) {
-          mergeChunkMappings(other.getChunkMappings());
+        if (chunkMappingsBuilder_ == null) {
+          if (!other.chunkMappings_.isEmpty()) {
+            if (chunkMappings_.isEmpty()) {
+              chunkMappings_ = other.chunkMappings_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureChunkMappingsIsMutable();
+              chunkMappings_.addAll(other.chunkMappings_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.chunkMappings_.isEmpty()) {
+            if (chunkMappingsBuilder_.isEmpty()) {
+              chunkMappingsBuilder_.dispose();
+              chunkMappingsBuilder_ = null;
+              chunkMappings_ = other.chunkMappings_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              chunkMappingsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getChunkMappingsFieldBuilder() : null;
+            } else {
+              chunkMappingsBuilder_.addAllMessages(other.chunkMappings_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -11921,119 +11969,241 @@ public final class StorageMessages {
         }
         return this;
       }
+      private int bitField0_;
 
-      private edu.usfca.cs.dfs.StorageMessages.ChunkMapping chunkMappings_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          edu.usfca.cs.dfs.StorageMessages.ChunkMapping, edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder> chunkMappingsBuilder_;
-      /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
-       * @return Whether the chunkMappings field is set.
-       */
-      public boolean hasChunkMappings() {
-        return chunkMappingsBuilder_ != null || chunkMappings_ != null;
+      private java.util.List<edu.usfca.cs.dfs.StorageMessages.ChunkMapping> chunkMappings_ =
+        java.util.Collections.emptyList();
+      private void ensureChunkMappingsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          chunkMappings_ = new java.util.ArrayList<edu.usfca.cs.dfs.StorageMessages.ChunkMapping>(chunkMappings_);
+          bitField0_ |= 0x00000001;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.ChunkMapping, edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder> chunkMappingsBuilder_;
+
       /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
-       * @return The chunkMappings.
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
        */
-      public edu.usfca.cs.dfs.StorageMessages.ChunkMapping getChunkMappings() {
+      public java.util.List<edu.usfca.cs.dfs.StorageMessages.ChunkMapping> getChunkMappingsList() {
         if (chunkMappingsBuilder_ == null) {
-          return chunkMappings_ == null ? edu.usfca.cs.dfs.StorageMessages.ChunkMapping.getDefaultInstance() : chunkMappings_;
+          return java.util.Collections.unmodifiableList(chunkMappings_);
         } else {
-          return chunkMappingsBuilder_.getMessage();
+          return chunkMappingsBuilder_.getMessageList();
         }
       }
       /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
        */
-      public Builder setChunkMappings(edu.usfca.cs.dfs.StorageMessages.ChunkMapping value) {
+      public int getChunkMappingsCount() {
+        if (chunkMappingsBuilder_ == null) {
+          return chunkMappings_.size();
+        } else {
+          return chunkMappingsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.ChunkMapping getChunkMappings(int index) {
+        if (chunkMappingsBuilder_ == null) {
+          return chunkMappings_.get(index);
+        } else {
+          return chunkMappingsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public Builder setChunkMappings(
+          int index, edu.usfca.cs.dfs.StorageMessages.ChunkMapping value) {
         if (chunkMappingsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          chunkMappings_ = value;
+          ensureChunkMappingsIsMutable();
+          chunkMappings_.set(index, value);
           onChanged();
         } else {
-          chunkMappingsBuilder_.setMessage(value);
+          chunkMappingsBuilder_.setMessage(index, value);
         }
-
         return this;
       }
       /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
        */
       public Builder setChunkMappings(
+          int index, edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder builderForValue) {
+        if (chunkMappingsBuilder_ == null) {
+          ensureChunkMappingsIsMutable();
+          chunkMappings_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          chunkMappingsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public Builder addChunkMappings(edu.usfca.cs.dfs.StorageMessages.ChunkMapping value) {
+        if (chunkMappingsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureChunkMappingsIsMutable();
+          chunkMappings_.add(value);
+          onChanged();
+        } else {
+          chunkMappingsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public Builder addChunkMappings(
+          int index, edu.usfca.cs.dfs.StorageMessages.ChunkMapping value) {
+        if (chunkMappingsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureChunkMappingsIsMutable();
+          chunkMappings_.add(index, value);
+          onChanged();
+        } else {
+          chunkMappingsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public Builder addChunkMappings(
           edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder builderForValue) {
         if (chunkMappingsBuilder_ == null) {
-          chunkMappings_ = builderForValue.build();
+          ensureChunkMappingsIsMutable();
+          chunkMappings_.add(builderForValue.build());
           onChanged();
         } else {
-          chunkMappingsBuilder_.setMessage(builderForValue.build());
+          chunkMappingsBuilder_.addMessage(builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
        */
-      public Builder mergeChunkMappings(edu.usfca.cs.dfs.StorageMessages.ChunkMapping value) {
+      public Builder addChunkMappings(
+          int index, edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder builderForValue) {
         if (chunkMappingsBuilder_ == null) {
-          if (chunkMappings_ != null) {
-            chunkMappings_ =
-              edu.usfca.cs.dfs.StorageMessages.ChunkMapping.newBuilder(chunkMappings_).mergeFrom(value).buildPartial();
-          } else {
-            chunkMappings_ = value;
-          }
+          ensureChunkMappingsIsMutable();
+          chunkMappings_.add(index, builderForValue.build());
           onChanged();
         } else {
-          chunkMappingsBuilder_.mergeFrom(value);
+          chunkMappingsBuilder_.addMessage(index, builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public Builder addAllChunkMappings(
+          java.lang.Iterable<? extends edu.usfca.cs.dfs.StorageMessages.ChunkMapping> values) {
+        if (chunkMappingsBuilder_ == null) {
+          ensureChunkMappingsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, chunkMappings_);
+          onChanged();
+        } else {
+          chunkMappingsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
        */
       public Builder clearChunkMappings() {
         if (chunkMappingsBuilder_ == null) {
-          chunkMappings_ = null;
+          chunkMappings_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          chunkMappings_ = null;
-          chunkMappingsBuilder_ = null;
+          chunkMappingsBuilder_.clear();
         }
-
         return this;
       }
       /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
        */
-      public edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder getChunkMappingsBuilder() {
-        
-        onChanged();
-        return getChunkMappingsFieldBuilder().getBuilder();
+      public Builder removeChunkMappings(int index) {
+        if (chunkMappingsBuilder_ == null) {
+          ensureChunkMappingsIsMutable();
+          chunkMappings_.remove(index);
+          onChanged();
+        } else {
+          chunkMappingsBuilder_.remove(index);
+        }
+        return this;
       }
       /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
        */
-      public edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder getChunkMappingsOrBuilder() {
-        if (chunkMappingsBuilder_ != null) {
-          return chunkMappingsBuilder_.getMessageOrBuilder();
-        } else {
-          return chunkMappings_ == null ?
-              edu.usfca.cs.dfs.StorageMessages.ChunkMapping.getDefaultInstance() : chunkMappings_;
+      public edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder getChunkMappingsBuilder(
+          int index) {
+        return getChunkMappingsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder getChunkMappingsOrBuilder(
+          int index) {
+        if (chunkMappingsBuilder_ == null) {
+          return chunkMappings_.get(index);  } else {
+          return chunkMappingsBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>.ChunkMapping chunkMappings = 1;</code>
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      public java.util.List<? extends edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder> 
+           getChunkMappingsOrBuilderList() {
+        if (chunkMappingsBuilder_ != null) {
+          return chunkMappingsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(chunkMappings_);
+        }
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder addChunkMappingsBuilder() {
+        return getChunkMappingsFieldBuilder().addBuilder(
+            edu.usfca.cs.dfs.StorageMessages.ChunkMapping.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder addChunkMappingsBuilder(
+          int index) {
+        return getChunkMappingsFieldBuilder().addBuilder(
+            index, edu.usfca.cs.dfs.StorageMessages.ChunkMapping.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .ChunkMapping chunkMappings = 2;</code>
+       */
+      public java.util.List<edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder> 
+           getChunkMappingsBuilderList() {
+        return getChunkMappingsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           edu.usfca.cs.dfs.StorageMessages.ChunkMapping, edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder> 
           getChunkMappingsFieldBuilder() {
         if (chunkMappingsBuilder_ == null) {
-          chunkMappingsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          chunkMappingsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               edu.usfca.cs.dfs.StorageMessages.ChunkMapping, edu.usfca.cs.dfs.StorageMessages.ChunkMapping.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkMappingOrBuilder>(
-                  getChunkMappings(),
+                  chunkMappings_,
+                  ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
           chunkMappings_ = null;
@@ -16347,7 +16517,7 @@ public final class StorageMessages {
       "\n\022StoreChunkResponse\022\025\n\005chunk\030\001 \001(\0132\006.Ch" +
       "unk\022\021\n\tisSuccess\030\002 \001(\010\",\n\023RetrieveFileRe" +
       "quest\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\"<\n\024Retrieve" +
-      "FileResponse\022$\n\rchunkMappings\030\001 \001(\0132\r.Ch" +
+      "FileResponse\022$\n\rchunkMappings\030\002 \003(\0132\r.Ch" +
       "unkMapping\"-\n\024RetrieveChunkRequest\022\025\n\005ch" +
       "unk\030\001 \001(\0132\006.Chunk\".\n\025RetrieveChunkRespon" +
       "se\022\025\n\005chunk\030\001 \001(\0132\006.Chunk\"\206\006\n\016MessageWra" +
