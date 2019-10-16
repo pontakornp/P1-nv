@@ -51,12 +51,12 @@ public class Client {
 		return clientInstance;
 	}
 
-    private void setVariables(Config config) {
+    private synchronized void setVariables(Config config) {
 		this.chunkSize = config.getChunkSize();
 		Client.controllerNodeAddr = config.getControllerNodeAddr();
 		Client.controllerNodePort = config.getControllerNodePort();
 		Client.fileDestinationPath = config.getClientDirectoryPath();
-		System.out.println("Client Node config updated.");
+		logger.info("Client Node config updated.");
 	}
     
     /*
@@ -67,7 +67,7 @@ public class Client {
     public synchronized void sendFile(String filePath) {
     	File file = new File(filePath);
     	if (!file.exists()) {
-    		System.out.println("File with the given path: " +   filePath +  " does not exists");
+    		logger.error("File with the given path: " +   filePath +  " does not exists");
     		return;
     	}
     	this.saveFileChunks(file);
@@ -273,10 +273,19 @@ public class Client {
     		
     		// Update client metadata about current file chunk transfers
     		String chunkKey = chunk.getFileName() + "_" + chunk.getChunkId();
-    		chunk = chunk.toBuilder()
-    					.setPrimaryCount(0)
-    					.setReplicaCount(0)
-    					.build();
+    		if(Client.chunkMapPut.containsKey(chunkKey)) {
+    			StorageMessages.Chunk oldChunk = chunkMapPut.get(chunkKey);
+    			chunk = chunk.toBuilder()
+					.setPrimaryCount(oldChunk.getPrimaryCount())
+					.setReplicaCount(oldChunk.getReplicaCount())
+					.setReplicaCount(0)
+					.build();
+    		}else {
+    			chunk = chunk.toBuilder()
+					.setPrimaryCount(0)
+					.setReplicaCount(0)
+					.build();
+    		}
     		
     		Client.chunkMapPut.put(chunkKey, chunk);
     		chunk = Client.updateChunkWithFileData(chunk);
@@ -325,7 +334,8 @@ public class Client {
     	ctx.close();
     }
     
-    public static void updateChunkSaveStatus(StorageMessages.Chunk chunk) {
+    public static void updateChunkSaveStatus(StorageMessages.StoreChunkResponse storeChunkResponse) {
+    	StorageMessages.Chunk chunk = storeChunkResponse.getChunk();
     	String fileKey = chunk.getFileName() + "_" + chunk.getChunkId();
     	Client.chunkMapPut.put(fileKey, chunk);
     	logger.info("Updated chunkmap after saving chunk");

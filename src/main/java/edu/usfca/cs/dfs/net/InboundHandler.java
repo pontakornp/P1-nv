@@ -86,7 +86,6 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     	}else if(messageType == 4){
 			logger.info("Storage node receives chunk to be stored from client");
 			StorageMessages.StoreChunkRequest storeChunkRequest = msg.getStoreChunkRequest();
-			StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
 			StorageNode storageNode = StorageNode.getInstance();
 			StorageMessages.StoreChunkRequest updatedStoreChunkRequest= storageNode.storeChunk(storeChunkRequest);
 			MessageWrapper msgWrapper;
@@ -97,11 +96,11 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 				msgWrapper = HDFSMessagesBuilder.constructStoreChunkAck(storeChunkRequest, false);
 			}
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
-			future.addListener(ChannelFutureListener.CLOSE);
+			ctx.close();
     	}else if(messageType == 5){
 			logger.info("Client receives store chunk ack");
 			if(msg.getStoreChunkResponse().getIsSuccess()) {
-				Client.updateChunkSaveStatus(msg.getStoreChunkResponse().getChunk());
+				Client.updateChunkSaveStatus(msg.getStoreChunkResponse());
 			}else {
 				throw new Exception("Failed to save chunk on storage Node");
 			}
@@ -110,10 +109,11 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		logger.info("Get Storage Nodes for saving file chunks received on controller");
     		StorageMessages.GetStorageNodesForChunksRequest getStorageNodesForChunksRequest = msg.getGetStorageNodeForChunksRequest();
     		logger.info(getStorageNodesForChunksRequest);
-    		Controller controller = Controller.getInstance();
     		
+    		Controller controller = Controller.getInstance();
     		StorageMessages.GetStorageNodesForChunksResponse.Builder responseMsg = StorageMessages.GetStorageNodesForChunksResponse.newBuilder();
     		List<StorageMessages.Chunk> chunkList = getStorageNodesForChunksRequest.getChunkListList();
+    		
     		ArrayList<StorageMessages.ChunkMapping> chunkMappingList = controller.getNodesForChunkSave(chunkList);
     		responseMsg.addAllChunkMappings(chunkMappingList);
     		
@@ -124,6 +124,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		                .setMessageType(7)
     		                .setGetStorageNodesForChunksResponse(getStorageNodesForChunksResponse)
     		                .build();
+    		
     		logger.info("Controller Nodes response for chunk mapping:");
     		logger.info(msgWrapper.toString());
     		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
@@ -132,6 +133,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		logger.info("Storage Nodes for saving files chunks received on client");
     		StorageMessages.GetStorageNodesForChunksResponse storageNodesForChunksResponse
     			= msg.getGetStorageNodesForChunksResponse();
+    		logger.info(storageNodesForChunksResponse.toString());
     		
     		List<StorageMessages.ChunkMapping> chunkMapping = storageNodesForChunksResponse.getChunkMappingsList();
     		Client.saveChunkFromChunkMappings(ctx, chunkMapping);

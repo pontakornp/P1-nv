@@ -150,6 +150,7 @@ public class HDFSMessagesBuilder {
     			.setFileName(fileName)
     			.setChunkSize((int)tempChunkSize)
     			.setFileAbsolutePath(fileAbsolutePath)
+    			.setFileSize(fileSize)
     			.build();
     		
     		getStorageNodesForChunksRequestBuilder.addChunkList(i, chunk);
@@ -194,7 +195,7 @@ public class HDFSMessagesBuilder {
         return msgWrapper;
     }
 
-    public static synchronized StorageMessages.MessageWrapper constructStoreChunkAck(
+    public static synchronized StorageMessages.MessageWrapper constructStoreChunkAck (
     		StorageMessages.StoreChunkRequest storeChunkRequest, boolean isSuccess) {
     	
     	StorageMessages.Chunk chunk = storeChunkRequest.getChunk();
@@ -204,6 +205,7 @@ public class HDFSMessagesBuilder {
     			.setChunkId(chunk.getChunkId())
     			.setChunkSize(chunk.getChunkSize())
     			.setFileName(chunk.getFileName())
+    			.setFileSize(chunk.getFileSize())
     			.setChecksum(chunk.getChecksum())
     			.setMaxChunkNumber(chunk.getMaxChunkNumber())
     			.setFileAbsolutePath(chunk.getFileAbsolutePath())
@@ -218,6 +220,7 @@ public class HDFSMessagesBuilder {
                 .setFileExists(storeChunkRequest.getFileExists())
                 .setIsClientInitiated(storeChunkRequest.getIsClientInitiated())
                 .build();
+        
         StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
                 .setMessageType(5)
                 .setStoreChunkResponse(storeChunkResponse)

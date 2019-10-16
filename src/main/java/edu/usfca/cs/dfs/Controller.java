@@ -262,7 +262,7 @@ public class Controller {
 			containingStorageNodeList.add(notcontainingStorageNodeList.get(0));
 		}
 		
-		System.out.println("StorageNodes Count Identified for chunk: " + String.valueOf(containingStorageNodeList.size()));
+		logger.info("StorageNodes Count Identified for chunk: " + String.valueOf(containingStorageNodeList.size()));
 		return containingStorageNodeList;
 	}
 	

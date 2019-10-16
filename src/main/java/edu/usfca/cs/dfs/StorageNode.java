@@ -280,6 +280,7 @@ public class StorageNode {
 				dir = new File(StorageNode.storageNodeDirectoryPath, this.storageNodeId);
 				isPrimaryNode = true;
 			}else {
+				isPrimaryNode = false;
 				dir = new File(StorageNode.storageNodeDirectoryPath, previousStorageNode.getStorageNodeId());
 			}
 			if (!dir.exists()) {
