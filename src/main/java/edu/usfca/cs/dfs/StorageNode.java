@@ -2,7 +2,9 @@ package edu.usfca.cs.dfs;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
 import edu.usfca.cs.dfs.StorageMessages.MessageWrapper;
@@ -266,6 +269,7 @@ public class StorageNode {
 		boolean isNewChunk = storeChunkRequest.getIsNewChunk();
 		boolean isPrimaryNode = false;
 		boolean isPreviousVersion = storeChunkRequest.getFileExists();
+		boolean isCompressed = false;
 		
 		StringBuilder filePathBuilder = new StringBuilder(); 
 		filePathBuilder.append(fileName);
@@ -318,16 +322,35 @@ public class StorageNode {
 						return null;
 					}
 					chunk = chunk.toBuilder().setData(ByteString.copyFrom(chunkData)).build();
+					isCompressed = true;
 				}
 			}
 			
 			try {
 				File outputFile = new File(dir.toString(), outputFileName);
+				File metaoutputFile = new File(dir.toString(), outputFileName+".meta");
+				String checksum = CheckSum.checkSum(chunkData);
+				
+				
 				logger.info("File getting saved at path: " + outputFile.toString());
 				outputFile.createNewFile();
 				FileOutputStream outputStream = new FileOutputStream(outputFile);
 				outputStream.write(chunkData);
 				outputStream.close();
+				ChunkMetaData chunkMetaData = new ChunkMetaData(
+						chunk.getFileName(), chunk.getChunkId(),
+						chunk.getChunkSize(),
+						chunk.getMaxChunkNumber(),
+						checksum,
+						isCompressed
+						);
+				
+				Gson gson = new Gson();
+				Writer writer = new FileWriter(metaoutputFile);
+				gson.toJson(chunkMetaData, writer);
+				writer.flush();
+		        writer.close();
+				
 				this.setAvailableStorageCapacity(this.getAvailableStorageCapacity()-outputFile.length());
 				if(isPrimaryNode && chunk.getPrimaryCount()==0) {
 					chunk = chunk.toBuilder().setPrimaryCount(chunk.getPrimaryCount()+1).build();

@@ -1,17 +1,21 @@
 package edu.usfca.cs.dfs;
 
 public class ChunkMetaData {
-    private String fileName;
-    private int chunkNum;
-    private int maxChunkNum;
-    private String checkSum;
-    private boolean isCompressed;
-    private boolean isPrimary;
+    public String fileName;
+    public int chunkId;
+    public int chunkSize;
+    public int maxChunkId;
+    public String checkSum;
+    public boolean isCompressed;
+    public boolean isPrimary;
 
-    public ChunkMetaData(String checkSum, boolean isCompressed, int chunkNum, int chunkSize) {
-        this.checkSum = checkSum;
+    public ChunkMetaData(String fileName, int chunkId, int chunkSize, int maxChunkId, String checkSum, boolean isCompressed) {
+    	this.fileName = fileName;
+    	this.chunkId = chunkId;
+    	this.chunkSize = chunkSize;
+    	this.maxChunkId = maxChunkId;
+    	this.checkSum = checkSum;
         this.isCompressed = isCompressed;
-        this.chunkNum = chunkNum;
     }
     public String getFileName() {
     	return this.fileName;
@@ -21,20 +25,20 @@ public class ChunkMetaData {
     	this.fileName = fileName;
     }
     
-    public int getChunkNum() {
-        return chunkNum;
+    public int getchunkId() {
+        return chunkId;
     }
 
-    public void setChunkNum(int chunkNum) {
-        this.chunkNum = chunkNum;
+    public void setchunkId(int chunkId) {
+        this.chunkId = chunkId;
     }
     
-    public int getMaxChunkNum() {
-        return maxChunkNum;
+    public int getMaxchunkId() {
+        return maxChunkId;
     }
 
-    public void setMaxChunkNum(int maxChunkNum) {
-        this.maxChunkNum = maxChunkNum;
+    public void setMaxchunkId(int maxChunkId) {
+        this.maxChunkId = maxChunkId;
     }
     
     public String getCheckSum() {
