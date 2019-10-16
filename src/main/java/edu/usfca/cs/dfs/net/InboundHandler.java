@@ -194,44 +194,9 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			} else {
 				Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
 			}
-			
+
 			// merge and write it to file later
     		ctx.close();
-
-
-
-    		// if chunk is null, it means chunk does not exist
-//			if(chunkMsg == null) {
-//
-//			}
-//			String fileName = chunkMsg.getFileName();
-//			int chunkId = chunkMsg.getChunkId();
-//			if(chunkId == 0) {
-//				// client get maxChunk from byte array data
-//				// traverse all the chunk up to max chunk, to request storage nodes from controller
-//
-//				int maxChunkNumber = chunkMsg.getMaxChunkNumber();
-//				List<StorageMessages.ChunkMapping> chunkMappingList = controller.getNodesForRetrieveFile(fileName, maxChunkNumber);
-//				// store chunk to file
-//				for(int i = 1; i <= maxChunkNumber; i++) {
-//					// request storage node from controller
-//					StorageMessages.ChunkMapping chunkMapping = controller.getNodesForRetrieveFile(fileName, i);
-//					// request to get chunk from each storage node one by one
-//					List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
-//					Client.retrieveChunk(storageNodeList, fileName, i);
-////					for(StorageMessages.StorageNode storageNode: storageNodeList) {
-////						Client.addChunkToChunkMap(fileName,chunkId,chunkMsg);
-////						Client.retrieveChunk(storageNodeList, fileName, i);
-////					}
-//
-//				}
-//				// if a chunk is found on the storage node, sequentially move on to request next chunk from the storage node in the chunk mapping
-//
-//			}else{
-//				// add chunk to mapping
-//				Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
-//			}
-//			ctx.close();
 		}else if(messageType == 12) {
     		logger.info("Save Chunk Update request received on Controller");
     		StorageMessages.StoreChunkControllerUpdateRequest storageChunkControllerUpdateRequest 
