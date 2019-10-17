@@ -452,46 +452,6 @@ public class StorageNode {
 		}
 	}
 
-	// get number of chunks
-	public synchronized Integer getChunkCount(String fileName) {
-		return 0;
-	}
-
-	// get chunk location
-	public synchronized String getChunkLocation(String fileName, Integer chunkNumber){
-		String filePath = StorageNode.storageNodeDirectoryPath + fileName + '_' + chunkNumber;
-		String metaPath = filePath + ".meta";
-
-		File file = new File(filePath);
-		if (!file.exists()) {
-			return null;
-		}
-		try {
-			byte[] chunkData = Files.readAllBytes(Paths.get(metaPath));
-			ChunkMetaData chunkMetaData = new ChunkMetaData();
-			chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
-			StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData);
-
-			if(chunkMetaData.isCompressed) {
-
-			}
-
-
-		} catch (IOException e) {
-			logger.error("File not exist");
-		}
-
-
-
-		String compressedFilePath = filePath + "_compressed";
-		// add _{checksum} then check if the file exist or not
-		File compressedFile = new File(compressedFilePath);
-		if (compressedFile.exists()) {
-			return compressedFilePath;
-		}
-		return null;
-	}
-
 	// retrieve chunk from a file
 	public synchronized StorageMessages.MessageWrapper retrieveChunk(String fileName, int chunkNumber) {
 		String file_key = fileName + '_' + chunkNumber;
@@ -605,7 +565,6 @@ public class StorageNode {
 			try {
 				byte[] chunkData = Files.readAllBytes(Paths.get(filePath.getAbsolutePath()));
 				String metaPath = filePath.getAbsolutePath()+".meta";
-				byte[] metaData = Files.readAllBytes(Paths.get(metaPath);
 				ChunkMetaData chunkMetaData = new ChunkMetaData();
 				chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
 				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData);
@@ -614,9 +573,7 @@ public class StorageNode {
 				e.printStackTrace();
 				return null;
 			}
-
 		}
-
 		return null;
 	}
 
@@ -640,7 +597,7 @@ public class StorageNode {
 	public void listChunksAndFileNames() {
 
 	}
-	
+
 	public void start() throws IOException, InterruptedException {
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -677,7 +634,7 @@ public class StorageNode {
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
 		try {
-			//storageNode.handleHeartBeats();
+			storageNode.handleHeartBeats();
 			storageNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start storage node");

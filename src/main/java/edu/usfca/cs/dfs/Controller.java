@@ -46,7 +46,7 @@ public class Controller {
 		return this.bloomFilterMap;
 	}
 	
-	public ConcurrentHashMap<String, StorageMessages.StorageNode> getActiveStorageNodes(){
+	public ConcurrentHashMap<String, StorageMessages.StorageNode> getActiveStorageNodesMap(){
 		return this.activeStorageNodes;
 	}
 
@@ -102,6 +102,15 @@ public class Controller {
 		for (Map.Entry<String, StorageMessages.StorageNode> activeStorageNode : this.activeStorageNodes.entrySet()) {
 			logger.info(activeStorageNode.toString());
 		}
+	}
+	
+	public synchronized List<StorageMessages.StorageNode> getActiveStorageNodes() {
+		List<StorageMessages.StorageNode> storageNodeList = new ArrayList<StorageMessages.StorageNode>();
+		for(StorageMessages.StorageNode activeStorageNode : this.activeStorageNodes.values()) {
+			storageNodeList.add(activeStorageNode);
+		}
+		
+		return storageNodeList;
 	}
 	
 	/* This will update the replication nodes for storage nodes 
@@ -360,7 +369,7 @@ public class Controller {
 	private static void detectInactiveNodes(Controller controller) {
 		for (Map.Entry<String, Timestamp> storageNodeTimestamp : controller.timeStamps.entrySet()) {
 			if(Controller.getCurrentTimeStamp().getTime()-storageNodeTimestamp.getValue().getTime()>=Controller.MAX_STORAGE_TIME_INACTIVITY){
-				System.out.println("Identified StorageNode  inactivity detected for StorageNodeId: "+  storageNodeTimestamp.getKey());
+				logger.info("Identified StorageNode  inactivity detected for StorageNodeId: "+  storageNodeTimestamp.getKey());
 				controller.timeStamps.remove(storageNodeTimestamp.getKey());
 				// TODO: Need to handle recovery of node here
 				controller.activeStorageNodes.remove(storageNodeTimestamp.getKey());
@@ -419,7 +428,7 @@ public class Controller {
 		Controller controllerNode = Controller.getInstance();
 		controllerNode.setVariables(config);
 		try {
-			//controllerNode.handleInactiveNodes();
+			controllerNode.handleInactiveNodes();
 			controllerNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start controller node");

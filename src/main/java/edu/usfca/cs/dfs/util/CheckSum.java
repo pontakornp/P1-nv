@@ -7,8 +7,9 @@ import java.util.Base64;
 public class CheckSum {
     public static String checkSum(byte[] byteArray) {
         try {
+        	byte[] copy = byteArray.clone();
             MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(byteArray);
+            md.update(copy);
             byte[] digest = md.digest();
             
             String checkSum = Base64.getEncoder().encodeToString(digest);

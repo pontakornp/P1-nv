@@ -238,16 +238,29 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 
     		// return the requested storageNode object to the storageNode
 			StorageMessages.StorageNode storageNodeMsg;
-			StorageMessages.Chunk
-
 			StorageNode storageNode = StorageNode.getInstance();
-			storageNode.getChunk(addr, port, fileName, chunkNumber, recoverStorageNodeId);
+//			storageNode.getChunk(addr, port, fileName, chunkNumber, recoverStorageNodeId);
 
 		} else if (messageType==17) {
     		logger.info("StorageNode gets storage node object to recover chunk from controller");
 
 
     		// call another storage node in messageType == 15
+
+		}else if(messageType==18) {
+			logger.info("Request for getting active node list received on controller");
+			Controller controller = Controller.getInstance();
+			StorageMessages.MessageWrapper msgWrapper 
+				= HDFSMessagesBuilder.constructGetActiveStorageNodeListResponse(controller.getActiveStorageNodes());
+
+			ctx.writeAndFlush(msgWrapper);
+			ctx.close();
+		}else if(messageType==19) {
+			logger.info("Active List of Storage Nodes received from controller!!!");
+			List<StorageMessages.StorageNode> activeStorageList = msg.getGetActiveStorageNodeListResponse().getActiveStorageNodesList();
+			System.out.println(activeStorageList);
+			ctx.close();
+
 		}
     }
 
