@@ -56,7 +56,7 @@ public class Controller {
 
 	public static Controller getInstance() {
 		if (controllerInstance == null){
-			System.out.println("New controller instance instantiated");
+			logger.info("New controller instance instantiated");
 			controllerInstance = new Controller();
 		}
 		return controllerInstance;
@@ -151,11 +151,12 @@ public class Controller {
 			for (StorageMessages.StorageNode activeStorageNode : this.activeStorageNodes.values()) {
 				String storageNodeId = activeStorageNode.getStorageNodeId();
 				
-				if(activeStorageNode.getReplicaNodesCount()<=maxReplicas) {
+				if(activeStorageNode.getReplicaNodesCount()<maxReplicas) {
 					ArrayList<StorageMessages.ReplicaNode> outputNodeList = new ArrayList<StorageMessages.ReplicaNode>();
 					ArrayList<StorageMessages.StorageNode> usedNodeList = new ArrayList<StorageMessages.StorageNode>();
+					int newReplicaCount = maxReplicas-existingReplicaMap.get(storageNodeId).size();
 					
-					for(int i=0; i<maxReplicas-existingReplicaMap.get(storageNodeId).size(); i++) {
+					for(int i=0; i<newReplicaCount; i++) {
 						
 						StorageMessages.StorageNode currentNode = completeNodeListPQ.peek();
 						while(storageNodeId == currentNode.getStorageNodeId()
@@ -165,6 +166,7 @@ public class Controller {
 						}
 						logger.info("Storage Node: " + currentNode.getStorageNodeId() + " added as replica for " + activeStorageNode.getStorageNodeId());
 						StorageMessages.StorageNode tempSN = completeNodeListPQ.remove();
+						usedNodeList.add(tempSN);
 						StorageMessages.ReplicaNode replicaNodeMsg 
 							= StorageMessages.ReplicaNode.newBuilder()
 							.setStorageNodeId(tempSN.getStorageNodeId())
@@ -175,13 +177,9 @@ public class Controller {
 					}
 					
 					// Re-add nodes which were removed from node list
-					for(StorageMessages.StorageNode usedNode: usedNodeList) {
-						completeNodeListPQ.add(usedNode);
-					}
+					completeNodeListPQ.addAll(usedNodeList);
 					
 					activeStorageNode = activeStorageNode.toBuilder().addAllReplicaNodes(outputNodeList).build();
-					// TODO: Send a updateReplicaNodeRequest to storageNode Here
-					
 					this.activeStorageNodes.put(storageNodeId, activeStorageNode);
 					updatedNodeList.add(activeStorageNode);
 				}
@@ -220,7 +218,8 @@ public class Controller {
 				
 				        Channel chan = cf.channel();
 				        chan.writeAndFlush(msgWrapper);
-				        logger.info("Update replica node initiated from controller to storage Node");
+				        logger.info("Update replica node completed from controller to storage Node: " + 
+				        		updatedNode.getStorageNodeAddr() + String.valueOf(updatedNode.getStorageNodePort()));
 				        chan.closeFuture().sync();
 				        workerGroup.shutdownGracefully();
 					} catch (Exception e) {
@@ -237,7 +236,7 @@ public class Controller {
 	 * This will be called when StorageNode send HeartBeat to controller
 	 * This will need to update metadata of chunk on controller
 	 */
-	public synchronized StorageMessages.StorageNode receiveHeartBeat(StorageMessages.StorageNode storageNode) {
+	public synchronized void receiveHeartBeat(StorageMessages.StorageNode storageNode) {
 		String storageNodeId = storageNode.getStorageNodeId();
 		
 		if(this.timeStamps.containsKey(storageNodeId)) {
@@ -247,13 +246,8 @@ public class Controller {
 					.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
 					.build();
 			this.activeStorageNodes.put(storageNodeId, activeStorageNode);
-			// TODO: Respond to heartbeat with new replication nodes
-			// TODO: Storage nodes needs to update replication nodes with changes in replication nodes
-			logger.info("Storage Node Heartbeat has been updated");
-			return activeStorageNode;
 		}else {
 			logger.error("Storage Node not registered on controller. Heartbeat will not be updated");
-			return null;
 		}
 	}
 	
@@ -333,7 +327,7 @@ public class Controller {
 			}
 		}
 		// This is added so that we can send atleast one node to save assuming false positives
-		if(notcontainingStorageNodeList.size()>0) {
+		if(notcontainingStorageNodeList.size()>0 && containingStorageNodeList.size()==0) {
 			containingStorageNodeList.add(notcontainingStorageNodeList.get(0));
 		}
 		
@@ -473,7 +467,7 @@ public class Controller {
               .childOption(ChannelOption.SO_KEEPALIVE, true);
  
             ChannelFuture f = b.bind(this.controllerNodePort).sync();
-            System.out.println("Controller started at given port: " + String.valueOf(this.controllerNodePort));
+            logger.info("Controller started at given port: " + String.valueOf(this.controllerNodePort));
             f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
@@ -497,7 +491,7 @@ public class Controller {
 			//controllerNode.handleInactiveNodes();
 			controllerNode.start();
 		}catch (Exception e){
-			System.out.println("Unable to start controller node");
+			logger.error("Unable to start controller node. Address already in use");
 			e.printStackTrace();
 		}
 		

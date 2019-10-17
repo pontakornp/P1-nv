@@ -140,7 +140,7 @@ public class StorageNode {
 		
 		this.controllerNodeAddr = config.getControllerNodeAddr();
 		this.controllerNodePort = config.getControllerNodePort();
-		System.out.println("Storage Node config updated. Storage Node Id: "
+		logger.info("Storage Node config updated. Storage Node Id: "
 			+ this.storageNodeId +  " StorageNode Size: " + this.availableStorageCapacity);
 	}
     
@@ -203,7 +203,7 @@ public class StorageNode {
 			EventLoopGroup workerGroup = new NioEventLoopGroup();
 	        MessagePipeline pipeline = new MessagePipeline();
 	        
-	        System.out.println("HeartBeat initiated to controller");
+	        logger.info("HeartBeat initiated to controller");
 	        Bootstrap bootstrap = new Bootstrap()
 	            .group(workerGroup)
 	            .channel(NioSocketChannel.class)
@@ -274,19 +274,7 @@ public class StorageNode {
 		String outputFileName = filePathBuilder.toString();
 		
 		File dir = null;
-		if(isNewChunk && !isPreviousVersion) {
-			if(isClientInitiated) {
-				dir = new File(this.storageNodeDirectoryPath, this.storageNodeId);
-				isPrimaryNode = true;
-			}else {
-				isPrimaryNode = false;
-				dir = new File(this.storageNodeDirectoryPath, previousStorageNode.getStorageNodeId());
-			}
-			if (!dir.exists()) {
-				dir.mkdirs();
-				logger.info("Created new file directory on storage node: " + dir.toString());
-			}
-		}else {
+		if(isPreviousVersion) {
 			// This is the case for false positives or multiple versions
 			// Finds previous file location in base path
 			File basePath = new File(this.storageNodeDirectoryPath);
@@ -305,6 +293,23 @@ public class StorageNode {
 						}
 					}
 				}
+			}
+			if(dir == null) {
+				isPreviousVersion = false;
+			}
+		}
+		
+		if(isNewChunk && !isPreviousVersion) {
+			if(isClientInitiated) {
+				dir = new File(this.storageNodeDirectoryPath, this.storageNodeId);
+				isPrimaryNode = true;
+			}else {
+				isPrimaryNode = false;
+				dir = new File(this.storageNodeDirectoryPath, previousStorageNode.getStorageNodeId());
+			}
+			if (!dir.exists()) {
+				dir.mkdirs();
+				logger.info("Created new file directory on storage node: " + dir.toString());
 			}
 		}
 		
@@ -353,7 +358,6 @@ public class StorageNode {
 					chunk = chunk.toBuilder().setReplicaCount(chunk.getPrimaryCount()+1).build();
 				}
 				
-				// TODO: Create metachunk file and save to file directory
 				storeChunkRequest = storeChunkRequest.toBuilder()
 						.setChunk(chunk)
 						.setIsClientInitiated(false)
@@ -362,10 +366,12 @@ public class StorageNode {
 						.build();
 				
 				if(!isPreviousVersion) {
-					logger.info("Previous version do not exists. Replicating chunks and updating controller");
-					//TODO: this needs to be executed in separate thread each
-					this.storeChunkOnReplica(storeChunkRequest);
 					this.updateControllerOnChunkSave(chunk);
+					if (isClientInitiated) {
+						logger.info("Previous version do not exists. Replicating chunks and updating controller");
+						//TODO: this needs to be executed in separate thread each
+						this.storeChunkOnReplica(storeChunkRequest);
+					}
 				}
 				return storeChunkRequest;
 			} catch (IOException e) {
@@ -417,9 +423,11 @@ public class StorageNode {
 		StorageMessages.MessageWrapper message = 
 				HDFSMessagesBuilder.constructStoreChunkRequest(
 						storeChunkRequest.getChunk(), 
-						storeChunkRequest.getStorageNode(), 
+						storeChunkRequest.getStorageNode(),
+						storeChunkRequest.getFileExists(),
 						storeChunkRequest.getIsClientInitiated(), 
 						storeChunkRequest.getIsNewChunk());
+		
 		for (StorageMessages.ReplicaNode replica: this.replicaStorageNodes) {
 			boolean isReplicated = storeChunkOnReplicaHelper(message, replica);
 			if (!isReplicated) {
@@ -656,7 +664,7 @@ public class StorageNode {
               .childOption(ChannelOption.SO_KEEPALIVE, true);
  
             ChannelFuture f = b.bind(this.storageNodePort).sync();
-            System.out.println("Storage Node started at port: " + String.valueOf(this.storageNodePort));
+            logger.info("Storage Node started at port: " + String.valueOf(this.storageNodePort));
             this.registerNode();
 			f.channel().closeFuture().sync();
         } finally {
@@ -681,7 +689,7 @@ public class StorageNode {
 			//storageNode.handleHeartBeats();
 			storageNode.start();
 		}catch (Exception e){
-			System.out.println("Unable to start storage node");
+			logger.error("Unable to start storage node. Address already in use");
 			e.printStackTrace();
 		}
 	}

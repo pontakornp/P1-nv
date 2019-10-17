@@ -98,32 +98,6 @@ public class HDFSMessagesBuilder {
 		return msgWrapper;
     }
 	
-	
-	/*
-     * This will use protobuf message to send heartbeat response from controller to storage node
-     * Sets message type as 13 for inbound handler to identify as heartbeat response message
-     */
-	public static synchronized StorageMessages.MessageWrapper constructHeartBeatResponse(StorageMessages.StorageNode storageNode) {
-		StorageMessages.StorageNodeHeartbeat StorageNodeHeartBeatMsg
-			= StorageMessages.StorageNodeHeartbeat.newBuilder()
-			.setStorageNode(storageNode)
-			.build();
-		
-		
-		StorageMessages.StorageNodeHeartBeatResponse storageNodeHeartBeatResponseMsg
-	    	= StorageMessages.StorageNodeHeartBeatResponse.newBuilder()
-	    	.setStorageNodeHeartbeat(StorageNodeHeartBeatMsg)
-	    	.build();
-		
-		StorageMessages.MessageWrapper msgWrapper =
-		        StorageMessages.MessageWrapper.newBuilder()
-		                .setMessageType(13)
-		                .setStorageNodeHeartBeatResponse(storageNodeHeartBeatResponseMsg)
-		                .build();
-		return msgWrapper;
-    }
-	
-	
 	/*
      * This will use protobuf message from client to controller requesting storageNodes for file
      * Sets message type as 6 for inbound handler to identify as GetStorageNodesForChunksRequest
@@ -160,7 +134,7 @@ public class HDFSMessagesBuilder {
 		
 		StorageMessages.MessageWrapper msgWrapper =
 		        StorageMessages.MessageWrapper.newBuilder()
-		                .setMessageType(6)
+		                .setMessageType(4)
 		                .setGetStorageNodeForChunksRequest(getStorageNodesForChunksRequestBuilder.build())
 		                .build();
 		
@@ -180,17 +154,33 @@ public class HDFSMessagesBuilder {
 		
 		return chunkMapping;
 	}
+	
+	public static synchronized StorageMessages.MessageWrapper constructGetStorageNodesForChunksResponse(ArrayList<StorageMessages.ChunkMapping> chunkMappingList) {
+		StorageMessages.GetStorageNodesForChunksResponse.Builder responseMsg = StorageMessages.GetStorageNodesForChunksResponse.newBuilder();
+		responseMsg.addAllChunkMappings(chunkMappingList);
+		
+		StorageMessages.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = responseMsg.build();
+		
+		StorageMessages.MessageWrapper msgWrapper =
+		        StorageMessages.MessageWrapper.newBuilder()
+		                .setMessageType(5)
+		                .setGetStorageNodesForChunksResponse(getStorageNodesForChunksResponse)
+		                .build();
+        return msgWrapper;
+    }
 
     public static synchronized StorageMessages.MessageWrapper constructStoreChunkRequest(
-    		StorageMessages.Chunk chunk, StorageMessages.StorageNode storageNode, boolean isClientInitated, boolean isNewChunk) {
+    		StorageMessages.Chunk chunk, StorageMessages.StorageNode storageNode, 
+    		boolean fileExists, boolean isClientInitated, boolean isNewChunk) {
         StorageMessages.StoreChunkRequest storeChunkRequest = StorageMessages.StoreChunkRequest.newBuilder()
                 .setChunk(chunk)
                 .setStorageNode(storageNode)
+                .setFileExists(fileExists)
                 .setIsClientInitiated(isClientInitated)
                 .setIsNewChunk(isNewChunk)
                 .build();
         StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-                .setMessageType(4)
+                .setMessageType(6)
                 .setStoreChunkRequest(storeChunkRequest)
                 .build();
         return msgWrapper;
@@ -223,7 +213,7 @@ public class HDFSMessagesBuilder {
                 .build();
         
         StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-                .setMessageType(5)
+                .setMessageType(7)
                 .setStoreChunkResponse(storeChunkResponse)
                 .build();
 	    return msgWrapper;

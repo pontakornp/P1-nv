@@ -320,7 +320,7 @@ public class Client {
      * The first storage node not containing the file becomes the primary node for that chunk
      * If file already exists but not in primary node we do not save it
      */
-    public static void saveChunkFromChunkMappings(ChannelHandlerContext ctx, List<StorageMessages.ChunkMapping> chunkMappingList){
+    public static synchronized void saveChunkFromChunkMappings(ChannelHandlerContext ctx, List<StorageMessages.ChunkMapping> chunkMappingList) throws Exception{
     	
     	System.out.println("ChunkMapping count received from controller: " + String.valueOf(chunkMappingList.size()));
     	for (StorageMessages.ChunkMapping chunkMapping : chunkMappingList) {
@@ -333,7 +333,6 @@ public class Client {
     			chunk = chunk.toBuilder()
 					.setPrimaryCount(oldChunk.getPrimaryCount())
 					.setReplicaCount(oldChunk.getReplicaCount())
-					.setReplicaCount(0)
 					.build();
     		}else {
     			chunk = chunk.toBuilder()
@@ -345,17 +344,24 @@ public class Client {
     		Client.chunkMapPut.put(chunkKey, chunk);
     		chunk = Client.updateChunkWithFileData(chunk);
     		List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
-
-    		System.out.println("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
-			for ( int i=0; i< storageNodeList.size(); i++) {
-				if(Client.chunkMapPut.get(chunkKey).getPrimaryCount()<1 
-						|| Client.chunkMapPut.get(chunkKey).getReplicaCount()<Client.MAX_REPLICAS) {
+    		logger.info("Storage Node count received from controller for chunk: " + String.valueOf(chunkMapping.getStorageNodeObjsList().size()));
+    		if(storageNodeList.size()==0) {
+    			throw new Exception("No storagenodes available to save chunk");
+    		}
+    		boolean isNewChunk = false;
+    		boolean fileExists = false;
+    		
+    		if(storageNodeList.size()>1) {
+    			fileExists = true;
+    		}
+    		
+			for (int i=0; i< storageNodeList.size(); i++) {
+				if(Client.chunkMapPut.get(chunkKey).getPrimaryCount()<1) {
 					StorageMessages.StorageNode storageNode = storageNodeList.get(i);
-					boolean isNewChunk = false;
+					
 					if (i == storageNodeList.size()-1) {
 						isNewChunk = true;
 					}
-					
 					try {
 						EventLoopGroup workerGroup = new NioEventLoopGroup();
 				        MessagePipeline pipeline = new MessagePipeline();
@@ -370,15 +376,14 @@ public class Client {
 				        ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
 				        cf.syncUninterruptibly();
 				
-				        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, storageNode, true, isNewChunk);
-				
+				        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructStoreChunkRequest(chunk, storageNode, fileExists, true, isNewChunk);
 				        Channel chan = cf.channel();
 				        ChannelFuture write = chan.write(msgWrapper);
 				        chan.flush();
 				        write.syncUninterruptibly();
-				        logger.info("Save File Chunks completed at storageNode: " + storageNode.getStorageNodeId());
 				        chan.closeFuture().sync();
 				        workerGroup.shutdownGracefully();
+				        logger.info("Save File chunk completed at storageNode: " + storageNode.getStorageNodeId());
 					} catch (Exception e) {
 						e.printStackTrace();
 						logger.error("Save File Chunk failed. Storage node connection establishment failed");
