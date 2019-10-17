@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -549,6 +550,43 @@ public class StorageNode {
 			// contact controller to get the address and port of the storage
 			Controller controller = Controller.getInstance();
 			// call a method in controller to get the storage node object
+			List<StorageMessages.StorageNode> activateStorageNodes = controller.getActiveStorageNodes();
+			for(StorageMessages.StorageNode storageNode: activateStorageNodes) {
+				if(storageNode.getStorageNodeId().equals(recoverStorageNodeId)) {
+					try {
+						EventLoopGroup workerGroup = new NioEventLoopGroup();
+						MessagePipeline pipeline = new MessagePipeline();
+
+						logger.info("Registration initiated to controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
+						Bootstrap bootstrap = new Bootstrap()
+								.group(workerGroup)
+								.channel(NioSocketChannel.class)
+								.option(ChannelOption.SO_KEEPALIVE, true)
+								.handler(pipeline);
+
+						ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
+						cf.syncUninterruptibly();
+
+						StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
+								.setChunkId(chunkNumber)
+								.setFileName(fileName)
+								.build();
+
+						StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetNodesFromController(chunk, storageNodeId);
+
+						Channel chan = cf.channel();
+						ChannelFuture write = chan.writeAndFlush(msgWrapper);
+						logger.info("Request controller for active nodes");
+						chan.closeFuture().sync();
+						workerGroup.shutdownGracefully();
+					} catch (Exception e) {
+						e.printStackTrace();
+						logger.error("Fail to request to controller");
+					}
+
+				}
+			}
+
 		}
 	}
 

@@ -235,6 +235,11 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			storageNode.storeRecoverChunk(chunk, storageNodeId);
 		} else if (messageType==16) {
     		logger.info("Controller gets request to return the storageNode object");
+			StorageMessages.RecoverChunkResponse recoverChunkResponse = msg.getRecoverChunkResponse();
+			StorageMessages.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = msg.getGetActiveStorageNodeListRequest();
+			Controller controller = Controller.getInstance();
+			controller.getActiveStorageNodes();
+
 
     		// return the requested storageNode object to the storageNode
 			StorageMessages.StorageNode storageNodeMsg;
