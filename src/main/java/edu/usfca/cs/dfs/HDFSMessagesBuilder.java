@@ -151,6 +151,7 @@ public class HDFSMessagesBuilder {
     			.setChunkSize((int)tempChunkSize)
     			.setFileAbsolutePath(fileAbsolutePath)
     			.setFileSize(fileSize)
+    			.setMaxChunkNumber((int)maxChunkNumber)
     			.build();
     		
     		getStorageNodesForChunksRequestBuilder.addChunkList(i, chunk);

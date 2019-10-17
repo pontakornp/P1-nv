@@ -33,8 +33,8 @@ public class Client {
 	private static Integer controllerNodePort;
 	private static String fileDestinationPath;
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut = new ConcurrentHashMap<String, StorageMessages.Chunk>();
-	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet = new ConcurrentHashMap<String, StorageMessages.Chunk>() ;
-	private static HashMap<String, StorageMessages.Chunk> chunkMap;
+	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapGet = new ConcurrentHashMap<String, StorageMessages.Chunk>();
+	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMap = new ConcurrentHashMap<String, StorageMessages.Chunk>();
 	private static Client clientInstance;
 	private static int MAX_REPLICAS = 2;
 
@@ -156,9 +156,13 @@ public class Client {
 		long fileSize = chunk.getFileSize();
 		byte[] data = chunk.getData().toByteArray();
 		
-		String outputFile = fileName + "_" + chunkId;
-		File outputFilePath = new File(Client.fileDestinationPath, outputFile);
-		
+		File basePath = new File(Client.fileDestinationPath);
+		if(!basePath.exists()) {
+			basePath.mkdirs();
+		}
+		File outputFilePath = new File(Client.fileDestinationPath, fileName);
+		logger.info(chunk.toString());
+		logger.info(outputFilePath.getAbsolutePath());
 		try {
 			if(!outputFilePath.exists()) {
 				outputFilePath.createNewFile();
@@ -169,6 +173,7 @@ public class Client {
 			aFile.write(data);
 			aFile.close();
 		} catch (IOException e) {
+			e.printStackTrace();
 			logger.error("Fail to write file");
 		}
 	}
