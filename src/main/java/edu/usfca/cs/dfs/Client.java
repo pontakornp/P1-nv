@@ -192,7 +192,7 @@ public class Client {
 			}
 			RandomAccessFile aFile = new RandomAccessFile(outputFilePath, "rw");
 			aFile.seek(chunkId*Client.chunkSize);
-			aFile.write(data);
+			aFile.write(data, 0, chunkSize);
 			aFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -242,15 +242,17 @@ public class Client {
 			aFile = new RandomAccessFile(filePath, "r");
 			
 	        byte[] buffer = new byte[chunkSize];
-	        aFile.seek(chunkId*chunkSize);
-	        int readPos = 0;
-	        while (readPos < buffer.length) {
-	            int nread = aFile.read(buffer, readPos, buffer.length - readPos);
-	            if (nread < 0) {
-	                break;
-	            }
-	            readPos += nread;
-	        }
+	        logger.info("offset: " + chunkId * Client.chunkSize + " length : " + chunkSize);
+	        aFile.seek(chunkId * Client.chunkSize);
+	        aFile.readFully(buffer, 0, chunkSize);
+//	        int readPos = 0;
+//	        while (readPos < buffer.length) {
+//	            int nread = aFile.read(buffer, readPos, buffer.length - readPos);
+//	            if (nread < 0) {
+//	                break;
+//	            }
+//	            readPos += nread;
+//	        }
 	        System.out.println("ByteStringData" + ByteString.copyFrom(buffer));
 	        chunk = chunk.toBuilder().setData(ByteString.copyFrom(buffer)).build();
 		} catch (FileNotFoundException e) {

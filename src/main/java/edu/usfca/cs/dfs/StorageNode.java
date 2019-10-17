@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -330,12 +331,12 @@ public class StorageNode {
 				File metaoutputFile = new File(dir.toString(), outputFileName+".meta");
 				String checksum = CheckSum.checkSum(chunkData);
 				
-				
 				logger.info("File getting saved at path: " + outputFile.toString());
 				outputFile.createNewFile();
-				FileOutputStream outputStream = new FileOutputStream(outputFile);
-				outputStream.write(chunkData);
-				outputStream.close();
+				RandomAccessFile aFile = new RandomAccessFile(outputFile, "rw");
+				aFile.write(chunkData, 0, chunkData.length);
+				aFile.close();
+				
 				ChunkMetaData chunkMetaData = new ChunkMetaData(
 					chunk.getFileName(), chunk.getFileSize(), 
 					chunk.getChunkId(), chunk.getChunkSize(),
