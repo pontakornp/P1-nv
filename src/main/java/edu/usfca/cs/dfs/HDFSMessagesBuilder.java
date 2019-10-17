@@ -284,7 +284,7 @@ public class HDFSMessagesBuilder {
 				.build();
         return msgWrapper;
     }
-
+    
     public static StorageMessages.MessageWrapper constructRetrieveFileResponse(List<StorageMessages.ChunkMapping> chunkMappings) {
 		StorageMessages.RetrieveFileResponse retrieveFileResponse = StorageMessages.RetrieveFileResponse.newBuilder()
 				.addAllChunkMappings(chunkMappings)

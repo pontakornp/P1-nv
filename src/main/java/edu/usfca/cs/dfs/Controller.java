@@ -266,7 +266,7 @@ public class Controller {
 		return containingStorageNodeList;
 	}
 	
-	public boolean updateBloomFilter(String fileName, int chunkNumber, List<StorageMessages.ChunkMapping> chunkMappingList) {
+	public boolean getChunkMappingForRetreive(String fileName, int chunkNumber, List<StorageMessages.ChunkMapping> chunkMappingList) {
 		String bloomFilterKey = fileName + "_" + chunkNumber;
 		ArrayList<StorageMessages.StorageNode> storageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
@@ -283,6 +283,7 @@ public class Controller {
 		}
 		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
 				.setFileName(fileName)
+				.setChunkId(chunkNumber)
 				.build();
 		StorageMessages.ChunkMapping chunkMapping = StorageMessages.ChunkMapping.newBuilder()
 				.setChunk(chunk)
@@ -299,12 +300,12 @@ public class Controller {
 		logger.info("Client gets nodes for retrieve file from client");
 		List<StorageMessages.ChunkMapping> chunkMappingList = new ArrayList<StorageMessages.ChunkMapping>();
 		if (maxChunkNumber == 0) {
-			if (!updateBloomFilter(fileName, 0, chunkMappingList)) {
+			if (!getChunkMappingForRetreive(fileName, 0, chunkMappingList)) {
 				return null;
 			}
 		} else {
 			for(int i = 1; i < maxChunkNumber; i++) {
-				if (!updateBloomFilter(fileName, i, chunkMappingList)) {
+				if (!getChunkMappingForRetreive(fileName, i, chunkMappingList)) {
 					return null;
 				}
 			}

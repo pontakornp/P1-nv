@@ -149,16 +149,22 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(chunkMappings);
 				ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			} else {
-				logger.error("If there are one or more chunk that could not be found on any storage node, stop");
+				logger.error("There are one or more chunk that could not be found on any storage node, stopping retreive");
 				throw new Exception("One or more chunks does not even have one replica on storage nodes");
 			}
 			ctx.close();
 		}else if(messageType == 9) {
     		logger.info("Retrieve File Response: Client receives storage nodes mappings from Controller");
     		StorageMessages.RetrieveFileResponse retrieveFileResponse = msg.getRetrieveFileResponse();
+    		logger.info(retrieveFileResponse.toString());
     		List<StorageMessages.ChunkMapping> chunkMappings =  retrieveFileResponse.getChunkMappingsList();
-    		Client.retrieveFile(chunkMappings);
-    		// done getting storage nodes
+    		
+    		if(chunkMappings.size()== 0) {
+    			logger.error("File with this name is not available on any storage nodes");
+    			ctx.close();
+    		}else {
+    			Client.retrieveFile(chunkMappings);
+    		}
     		ctx.close();
     		// client retrieve file from storage nodes chunk by chunk
 		}else if(messageType == 10) {
@@ -179,25 +185,12 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		//TODO: Update chunk metadata on client
     		//TODO: Required for retries and raise errors
     		StorageMessages.Chunk chunkMsg = retrieveChunkResponse.getChunk();
-			String fileName = chunkMsg.getFileName();
-			int chunkId = chunkMsg.getChunkId();
     		//store the chunk
 			// if chunk is null, it means chunk does not exist
 			if(chunkMsg != null) {
-				if(chunkId == 0) {
-					// get maxChunkNumber
-					Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
-					// mock writing to file
-					Client.writeToFile(fileName, chunkId, chunkMsg.getData().toByteArray());
-					int maxChunkNumber = chunkMsg.getMaxChunkNumber();
-					// request to controller to get the rest of the chunks
-					if(maxChunkNumber > 1) {
-						Client.retrieveFileRequestToController(fileName, maxChunkNumber);
-					}
-				} else {
-					Client.addChunkToChunkMap(fileName, chunkId, chunkMsg);
-
-				}
+				Client.updateFileWithChunkData(chunkMsg);
+			}else {
+				logger.error("Chunk doesnt exist on this storage node. False positive detected");
 			}
 			ctx.close();
 			// merge and write it to file later

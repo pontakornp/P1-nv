@@ -105,6 +105,11 @@ public class Client {
 			logger.error("File Existence Check failed. Controller connection establishment failed");
 		}
     }
+    
+    public static void getMaxChuckFromChunk0() {
+    	
+    }
+    
 
     public static void retrieveFile(List<StorageMessages.ChunkMapping> chunkMappings) {
     	logger.info("got the chunk mapping yes!");
@@ -144,7 +149,13 @@ public class Client {
 		Client.chunkMap.put(fileName + "_" + chunkId, chunkMsg);
 	}
 
-	public static void writeToFile(String fileName, int chunkId, byte[] data) {
+	public static void writeToFile(StorageMessages.Chunk chunk) {
+		String fileName = chunk.getFileName();
+		int chunkId = chunk.getChunkId();
+		int chunkSize = chunk.getChunkSize();
+		long fileSize = chunk.getFileSize();
+		byte[] data = chunk.getData().toByteArray();
+		
 		String outputFile = fileName + "_" + chunkId;
 		File outputFilePath = new File(Client.fileDestinationPath, outputFile);
 		
@@ -152,13 +163,16 @@ public class Client {
 			if(!outputFilePath.exists()) {
 				outputFilePath.createNewFile();
 			}
-			RandomAccessFile aFile = new RandomAccessFile(outputFilePath, "r");
-			
+			RandomAccessFile aFile = new RandomAccessFile(outputFilePath, "rw");
+			aFile.setLength(fileSize);
+			aFile.seek(chunkId*chunkSize);
+			aFile.write(data);
+			aFile.close();
 		} catch (IOException e) {
 			logger.error("Fail to write file");
 		}
 	}
-	//
+	// This makes a request to controller for getting list of storage nodes containing chunkzero
     public static void retrieveFileRequestToController(String fileName, int maxChunkNumber) {
         try {
             EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -183,7 +197,6 @@ public class Client {
             logger.info("Retrieve File Chunks initial request sent to controller");
             chan.closeFuture().sync();
             workerGroup.shutdownGracefully();
-
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("File Existence Check failed. Controller connection establishment failed");
@@ -221,6 +234,23 @@ public class Client {
 		System.out.println("Chunk has been updated with file data");
 		return chunk;
     }
+    
+    public static void updateFileWithChunkData(StorageMessages.Chunk chunk) {
+    	String fileName = chunk.getFileName();
+		int chunkId = chunk.getChunkId();
+		int maxChunkNumber = chunk.getMaxChunkNumber();
+		File outputFile = new File(Client.fileDestinationPath, fileName);
+		
+		if(chunkId == 0) {
+			// request to controller to get the rest of the chunks
+			if(!outputFile.exists() && maxChunkNumber > 1) {
+				Client.retrieveFileRequestToController(fileName, maxChunkNumber);
+			}
+		}
+		Client.writeToFile(chunk);
+		Client.addChunkToChunkMap(fileName, chunkId, chunk);
+    }
+    
 
     public static void sendMsgWrapperToChannelFutureTemplate(String addr, int port, StorageMessages.MessageWrapper msgWrapper, String initiatedMsg, String successMsg, String failMsg) {
 		try {
@@ -249,13 +279,6 @@ public class Client {
 			logger.error(failMsg);
 		}
 	}
-    
-    /*
-     * 
-     */
-    private static void updatePutChunkMetadata() {
-    	
-    }
     
     
     /*
