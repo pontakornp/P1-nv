@@ -100,6 +100,17 @@ message RetrieveChunkResponse {
     Chunk chunk = 1;
 }
 
+message RecoverChunkRequest {
+    string storageNodeId = 1;
+    Chunk chunk = 2;
+}
+
+message RecoverChunkResponse {
+    string storageNodeId = 1;
+    Chunk chunk = 2;
+}
+
+
 message GetActiveStorageNodeListRequest {
 
 }
@@ -125,4 +136,6 @@ message MessageWrapper {
     StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;
     GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;
     GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;
+    RecoverChunkRequest recoverChunkRequest = 20;
+    RecoverChunkResponse recoverChunkResponse = 21;
 }

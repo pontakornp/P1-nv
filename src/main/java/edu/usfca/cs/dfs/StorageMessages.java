@@ -20,31 +20,26 @@ public final class StorageMessages {
 
     /**
      * <code>string storageNodeId = 1;</code>
-     * @return The storageNodeId.
      */
     java.lang.String getStorageNodeId();
     /**
      * <code>string storageNodeId = 1;</code>
-     * @return The bytes for storageNodeId.
      */
     com.google.protobuf.ByteString
         getStorageNodeIdBytes();
 
     /**
      * <code>string storageNodeAddr = 2;</code>
-     * @return The storageNodeAddr.
      */
     java.lang.String getStorageNodeAddr();
     /**
      * <code>string storageNodeAddr = 2;</code>
-     * @return The bytes for storageNodeAddr.
      */
     com.google.protobuf.ByteString
         getStorageNodeAddrBytes();
 
     /**
      * <code>int32 storageNodePort = 3;</code>
-     * @return The storageNodePort.
      */
     int getStorageNodePort();
   }
@@ -148,7 +143,6 @@ public final class StorageMessages {
     private volatile java.lang.Object storageNodeId_;
     /**
      * <code>string storageNodeId = 1;</code>
-     * @return The storageNodeId.
      */
     public java.lang.String getStorageNodeId() {
       java.lang.Object ref = storageNodeId_;
@@ -164,7 +158,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string storageNodeId = 1;</code>
-     * @return The bytes for storageNodeId.
      */
     public com.google.protobuf.ByteString
         getStorageNodeIdBytes() {
@@ -184,7 +177,6 @@ public final class StorageMessages {
     private volatile java.lang.Object storageNodeAddr_;
     /**
      * <code>string storageNodeAddr = 2;</code>
-     * @return The storageNodeAddr.
      */
     public java.lang.String getStorageNodeAddr() {
       java.lang.Object ref = storageNodeAddr_;
@@ -200,7 +192,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string storageNodeAddr = 2;</code>
-     * @return The bytes for storageNodeAddr.
      */
     public com.google.protobuf.ByteString
         getStorageNodeAddrBytes() {
@@ -220,7 +211,6 @@ public final class StorageMessages {
     private int storageNodePort_;
     /**
      * <code>int32 storageNodePort = 3;</code>
-     * @return The storageNodePort.
      */
     public int getStorageNodePort() {
       return storageNodePort_;
@@ -565,7 +555,6 @@ public final class StorageMessages {
       private java.lang.Object storageNodeId_ = "";
       /**
        * <code>string storageNodeId = 1;</code>
-       * @return The storageNodeId.
        */
       public java.lang.String getStorageNodeId() {
         java.lang.Object ref = storageNodeId_;
@@ -581,7 +570,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeId = 1;</code>
-       * @return The bytes for storageNodeId.
        */
       public com.google.protobuf.ByteString
           getStorageNodeIdBytes() {
@@ -598,8 +586,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeId = 1;</code>
-       * @param value The storageNodeId to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeId(
           java.lang.String value) {
@@ -613,7 +599,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeId = 1;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStorageNodeId() {
         
@@ -623,8 +608,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeId = 1;</code>
-       * @param value The bytes for storageNodeId to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeIdBytes(
           com.google.protobuf.ByteString value) {
@@ -641,7 +624,6 @@ public final class StorageMessages {
       private java.lang.Object storageNodeAddr_ = "";
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @return The storageNodeAddr.
        */
       public java.lang.String getStorageNodeAddr() {
         java.lang.Object ref = storageNodeAddr_;
@@ -657,7 +639,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @return The bytes for storageNodeAddr.
        */
       public com.google.protobuf.ByteString
           getStorageNodeAddrBytes() {
@@ -674,8 +655,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @param value The storageNodeAddr to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeAddr(
           java.lang.String value) {
@@ -689,7 +668,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStorageNodeAddr() {
         
@@ -699,8 +677,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @param value The bytes for storageNodeAddr to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeAddrBytes(
           com.google.protobuf.ByteString value) {
@@ -717,15 +693,12 @@ public final class StorageMessages {
       private int storageNodePort_ ;
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @return The storageNodePort.
        */
       public int getStorageNodePort() {
         return storageNodePort_;
       }
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @param value The storageNodePort to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodePort(int value) {
         
@@ -735,7 +708,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStorageNodePort() {
         
@@ -802,43 +774,36 @@ public final class StorageMessages {
 
     /**
      * <code>string storageNodeId = 1;</code>
-     * @return The storageNodeId.
      */
     java.lang.String getStorageNodeId();
     /**
      * <code>string storageNodeId = 1;</code>
-     * @return The bytes for storageNodeId.
      */
     com.google.protobuf.ByteString
         getStorageNodeIdBytes();
 
     /**
      * <code>string storageNodeAddr = 2;</code>
-     * @return The storageNodeAddr.
      */
     java.lang.String getStorageNodeAddr();
     /**
      * <code>string storageNodeAddr = 2;</code>
-     * @return The bytes for storageNodeAddr.
      */
     com.google.protobuf.ByteString
         getStorageNodeAddrBytes();
 
     /**
      * <code>int32 storageNodePort = 3;</code>
-     * @return The storageNodePort.
      */
     int getStorageNodePort();
 
     /**
      * <code>int64 availableStorageCapacity = 4;</code>
-     * @return The availableStorageCapacity.
      */
     long getAvailableStorageCapacity();
 
     /**
      * <code>int64 maxStorageCapacity = 5;</code>
-     * @return The maxStorageCapacity.
      */
     long getMaxStorageCapacity();
 
@@ -990,7 +955,6 @@ public final class StorageMessages {
     private volatile java.lang.Object storageNodeId_;
     /**
      * <code>string storageNodeId = 1;</code>
-     * @return The storageNodeId.
      */
     public java.lang.String getStorageNodeId() {
       java.lang.Object ref = storageNodeId_;
@@ -1006,7 +970,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string storageNodeId = 1;</code>
-     * @return The bytes for storageNodeId.
      */
     public com.google.protobuf.ByteString
         getStorageNodeIdBytes() {
@@ -1026,7 +989,6 @@ public final class StorageMessages {
     private volatile java.lang.Object storageNodeAddr_;
     /**
      * <code>string storageNodeAddr = 2;</code>
-     * @return The storageNodeAddr.
      */
     public java.lang.String getStorageNodeAddr() {
       java.lang.Object ref = storageNodeAddr_;
@@ -1042,7 +1004,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string storageNodeAddr = 2;</code>
-     * @return The bytes for storageNodeAddr.
      */
     public com.google.protobuf.ByteString
         getStorageNodeAddrBytes() {
@@ -1062,7 +1023,6 @@ public final class StorageMessages {
     private int storageNodePort_;
     /**
      * <code>int32 storageNodePort = 3;</code>
-     * @return The storageNodePort.
      */
     public int getStorageNodePort() {
       return storageNodePort_;
@@ -1072,7 +1032,6 @@ public final class StorageMessages {
     private long availableStorageCapacity_;
     /**
      * <code>int64 availableStorageCapacity = 4;</code>
-     * @return The availableStorageCapacity.
      */
     public long getAvailableStorageCapacity() {
       return availableStorageCapacity_;
@@ -1082,7 +1041,6 @@ public final class StorageMessages {
     private long maxStorageCapacity_;
     /**
      * <code>int64 maxStorageCapacity = 5;</code>
-     * @return The maxStorageCapacity.
      */
     public long getMaxStorageCapacity() {
       return maxStorageCapacity_;
@@ -1555,7 +1513,6 @@ public final class StorageMessages {
       private java.lang.Object storageNodeId_ = "";
       /**
        * <code>string storageNodeId = 1;</code>
-       * @return The storageNodeId.
        */
       public java.lang.String getStorageNodeId() {
         java.lang.Object ref = storageNodeId_;
@@ -1571,7 +1528,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeId = 1;</code>
-       * @return The bytes for storageNodeId.
        */
       public com.google.protobuf.ByteString
           getStorageNodeIdBytes() {
@@ -1588,8 +1544,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeId = 1;</code>
-       * @param value The storageNodeId to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeId(
           java.lang.String value) {
@@ -1603,7 +1557,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeId = 1;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStorageNodeId() {
         
@@ -1613,8 +1566,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeId = 1;</code>
-       * @param value The bytes for storageNodeId to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeIdBytes(
           com.google.protobuf.ByteString value) {
@@ -1631,7 +1582,6 @@ public final class StorageMessages {
       private java.lang.Object storageNodeAddr_ = "";
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @return The storageNodeAddr.
        */
       public java.lang.String getStorageNodeAddr() {
         java.lang.Object ref = storageNodeAddr_;
@@ -1647,7 +1597,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @return The bytes for storageNodeAddr.
        */
       public com.google.protobuf.ByteString
           getStorageNodeAddrBytes() {
@@ -1664,8 +1613,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @param value The storageNodeAddr to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeAddr(
           java.lang.String value) {
@@ -1679,7 +1626,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStorageNodeAddr() {
         
@@ -1689,8 +1635,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string storageNodeAddr = 2;</code>
-       * @param value The bytes for storageNodeAddr to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodeAddrBytes(
           com.google.protobuf.ByteString value) {
@@ -1707,15 +1651,12 @@ public final class StorageMessages {
       private int storageNodePort_ ;
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @return The storageNodePort.
        */
       public int getStorageNodePort() {
         return storageNodePort_;
       }
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @param value The storageNodePort to set.
-       * @return This builder for chaining.
        */
       public Builder setStorageNodePort(int value) {
         
@@ -1725,7 +1666,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 storageNodePort = 3;</code>
-       * @return This builder for chaining.
        */
       public Builder clearStorageNodePort() {
         
@@ -1737,15 +1677,12 @@ public final class StorageMessages {
       private long availableStorageCapacity_ ;
       /**
        * <code>int64 availableStorageCapacity = 4;</code>
-       * @return The availableStorageCapacity.
        */
       public long getAvailableStorageCapacity() {
         return availableStorageCapacity_;
       }
       /**
        * <code>int64 availableStorageCapacity = 4;</code>
-       * @param value The availableStorageCapacity to set.
-       * @return This builder for chaining.
        */
       public Builder setAvailableStorageCapacity(long value) {
         
@@ -1755,7 +1692,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int64 availableStorageCapacity = 4;</code>
-       * @return This builder for chaining.
        */
       public Builder clearAvailableStorageCapacity() {
         
@@ -1767,15 +1703,12 @@ public final class StorageMessages {
       private long maxStorageCapacity_ ;
       /**
        * <code>int64 maxStorageCapacity = 5;</code>
-       * @return The maxStorageCapacity.
        */
       public long getMaxStorageCapacity() {
         return maxStorageCapacity_;
       }
       /**
        * <code>int64 maxStorageCapacity = 5;</code>
-       * @param value The maxStorageCapacity to set.
-       * @return This builder for chaining.
        */
       public Builder setMaxStorageCapacity(long value) {
         
@@ -1785,7 +1718,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int64 maxStorageCapacity = 5;</code>
-       * @return This builder for chaining.
        */
       public Builder clearMaxStorageCapacity() {
         
@@ -2092,12 +2024,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return Whether the storageNode field is set.
      */
     boolean hasStorageNode();
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return The storageNode.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode();
     /**
@@ -2199,14 +2129,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNode storageNode_;
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return Whether the storageNode field is set.
      */
     public boolean hasStorageNode() {
       return storageNode_ != null;
     }
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return The storageNode.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
       return storageNode_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNode_;
@@ -2538,14 +2466,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder> storageNodeBuilder_;
       /**
        * <code>.StorageNode storageNode = 1;</code>
-       * @return Whether the storageNode field is set.
        */
       public boolean hasStorageNode() {
         return storageNodeBuilder_ != null || storageNode_ != null;
       }
       /**
        * <code>.StorageNode storageNode = 1;</code>
-       * @return The storageNode.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
         if (storageNodeBuilder_ == null) {
@@ -2710,12 +2636,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return Whether the storageNode field is set.
      */
     boolean hasStorageNode();
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return The storageNode.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode();
     /**
@@ -2817,14 +2741,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNode storageNode_;
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return Whether the storageNode field is set.
      */
     public boolean hasStorageNode() {
       return storageNode_ != null;
     }
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return The storageNode.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
       return storageNode_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNode_;
@@ -3156,14 +3078,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder> storageNodeBuilder_;
       /**
        * <code>.StorageNode storageNode = 1;</code>
-       * @return Whether the storageNode field is set.
        */
       public boolean hasStorageNode() {
         return storageNodeBuilder_ != null || storageNode_ != null;
       }
       /**
        * <code>.StorageNode storageNode = 1;</code>
-       * @return The storageNode.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
         if (storageNodeBuilder_ == null) {
@@ -3328,12 +3248,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return Whether the storageNode field is set.
      */
     boolean hasStorageNode();
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return The storageNode.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode();
     /**
@@ -3435,14 +3353,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNode storageNode_;
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return Whether the storageNode field is set.
      */
     public boolean hasStorageNode() {
       return storageNode_ != null;
     }
     /**
      * <code>.StorageNode storageNode = 1;</code>
-     * @return The storageNode.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
       return storageNode_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNode_;
@@ -3774,14 +3690,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder> storageNodeBuilder_;
       /**
        * <code>.StorageNode storageNode = 1;</code>
-       * @return Whether the storageNode field is set.
        */
       public boolean hasStorageNode() {
         return storageNodeBuilder_ != null || storageNode_ != null;
       }
       /**
        * <code>.StorageNode storageNode = 1;</code>
-       * @return The storageNode.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
         if (storageNodeBuilder_ == null) {
@@ -3946,12 +3860,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-     * @return Whether the storageNodeHeartbeat field is set.
      */
     boolean hasStorageNodeHeartbeat();
     /**
      * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-     * @return The storageNodeHeartbeat.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat getStorageNodeHeartbeat();
     /**
@@ -4053,14 +3965,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat storageNodeHeartbeat_;
     /**
      * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-     * @return Whether the storageNodeHeartbeat field is set.
      */
     public boolean hasStorageNodeHeartbeat() {
       return storageNodeHeartbeat_ != null;
     }
     /**
      * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-     * @return The storageNodeHeartbeat.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat getStorageNodeHeartbeat() {
       return storageNodeHeartbeat_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat.getDefaultInstance() : storageNodeHeartbeat_;
@@ -4392,14 +4302,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat, edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeatOrBuilder> storageNodeHeartbeatBuilder_;
       /**
        * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-       * @return Whether the storageNodeHeartbeat field is set.
        */
       public boolean hasStorageNodeHeartbeat() {
         return storageNodeHeartbeatBuilder_ != null || storageNodeHeartbeat_ != null;
       }
       /**
        * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-       * @return The storageNodeHeartbeat.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat getStorageNodeHeartbeat() {
         if (storageNodeHeartbeatBuilder_ == null) {
@@ -4564,12 +4472,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-     * @return Whether the storageNodeHeartbeat field is set.
      */
     boolean hasStorageNodeHeartbeat();
     /**
      * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-     * @return The storageNodeHeartbeat.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat getStorageNodeHeartbeat();
     /**
@@ -4671,14 +4577,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat storageNodeHeartbeat_;
     /**
      * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-     * @return Whether the storageNodeHeartbeat field is set.
      */
     public boolean hasStorageNodeHeartbeat() {
       return storageNodeHeartbeat_ != null;
     }
     /**
      * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-     * @return The storageNodeHeartbeat.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat getStorageNodeHeartbeat() {
       return storageNodeHeartbeat_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat.getDefaultInstance() : storageNodeHeartbeat_;
@@ -5010,14 +4914,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat, edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeatOrBuilder> storageNodeHeartbeatBuilder_;
       /**
        * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-       * @return Whether the storageNodeHeartbeat field is set.
        */
       public boolean hasStorageNodeHeartbeat() {
         return storageNodeHeartbeatBuilder_ != null || storageNodeHeartbeat_ != null;
       }
       /**
        * <code>.StorageNodeHeartbeat storageNodeHeartbeat = 1;</code>
-       * @return The storageNodeHeartbeat.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartbeat getStorageNodeHeartbeat() {
         if (storageNodeHeartbeatBuilder_ == null) {
@@ -5182,79 +5084,66 @@ public final class StorageMessages {
 
     /**
      * <code>string fileName = 1;</code>
-     * @return The fileName.
      */
     java.lang.String getFileName();
     /**
      * <code>string fileName = 1;</code>
-     * @return The bytes for fileName.
      */
     com.google.protobuf.ByteString
         getFileNameBytes();
 
     /**
      * <code>int32 chunkId = 2;</code>
-     * @return The chunkId.
      */
     int getChunkId();
 
     /**
      * <code>int32 chunkSize = 3;</code>
-     * @return The chunkSize.
      */
     int getChunkSize();
 
     /**
      * <code>string checksum = 4;</code>
-     * @return The checksum.
      */
     java.lang.String getChecksum();
     /**
      * <code>string checksum = 4;</code>
-     * @return The bytes for checksum.
      */
     com.google.protobuf.ByteString
         getChecksumBytes();
 
     /**
      * <code>bytes data = 5;</code>
-     * @return The data.
      */
     com.google.protobuf.ByteString getData();
 
     /**
      * <code>int32 maxChunkNumber = 6;</code>
-     * @return The maxChunkNumber.
      */
     int getMaxChunkNumber();
 
     /**
      * <code>string fileAbsolutePath = 7;</code>
-     * @return The fileAbsolutePath.
      */
     java.lang.String getFileAbsolutePath();
     /**
      * <code>string fileAbsolutePath = 7;</code>
-     * @return The bytes for fileAbsolutePath.
      */
     com.google.protobuf.ByteString
         getFileAbsolutePathBytes();
 
     /**
      * <code>int32 primaryCount = 8;</code>
-     * @return The primaryCount.
      */
     int getPrimaryCount();
 
     /**
      * <code>int32 replicaCount = 9;</code>
-     * @return The replicaCount.
      */
     int getReplicaCount();
 
     /**
      * <code>int64 fileSize = 10;</code>
-     * @return The fileSize.
      */
     long getFileSize();
   }
@@ -5396,7 +5285,6 @@ public final class StorageMessages {
     private volatile java.lang.Object fileName_;
     /**
      * <code>string fileName = 1;</code>
-     * @return The fileName.
      */
     public java.lang.String getFileName() {
       java.lang.Object ref = fileName_;
@@ -5412,7 +5300,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string fileName = 1;</code>
-     * @return The bytes for fileName.
      */
     public com.google.protobuf.ByteString
         getFileNameBytes() {
@@ -5432,7 +5319,6 @@ public final class StorageMessages {
     private int chunkId_;
     /**
      * <code>int32 chunkId = 2;</code>
-     * @return The chunkId.
      */
     public int getChunkId() {
       return chunkId_;
@@ -5442,7 +5328,6 @@ public final class StorageMessages {
     private int chunkSize_;
     /**
      * <code>int32 chunkSize = 3;</code>
-     * @return The chunkSize.
      */
     public int getChunkSize() {
       return chunkSize_;
@@ -5452,7 +5337,6 @@ public final class StorageMessages {
     private volatile java.lang.Object checksum_;
     /**
      * <code>string checksum = 4;</code>
-     * @return The checksum.
      */
     public java.lang.String getChecksum() {
       java.lang.Object ref = checksum_;
@@ -5468,7 +5352,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string checksum = 4;</code>
-     * @return The bytes for checksum.
      */
     public com.google.protobuf.ByteString
         getChecksumBytes() {
@@ -5488,7 +5371,6 @@ public final class StorageMessages {
     private com.google.protobuf.ByteString data_;
     /**
      * <code>bytes data = 5;</code>
-     * @return The data.
      */
     public com.google.protobuf.ByteString getData() {
       return data_;
@@ -5498,7 +5380,6 @@ public final class StorageMessages {
     private int maxChunkNumber_;
     /**
      * <code>int32 maxChunkNumber = 6;</code>
-     * @return The maxChunkNumber.
      */
     public int getMaxChunkNumber() {
       return maxChunkNumber_;
@@ -5508,7 +5389,6 @@ public final class StorageMessages {
     private volatile java.lang.Object fileAbsolutePath_;
     /**
      * <code>string fileAbsolutePath = 7;</code>
-     * @return The fileAbsolutePath.
      */
     public java.lang.String getFileAbsolutePath() {
       java.lang.Object ref = fileAbsolutePath_;
@@ -5524,7 +5404,6 @@ public final class StorageMessages {
     }
     /**
      * <code>string fileAbsolutePath = 7;</code>
-     * @return The bytes for fileAbsolutePath.
      */
     public com.google.protobuf.ByteString
         getFileAbsolutePathBytes() {
@@ -5544,7 +5423,6 @@ public final class StorageMessages {
     private int primaryCount_;
     /**
      * <code>int32 primaryCount = 8;</code>
-     * @return The primaryCount.
      */
     public int getPrimaryCount() {
       return primaryCount_;
@@ -5554,7 +5432,6 @@ public final class StorageMessages {
     private int replicaCount_;
     /**
      * <code>int32 replicaCount = 9;</code>
-     * @return The replicaCount.
      */
     public int getReplicaCount() {
       return replicaCount_;
@@ -5564,7 +5441,6 @@ public final class StorageMessages {
     private long fileSize_;
     /**
      * <code>int64 fileSize = 10;</code>
-     * @return The fileSize.
      */
     public long getFileSize() {
       return fileSize_;
@@ -6029,7 +5905,6 @@ public final class StorageMessages {
       private java.lang.Object fileName_ = "";
       /**
        * <code>string fileName = 1;</code>
-       * @return The fileName.
        */
       public java.lang.String getFileName() {
         java.lang.Object ref = fileName_;
@@ -6045,7 +5920,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @return The bytes for fileName.
        */
       public com.google.protobuf.ByteString
           getFileNameBytes() {
@@ -6062,8 +5936,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @param value The fileName to set.
-       * @return This builder for chaining.
        */
       public Builder setFileName(
           java.lang.String value) {
@@ -6077,7 +5949,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @return This builder for chaining.
        */
       public Builder clearFileName() {
         
@@ -6087,8 +5958,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileName = 1;</code>
-       * @param value The bytes for fileName to set.
-       * @return This builder for chaining.
        */
       public Builder setFileNameBytes(
           com.google.protobuf.ByteString value) {
@@ -6105,15 +5974,12 @@ public final class StorageMessages {
       private int chunkId_ ;
       /**
        * <code>int32 chunkId = 2;</code>
-       * @return The chunkId.
        */
       public int getChunkId() {
         return chunkId_;
       }
       /**
        * <code>int32 chunkId = 2;</code>
-       * @param value The chunkId to set.
-       * @return This builder for chaining.
        */
       public Builder setChunkId(int value) {
         
@@ -6123,7 +5989,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 chunkId = 2;</code>
-       * @return This builder for chaining.
        */
       public Builder clearChunkId() {
         
@@ -6135,15 +6000,12 @@ public final class StorageMessages {
       private int chunkSize_ ;
       /**
        * <code>int32 chunkSize = 3;</code>
-       * @return The chunkSize.
        */
       public int getChunkSize() {
         return chunkSize_;
       }
       /**
        * <code>int32 chunkSize = 3;</code>
-       * @param value The chunkSize to set.
-       * @return This builder for chaining.
        */
       public Builder setChunkSize(int value) {
         
@@ -6153,7 +6015,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 chunkSize = 3;</code>
-       * @return This builder for chaining.
        */
       public Builder clearChunkSize() {
         
@@ -6165,7 +6026,6 @@ public final class StorageMessages {
       private java.lang.Object checksum_ = "";
       /**
        * <code>string checksum = 4;</code>
-       * @return The checksum.
        */
       public java.lang.String getChecksum() {
         java.lang.Object ref = checksum_;
@@ -6181,7 +6041,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string checksum = 4;</code>
-       * @return The bytes for checksum.
        */
       public com.google.protobuf.ByteString
           getChecksumBytes() {
@@ -6198,8 +6057,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string checksum = 4;</code>
-       * @param value The checksum to set.
-       * @return This builder for chaining.
        */
       public Builder setChecksum(
           java.lang.String value) {
@@ -6213,7 +6070,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string checksum = 4;</code>
-       * @return This builder for chaining.
        */
       public Builder clearChecksum() {
         
@@ -6223,8 +6079,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string checksum = 4;</code>
-       * @param value The bytes for checksum to set.
-       * @return This builder for chaining.
        */
       public Builder setChecksumBytes(
           com.google.protobuf.ByteString value) {
@@ -6241,15 +6095,12 @@ public final class StorageMessages {
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>bytes data = 5;</code>
-       * @return The data.
        */
       public com.google.protobuf.ByteString getData() {
         return data_;
       }
       /**
        * <code>bytes data = 5;</code>
-       * @param value The data to set.
-       * @return This builder for chaining.
        */
       public Builder setData(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -6262,7 +6113,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bytes data = 5;</code>
-       * @return This builder for chaining.
        */
       public Builder clearData() {
         
@@ -6274,15 +6124,12 @@ public final class StorageMessages {
       private int maxChunkNumber_ ;
       /**
        * <code>int32 maxChunkNumber = 6;</code>
-       * @return The maxChunkNumber.
        */
       public int getMaxChunkNumber() {
         return maxChunkNumber_;
       }
       /**
        * <code>int32 maxChunkNumber = 6;</code>
-       * @param value The maxChunkNumber to set.
-       * @return This builder for chaining.
        */
       public Builder setMaxChunkNumber(int value) {
         
@@ -6292,7 +6139,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 maxChunkNumber = 6;</code>
-       * @return This builder for chaining.
        */
       public Builder clearMaxChunkNumber() {
         
@@ -6304,7 +6150,6 @@ public final class StorageMessages {
       private java.lang.Object fileAbsolutePath_ = "";
       /**
        * <code>string fileAbsolutePath = 7;</code>
-       * @return The fileAbsolutePath.
        */
       public java.lang.String getFileAbsolutePath() {
         java.lang.Object ref = fileAbsolutePath_;
@@ -6320,7 +6165,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileAbsolutePath = 7;</code>
-       * @return The bytes for fileAbsolutePath.
        */
       public com.google.protobuf.ByteString
           getFileAbsolutePathBytes() {
@@ -6337,8 +6181,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileAbsolutePath = 7;</code>
-       * @param value The fileAbsolutePath to set.
-       * @return This builder for chaining.
        */
       public Builder setFileAbsolutePath(
           java.lang.String value) {
@@ -6352,7 +6194,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileAbsolutePath = 7;</code>
-       * @return This builder for chaining.
        */
       public Builder clearFileAbsolutePath() {
         
@@ -6362,8 +6203,6 @@ public final class StorageMessages {
       }
       /**
        * <code>string fileAbsolutePath = 7;</code>
-       * @param value The bytes for fileAbsolutePath to set.
-       * @return This builder for chaining.
        */
       public Builder setFileAbsolutePathBytes(
           com.google.protobuf.ByteString value) {
@@ -6380,15 +6219,12 @@ public final class StorageMessages {
       private int primaryCount_ ;
       /**
        * <code>int32 primaryCount = 8;</code>
-       * @return The primaryCount.
        */
       public int getPrimaryCount() {
         return primaryCount_;
       }
       /**
        * <code>int32 primaryCount = 8;</code>
-       * @param value The primaryCount to set.
-       * @return This builder for chaining.
        */
       public Builder setPrimaryCount(int value) {
         
@@ -6398,7 +6234,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 primaryCount = 8;</code>
-       * @return This builder for chaining.
        */
       public Builder clearPrimaryCount() {
         
@@ -6410,15 +6245,12 @@ public final class StorageMessages {
       private int replicaCount_ ;
       /**
        * <code>int32 replicaCount = 9;</code>
-       * @return The replicaCount.
        */
       public int getReplicaCount() {
         return replicaCount_;
       }
       /**
        * <code>int32 replicaCount = 9;</code>
-       * @param value The replicaCount to set.
-       * @return This builder for chaining.
        */
       public Builder setReplicaCount(int value) {
         
@@ -6428,7 +6260,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 replicaCount = 9;</code>
-       * @return This builder for chaining.
        */
       public Builder clearReplicaCount() {
         
@@ -6440,15 +6271,12 @@ public final class StorageMessages {
       private long fileSize_ ;
       /**
        * <code>int64 fileSize = 10;</code>
-       * @return The fileSize.
        */
       public long getFileSize() {
         return fileSize_;
       }
       /**
        * <code>int64 fileSize = 10;</code>
-       * @param value The fileSize to set.
-       * @return This builder for chaining.
        */
       public Builder setFileSize(long value) {
         
@@ -6458,7 +6286,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int64 fileSize = 10;</code>
-       * @return This builder for chaining.
        */
       public Builder clearFileSize() {
         
@@ -6525,12 +6352,10 @@ public final class StorageMessages {
 
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     boolean hasChunk();
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
     /**
@@ -6670,14 +6495,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     public boolean hasChunk() {
       return chunk_ != null;
     }
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
       return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
@@ -7101,14 +6924,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return Whether the chunk field is set.
        */
       public boolean hasChunk() {
         return chunkBuilder_ != null || chunk_ != null;
       }
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return The chunk.
        */
       public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
         if (chunkBuilder_ == null) {
@@ -9089,12 +8910,10 @@ public final class StorageMessages {
 
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     boolean hasChunk();
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
     /**
@@ -9104,30 +8923,25 @@ public final class StorageMessages {
 
     /**
      * <code>bool isClientInitiated = 2;</code>
-     * @return The isClientInitiated.
      */
     boolean getIsClientInitiated();
 
     /**
      * <code>bool fileExists = 3;</code>
-     * @return The fileExists.
      */
     boolean getFileExists();
 
     /**
      * <code>bool isNewChunk = 5;</code>
-     * @return The isNewChunk.
      */
     boolean getIsNewChunk();
 
     /**
      * <code>.StorageNode storageNode = 6;</code>
-     * @return Whether the storageNode field is set.
      */
     boolean hasStorageNode();
     /**
      * <code>.StorageNode storageNode = 6;</code>
-     * @return The storageNode.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode();
     /**
@@ -9257,14 +9071,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     public boolean hasChunk() {
       return chunk_ != null;
     }
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
       return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
@@ -9280,7 +9092,6 @@ public final class StorageMessages {
     private boolean isClientInitiated_;
     /**
      * <code>bool isClientInitiated = 2;</code>
-     * @return The isClientInitiated.
      */
     public boolean getIsClientInitiated() {
       return isClientInitiated_;
@@ -9290,7 +9101,6 @@ public final class StorageMessages {
     private boolean fileExists_;
     /**
      * <code>bool fileExists = 3;</code>
-     * @return The fileExists.
      */
     public boolean getFileExists() {
       return fileExists_;
@@ -9300,7 +9110,6 @@ public final class StorageMessages {
     private boolean isNewChunk_;
     /**
      * <code>bool isNewChunk = 5;</code>
-     * @return The isNewChunk.
      */
     public boolean getIsNewChunk() {
       return isNewChunk_;
@@ -9310,14 +9119,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNode storageNode_;
     /**
      * <code>.StorageNode storageNode = 6;</code>
-     * @return Whether the storageNode field is set.
      */
     public boolean hasStorageNode() {
       return storageNode_ != null;
     }
     /**
      * <code>.StorageNode storageNode = 6;</code>
-     * @return The storageNode.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
       return storageNode_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNode_;
@@ -9733,14 +9540,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return Whether the chunk field is set.
        */
       public boolean hasChunk() {
         return chunkBuilder_ != null || chunk_ != null;
       }
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return The chunk.
        */
       public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
         if (chunkBuilder_ == null) {
@@ -9850,15 +9655,12 @@ public final class StorageMessages {
       private boolean isClientInitiated_ ;
       /**
        * <code>bool isClientInitiated = 2;</code>
-       * @return The isClientInitiated.
        */
       public boolean getIsClientInitiated() {
         return isClientInitiated_;
       }
       /**
        * <code>bool isClientInitiated = 2;</code>
-       * @param value The isClientInitiated to set.
-       * @return This builder for chaining.
        */
       public Builder setIsClientInitiated(boolean value) {
         
@@ -9868,7 +9670,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bool isClientInitiated = 2;</code>
-       * @return This builder for chaining.
        */
       public Builder clearIsClientInitiated() {
         
@@ -9880,15 +9681,12 @@ public final class StorageMessages {
       private boolean fileExists_ ;
       /**
        * <code>bool fileExists = 3;</code>
-       * @return The fileExists.
        */
       public boolean getFileExists() {
         return fileExists_;
       }
       /**
        * <code>bool fileExists = 3;</code>
-       * @param value The fileExists to set.
-       * @return This builder for chaining.
        */
       public Builder setFileExists(boolean value) {
         
@@ -9898,7 +9696,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bool fileExists = 3;</code>
-       * @return This builder for chaining.
        */
       public Builder clearFileExists() {
         
@@ -9910,15 +9707,12 @@ public final class StorageMessages {
       private boolean isNewChunk_ ;
       /**
        * <code>bool isNewChunk = 5;</code>
-       * @return The isNewChunk.
        */
       public boolean getIsNewChunk() {
         return isNewChunk_;
       }
       /**
        * <code>bool isNewChunk = 5;</code>
-       * @param value The isNewChunk to set.
-       * @return This builder for chaining.
        */
       public Builder setIsNewChunk(boolean value) {
         
@@ -9928,7 +9722,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bool isNewChunk = 5;</code>
-       * @return This builder for chaining.
        */
       public Builder clearIsNewChunk() {
         
@@ -9942,14 +9735,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder> storageNodeBuilder_;
       /**
        * <code>.StorageNode storageNode = 6;</code>
-       * @return Whether the storageNode field is set.
        */
       public boolean hasStorageNode() {
         return storageNodeBuilder_ != null || storageNode_ != null;
       }
       /**
        * <code>.StorageNode storageNode = 6;</code>
-       * @return The storageNode.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
         if (storageNodeBuilder_ == null) {
@@ -10114,12 +9905,10 @@ public final class StorageMessages {
 
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     boolean hasChunk();
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
     /**
@@ -10129,12 +9918,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNode storageNode = 2;</code>
-     * @return Whether the storageNode field is set.
      */
     boolean hasStorageNode();
     /**
      * <code>.StorageNode storageNode = 2;</code>
-     * @return The storageNode.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode();
     /**
@@ -10249,14 +10036,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     public boolean hasChunk() {
       return chunk_ != null;
     }
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
       return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
@@ -10272,14 +10057,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNode storageNode_;
     /**
      * <code>.StorageNode storageNode = 2;</code>
-     * @return Whether the storageNode field is set.
      */
     public boolean hasStorageNode() {
       return storageNode_ != null;
     }
     /**
      * <code>.StorageNode storageNode = 2;</code>
-     * @return The storageNode.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
       return storageNode_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNode.getDefaultInstance() : storageNode_;
@@ -10641,14 +10424,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return Whether the chunk field is set.
        */
       public boolean hasChunk() {
         return chunkBuilder_ != null || chunk_ != null;
       }
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return The chunk.
        */
       public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
         if (chunkBuilder_ == null) {
@@ -10760,14 +10541,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNode, edu.usfca.cs.dfs.StorageMessages.StorageNode.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeOrBuilder> storageNodeBuilder_;
       /**
        * <code>.StorageNode storageNode = 2;</code>
-       * @return Whether the storageNode field is set.
        */
       public boolean hasStorageNode() {
         return storageNodeBuilder_ != null || storageNode_ != null;
       }
       /**
        * <code>.StorageNode storageNode = 2;</code>
-       * @return The storageNode.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNode getStorageNode() {
         if (storageNodeBuilder_ == null) {
@@ -10932,12 +10711,10 @@ public final class StorageMessages {
 
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     boolean hasChunk();
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
     /**
@@ -10947,25 +10724,21 @@ public final class StorageMessages {
 
     /**
      * <code>bool isClientInitiated = 2;</code>
-     * @return The isClientInitiated.
      */
     boolean getIsClientInitiated();
 
     /**
      * <code>bool fileExists = 3;</code>
-     * @return The fileExists.
      */
     boolean getFileExists();
 
     /**
      * <code>bool isNewChunk = 4;</code>
-     * @return The isNewChunk.
      */
     boolean getIsNewChunk();
 
     /**
      * <code>bool isSuccess = 5;</code>
-     * @return The isSuccess.
      */
     boolean getIsSuccess();
   }
@@ -11083,14 +10856,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     public boolean hasChunk() {
       return chunk_ != null;
     }
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
       return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
@@ -11106,7 +10877,6 @@ public final class StorageMessages {
     private boolean isClientInitiated_;
     /**
      * <code>bool isClientInitiated = 2;</code>
-     * @return The isClientInitiated.
      */
     public boolean getIsClientInitiated() {
       return isClientInitiated_;
@@ -11116,7 +10886,6 @@ public final class StorageMessages {
     private boolean fileExists_;
     /**
      * <code>bool fileExists = 3;</code>
-     * @return The fileExists.
      */
     public boolean getFileExists() {
       return fileExists_;
@@ -11126,7 +10895,6 @@ public final class StorageMessages {
     private boolean isNewChunk_;
     /**
      * <code>bool isNewChunk = 4;</code>
-     * @return The isNewChunk.
      */
     public boolean getIsNewChunk() {
       return isNewChunk_;
@@ -11136,7 +10904,6 @@ public final class StorageMessages {
     private boolean isSuccess_;
     /**
      * <code>bool isSuccess = 5;</code>
-     * @return The isSuccess.
      */
     public boolean getIsSuccess() {
       return isSuccess_;
@@ -11534,14 +11301,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return Whether the chunk field is set.
        */
       public boolean hasChunk() {
         return chunkBuilder_ != null || chunk_ != null;
       }
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return The chunk.
        */
       public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
         if (chunkBuilder_ == null) {
@@ -11651,15 +11416,12 @@ public final class StorageMessages {
       private boolean isClientInitiated_ ;
       /**
        * <code>bool isClientInitiated = 2;</code>
-       * @return The isClientInitiated.
        */
       public boolean getIsClientInitiated() {
         return isClientInitiated_;
       }
       /**
        * <code>bool isClientInitiated = 2;</code>
-       * @param value The isClientInitiated to set.
-       * @return This builder for chaining.
        */
       public Builder setIsClientInitiated(boolean value) {
         
@@ -11669,7 +11431,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bool isClientInitiated = 2;</code>
-       * @return This builder for chaining.
        */
       public Builder clearIsClientInitiated() {
         
@@ -11681,15 +11442,12 @@ public final class StorageMessages {
       private boolean fileExists_ ;
       /**
        * <code>bool fileExists = 3;</code>
-       * @return The fileExists.
        */
       public boolean getFileExists() {
         return fileExists_;
       }
       /**
        * <code>bool fileExists = 3;</code>
-       * @param value The fileExists to set.
-       * @return This builder for chaining.
        */
       public Builder setFileExists(boolean value) {
         
@@ -11699,7 +11457,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bool fileExists = 3;</code>
-       * @return This builder for chaining.
        */
       public Builder clearFileExists() {
         
@@ -11711,15 +11468,12 @@ public final class StorageMessages {
       private boolean isNewChunk_ ;
       /**
        * <code>bool isNewChunk = 4;</code>
-       * @return The isNewChunk.
        */
       public boolean getIsNewChunk() {
         return isNewChunk_;
       }
       /**
        * <code>bool isNewChunk = 4;</code>
-       * @param value The isNewChunk to set.
-       * @return This builder for chaining.
        */
       public Builder setIsNewChunk(boolean value) {
         
@@ -11729,7 +11483,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bool isNewChunk = 4;</code>
-       * @return This builder for chaining.
        */
       public Builder clearIsNewChunk() {
         
@@ -11741,15 +11494,12 @@ public final class StorageMessages {
       private boolean isSuccess_ ;
       /**
        * <code>bool isSuccess = 5;</code>
-       * @return The isSuccess.
        */
       public boolean getIsSuccess() {
         return isSuccess_;
       }
       /**
        * <code>bool isSuccess = 5;</code>
-       * @param value The isSuccess to set.
-       * @return This builder for chaining.
        */
       public Builder setIsSuccess(boolean value) {
         
@@ -11759,7 +11509,6 @@ public final class StorageMessages {
       }
       /**
        * <code>bool isSuccess = 5;</code>
-       * @return This builder for chaining.
        */
       public Builder clearIsSuccess() {
         
@@ -11826,12 +11575,10 @@ public final class StorageMessages {
 
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     boolean hasChunk();
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
     /**
@@ -11933,14 +11680,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     public boolean hasChunk() {
       return chunk_ != null;
     }
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
       return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
@@ -12272,14 +12017,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return Whether the chunk field is set.
        */
       public boolean hasChunk() {
         return chunkBuilder_ != null || chunk_ != null;
       }
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return The chunk.
        */
       public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
         if (chunkBuilder_ == null) {
@@ -13232,12 +12975,10 @@ public final class StorageMessages {
 
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     boolean hasChunk();
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
     /**
@@ -13339,14 +13080,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     public boolean hasChunk() {
       return chunk_ != null;
     }
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
       return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
@@ -13678,14 +13417,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return Whether the chunk field is set.
        */
       public boolean hasChunk() {
         return chunkBuilder_ != null || chunk_ != null;
       }
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return The chunk.
        */
       public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
         if (chunkBuilder_ == null) {
@@ -13850,12 +13587,10 @@ public final class StorageMessages {
 
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     boolean hasChunk();
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
     /**
@@ -13957,14 +13692,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return Whether the chunk field is set.
      */
     public boolean hasChunk() {
       return chunk_ != null;
     }
     /**
      * <code>.Chunk chunk = 1;</code>
-     * @return The chunk.
      */
     public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
       return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
@@ -14296,14 +14029,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return Whether the chunk field is set.
        */
       public boolean hasChunk() {
         return chunkBuilder_ != null || chunk_ != null;
       }
       /**
        * <code>.Chunk chunk = 1;</code>
-       * @return The chunk.
        */
       public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
         if (chunkBuilder_ == null) {
@@ -14457,6 +14188,1504 @@ public final class StorageMessages {
 
     @java.lang.Override
     public edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface RecoverChunkRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:RecoverChunkRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string storageNodeId = 1;</code>
+     */
+    java.lang.String getStorageNodeId();
+    /**
+     * <code>string storageNodeId = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getStorageNodeIdBytes();
+
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    boolean hasChunk();
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder getChunkOrBuilder();
+  }
+  /**
+   * Protobuf type {@code RecoverChunkRequest}
+   */
+  public  static final class RecoverChunkRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:RecoverChunkRequest)
+      RecoverChunkRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use RecoverChunkRequest.newBuilder() to construct.
+    private RecoverChunkRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private RecoverChunkRequest() {
+      storageNodeId_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new RecoverChunkRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private RecoverChunkRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              storageNodeId_ = s;
+              break;
+            }
+            case 18: {
+              edu.usfca.cs.dfs.StorageMessages.Chunk.Builder subBuilder = null;
+              if (chunk_ != null) {
+                subBuilder = chunk_.toBuilder();
+              }
+              chunk_ = input.readMessage(edu.usfca.cs.dfs.StorageMessages.Chunk.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(chunk_);
+                chunk_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.class, edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.Builder.class);
+    }
+
+    public static final int STORAGENODEID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object storageNodeId_;
+    /**
+     * <code>string storageNodeId = 1;</code>
+     */
+    public java.lang.String getStorageNodeId() {
+      java.lang.Object ref = storageNodeId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        storageNodeId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string storageNodeId = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getStorageNodeIdBytes() {
+      java.lang.Object ref = storageNodeId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        storageNodeId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CHUNK_FIELD_NUMBER = 2;
+    private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    public boolean hasChunk() {
+      return chunk_ != null;
+    }
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
+      return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
+    }
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder getChunkOrBuilder() {
+      return getChunk();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getStorageNodeIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, storageNodeId_);
+      }
+      if (chunk_ != null) {
+        output.writeMessage(2, getChunk());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getStorageNodeIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, storageNodeId_);
+      }
+      if (chunk_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getChunk());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest)) {
+        return super.equals(obj);
+      }
+      edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest other = (edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest) obj;
+
+      if (!getStorageNodeId()
+          .equals(other.getStorageNodeId())) return false;
+      if (hasChunk() != other.hasChunk()) return false;
+      if (hasChunk()) {
+        if (!getChunk()
+            .equals(other.getChunk())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + STORAGENODEID_FIELD_NUMBER;
+      hash = (53 * hash) + getStorageNodeId().hashCode();
+      if (hasChunk()) {
+        hash = (37 * hash) + CHUNK_FIELD_NUMBER;
+        hash = (53 * hash) + getChunk().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code RecoverChunkRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:RecoverChunkRequest)
+        edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.class, edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.Builder.class);
+      }
+
+      // Construct using edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        storageNodeId_ = "";
+
+        if (chunkBuilder_ == null) {
+          chunk_ = null;
+        } else {
+          chunk_ = null;
+          chunkBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest getDefaultInstanceForType() {
+        return edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest build() {
+        edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest buildPartial() {
+        edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest result = new edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest(this);
+        result.storageNodeId_ = storageNodeId_;
+        if (chunkBuilder_ == null) {
+          result.chunk_ = chunk_;
+        } else {
+          result.chunk_ = chunkBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest) {
+          return mergeFrom((edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest other) {
+        if (other == edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.getDefaultInstance()) return this;
+        if (!other.getStorageNodeId().isEmpty()) {
+          storageNodeId_ = other.storageNodeId_;
+          onChanged();
+        }
+        if (other.hasChunk()) {
+          mergeChunk(other.getChunk());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object storageNodeId_ = "";
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public java.lang.String getStorageNodeId() {
+        java.lang.Object ref = storageNodeId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          storageNodeId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getStorageNodeIdBytes() {
+        java.lang.Object ref = storageNodeId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          storageNodeId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public Builder setStorageNodeId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        storageNodeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public Builder clearStorageNodeId() {
+        
+        storageNodeId_ = getDefaultInstance().getStorageNodeId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public Builder setStorageNodeIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        storageNodeId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public boolean hasChunk() {
+        return chunkBuilder_ != null || chunk_ != null;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
+        if (chunkBuilder_ == null) {
+          return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
+        } else {
+          return chunkBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public Builder setChunk(edu.usfca.cs.dfs.StorageMessages.Chunk value) {
+        if (chunkBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          chunk_ = value;
+          onChanged();
+        } else {
+          chunkBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public Builder setChunk(
+          edu.usfca.cs.dfs.StorageMessages.Chunk.Builder builderForValue) {
+        if (chunkBuilder_ == null) {
+          chunk_ = builderForValue.build();
+          onChanged();
+        } else {
+          chunkBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public Builder mergeChunk(edu.usfca.cs.dfs.StorageMessages.Chunk value) {
+        if (chunkBuilder_ == null) {
+          if (chunk_ != null) {
+            chunk_ =
+              edu.usfca.cs.dfs.StorageMessages.Chunk.newBuilder(chunk_).mergeFrom(value).buildPartial();
+          } else {
+            chunk_ = value;
+          }
+          onChanged();
+        } else {
+          chunkBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public Builder clearChunk() {
+        if (chunkBuilder_ == null) {
+          chunk_ = null;
+          onChanged();
+        } else {
+          chunk_ = null;
+          chunkBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.Chunk.Builder getChunkBuilder() {
+        
+        onChanged();
+        return getChunkFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder getChunkOrBuilder() {
+        if (chunkBuilder_ != null) {
+          return chunkBuilder_.getMessageOrBuilder();
+        } else {
+          return chunk_ == null ?
+              edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
+        }
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> 
+          getChunkFieldBuilder() {
+        if (chunkBuilder_ == null) {
+          chunkBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder>(
+                  getChunk(),
+                  getParentForChildren(),
+                  isClean());
+          chunk_ = null;
+        }
+        return chunkBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:RecoverChunkRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:RecoverChunkRequest)
+    private static final edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest();
+    }
+
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<RecoverChunkRequest>
+        PARSER = new com.google.protobuf.AbstractParser<RecoverChunkRequest>() {
+      @java.lang.Override
+      public RecoverChunkRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new RecoverChunkRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<RecoverChunkRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RecoverChunkRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface RecoverChunkResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:RecoverChunkResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string storageNodeId = 1;</code>
+     */
+    java.lang.String getStorageNodeId();
+    /**
+     * <code>string storageNodeId = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getStorageNodeIdBytes();
+
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    boolean hasChunk();
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.Chunk getChunk();
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder getChunkOrBuilder();
+  }
+  /**
+   * Protobuf type {@code RecoverChunkResponse}
+   */
+  public  static final class RecoverChunkResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:RecoverChunkResponse)
+      RecoverChunkResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use RecoverChunkResponse.newBuilder() to construct.
+    private RecoverChunkResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private RecoverChunkResponse() {
+      storageNodeId_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new RecoverChunkResponse();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private RecoverChunkResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              storageNodeId_ = s;
+              break;
+            }
+            case 18: {
+              edu.usfca.cs.dfs.StorageMessages.Chunk.Builder subBuilder = null;
+              if (chunk_ != null) {
+                subBuilder = chunk_.toBuilder();
+              }
+              chunk_ = input.readMessage(edu.usfca.cs.dfs.StorageMessages.Chunk.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(chunk_);
+                chunk_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.class, edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.Builder.class);
+    }
+
+    public static final int STORAGENODEID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object storageNodeId_;
+    /**
+     * <code>string storageNodeId = 1;</code>
+     */
+    public java.lang.String getStorageNodeId() {
+      java.lang.Object ref = storageNodeId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        storageNodeId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string storageNodeId = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getStorageNodeIdBytes() {
+      java.lang.Object ref = storageNodeId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        storageNodeId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CHUNK_FIELD_NUMBER = 2;
+    private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    public boolean hasChunk() {
+      return chunk_ != null;
+    }
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
+      return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
+    }
+    /**
+     * <code>.Chunk chunk = 2;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder getChunkOrBuilder() {
+      return getChunk();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getStorageNodeIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, storageNodeId_);
+      }
+      if (chunk_ != null) {
+        output.writeMessage(2, getChunk());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getStorageNodeIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, storageNodeId_);
+      }
+      if (chunk_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getChunk());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse)) {
+        return super.equals(obj);
+      }
+      edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse other = (edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse) obj;
+
+      if (!getStorageNodeId()
+          .equals(other.getStorageNodeId())) return false;
+      if (hasChunk() != other.hasChunk()) return false;
+      if (hasChunk()) {
+        if (!getChunk()
+            .equals(other.getChunk())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + STORAGENODEID_FIELD_NUMBER;
+      hash = (53 * hash) + getStorageNodeId().hashCode();
+      if (hasChunk()) {
+        hash = (37 * hash) + CHUNK_FIELD_NUMBER;
+        hash = (53 * hash) + getChunk().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code RecoverChunkResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:RecoverChunkResponse)
+        edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.class, edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.Builder.class);
+      }
+
+      // Construct using edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        storageNodeId_ = "";
+
+        if (chunkBuilder_ == null) {
+          chunk_ = null;
+        } else {
+          chunk_ = null;
+          chunkBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return edu.usfca.cs.dfs.StorageMessages.internal_static_RecoverChunkResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse getDefaultInstanceForType() {
+        return edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse build() {
+        edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse buildPartial() {
+        edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse result = new edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse(this);
+        result.storageNodeId_ = storageNodeId_;
+        if (chunkBuilder_ == null) {
+          result.chunk_ = chunk_;
+        } else {
+          result.chunk_ = chunkBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse) {
+          return mergeFrom((edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse other) {
+        if (other == edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.getDefaultInstance()) return this;
+        if (!other.getStorageNodeId().isEmpty()) {
+          storageNodeId_ = other.storageNodeId_;
+          onChanged();
+        }
+        if (other.hasChunk()) {
+          mergeChunk(other.getChunk());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object storageNodeId_ = "";
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public java.lang.String getStorageNodeId() {
+        java.lang.Object ref = storageNodeId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          storageNodeId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getStorageNodeIdBytes() {
+        java.lang.Object ref = storageNodeId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          storageNodeId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public Builder setStorageNodeId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        storageNodeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public Builder clearStorageNodeId() {
+        
+        storageNodeId_ = getDefaultInstance().getStorageNodeId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string storageNodeId = 1;</code>
+       */
+      public Builder setStorageNodeIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        storageNodeId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private edu.usfca.cs.dfs.StorageMessages.Chunk chunk_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> chunkBuilder_;
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public boolean hasChunk() {
+        return chunkBuilder_ != null || chunk_ != null;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.Chunk getChunk() {
+        if (chunkBuilder_ == null) {
+          return chunk_ == null ? edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
+        } else {
+          return chunkBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public Builder setChunk(edu.usfca.cs.dfs.StorageMessages.Chunk value) {
+        if (chunkBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          chunk_ = value;
+          onChanged();
+        } else {
+          chunkBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public Builder setChunk(
+          edu.usfca.cs.dfs.StorageMessages.Chunk.Builder builderForValue) {
+        if (chunkBuilder_ == null) {
+          chunk_ = builderForValue.build();
+          onChanged();
+        } else {
+          chunkBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public Builder mergeChunk(edu.usfca.cs.dfs.StorageMessages.Chunk value) {
+        if (chunkBuilder_ == null) {
+          if (chunk_ != null) {
+            chunk_ =
+              edu.usfca.cs.dfs.StorageMessages.Chunk.newBuilder(chunk_).mergeFrom(value).buildPartial();
+          } else {
+            chunk_ = value;
+          }
+          onChanged();
+        } else {
+          chunkBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public Builder clearChunk() {
+        if (chunkBuilder_ == null) {
+          chunk_ = null;
+          onChanged();
+        } else {
+          chunk_ = null;
+          chunkBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.Chunk.Builder getChunkBuilder() {
+        
+        onChanged();
+        return getChunkFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder getChunkOrBuilder() {
+        if (chunkBuilder_ != null) {
+          return chunkBuilder_.getMessageOrBuilder();
+        } else {
+          return chunk_ == null ?
+              edu.usfca.cs.dfs.StorageMessages.Chunk.getDefaultInstance() : chunk_;
+        }
+      }
+      /**
+       * <code>.Chunk chunk = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder> 
+          getChunkFieldBuilder() {
+        if (chunkBuilder_ == null) {
+          chunkBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              edu.usfca.cs.dfs.StorageMessages.Chunk, edu.usfca.cs.dfs.StorageMessages.Chunk.Builder, edu.usfca.cs.dfs.StorageMessages.ChunkOrBuilder>(
+                  getChunk(),
+                  getParentForChildren(),
+                  isClean());
+          chunk_ = null;
+        }
+        return chunkBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:RecoverChunkResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:RecoverChunkResponse)
+    private static final edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse();
+    }
+
+    public static edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<RecoverChunkResponse>
+        PARSER = new com.google.protobuf.AbstractParser<RecoverChunkResponse>() {
+      @java.lang.Override
+      public RecoverChunkResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new RecoverChunkResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<RecoverChunkResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RecoverChunkResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -15674,18 +16903,15 @@ public final class StorageMessages {
 
     /**
      * <code>int32 messageType = 1;</code>
-     * @return The messageType.
      */
     int getMessageType();
 
     /**
      * <code>.StorageNodeRegisterRequest storageNodeRegisterRequest = 2;</code>
-     * @return Whether the storageNodeRegisterRequest field is set.
      */
     boolean hasStorageNodeRegisterRequest();
     /**
      * <code>.StorageNodeRegisterRequest storageNodeRegisterRequest = 2;</code>
-     * @return The storageNodeRegisterRequest.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterRequest getStorageNodeRegisterRequest();
     /**
@@ -15695,12 +16921,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNodeRegisterResponse storageNodeRegisterResponse = 3;</code>
-     * @return Whether the storageNodeRegisterResponse field is set.
      */
     boolean hasStorageNodeRegisterResponse();
     /**
      * <code>.StorageNodeRegisterResponse storageNodeRegisterResponse = 3;</code>
-     * @return The storageNodeRegisterResponse.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterResponse getStorageNodeRegisterResponse();
     /**
@@ -15710,12 +16934,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;</code>
-     * @return Whether the storageNodeHeartBeatRequest field is set.
      */
     boolean hasStorageNodeHeartBeatRequest();
     /**
      * <code>.StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;</code>
-     * @return The storageNodeHeartBeatRequest.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatRequest getStorageNodeHeartBeatRequest();
     /**
@@ -15725,12 +16947,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StorageNodeHeartBeatResponse storageNodeHeartBeatResponse = 5;</code>
-     * @return Whether the storageNodeHeartBeatResponse field is set.
      */
     boolean hasStorageNodeHeartBeatResponse();
     /**
      * <code>.StorageNodeHeartBeatResponse storageNodeHeartBeatResponse = 5;</code>
-     * @return The storageNodeHeartBeatResponse.
      */
     edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatResponse getStorageNodeHeartBeatResponse();
     /**
@@ -15740,12 +16960,10 @@ public final class StorageMessages {
 
     /**
      * <code>.GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;</code>
-     * @return Whether the getStorageNodeForChunksRequest field is set.
      */
     boolean hasGetStorageNodeForChunksRequest();
     /**
      * <code>.GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;</code>
-     * @return The getStorageNodeForChunksRequest.
      */
     edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksRequest getGetStorageNodeForChunksRequest();
     /**
@@ -15755,12 +16973,10 @@ public final class StorageMessages {
 
     /**
      * <code>.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;</code>
-     * @return Whether the getStorageNodesForChunksResponse field is set.
      */
     boolean hasGetStorageNodesForChunksResponse();
     /**
      * <code>.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;</code>
-     * @return The getStorageNodesForChunksResponse.
      */
     edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksResponse getGetStorageNodesForChunksResponse();
     /**
@@ -15770,12 +16986,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StoreChunkRequest storeChunkRequest = 11;</code>
-     * @return Whether the storeChunkRequest field is set.
      */
     boolean hasStoreChunkRequest();
     /**
      * <code>.StoreChunkRequest storeChunkRequest = 11;</code>
-     * @return The storeChunkRequest.
      */
     edu.usfca.cs.dfs.StorageMessages.StoreChunkRequest getStoreChunkRequest();
     /**
@@ -15785,12 +16999,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StoreChunkResponse storeChunkResponse = 12;</code>
-     * @return Whether the storeChunkResponse field is set.
      */
     boolean hasStoreChunkResponse();
     /**
      * <code>.StoreChunkResponse storeChunkResponse = 12;</code>
-     * @return The storeChunkResponse.
      */
     edu.usfca.cs.dfs.StorageMessages.StoreChunkResponse getStoreChunkResponse();
     /**
@@ -15800,12 +17012,10 @@ public final class StorageMessages {
 
     /**
      * <code>.RetrieveFileRequest retrieveFileRequest = 13;</code>
-     * @return Whether the retrieveFileRequest field is set.
      */
     boolean hasRetrieveFileRequest();
     /**
      * <code>.RetrieveFileRequest retrieveFileRequest = 13;</code>
-     * @return The retrieveFileRequest.
      */
     edu.usfca.cs.dfs.StorageMessages.RetrieveFileRequest getRetrieveFileRequest();
     /**
@@ -15815,12 +17025,10 @@ public final class StorageMessages {
 
     /**
      * <code>.RetrieveFileResponse retrieveFileResponse = 14;</code>
-     * @return Whether the retrieveFileResponse field is set.
      */
     boolean hasRetrieveFileResponse();
     /**
      * <code>.RetrieveFileResponse retrieveFileResponse = 14;</code>
-     * @return The retrieveFileResponse.
      */
     edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse getRetrieveFileResponse();
     /**
@@ -15830,12 +17038,10 @@ public final class StorageMessages {
 
     /**
      * <code>.RetrieveChunkRequest retrieveChunkRequest = 15;</code>
-     * @return Whether the retrieveChunkRequest field is set.
      */
     boolean hasRetrieveChunkRequest();
     /**
      * <code>.RetrieveChunkRequest retrieveChunkRequest = 15;</code>
-     * @return The retrieveChunkRequest.
      */
     edu.usfca.cs.dfs.StorageMessages.RetrieveChunkRequest getRetrieveChunkRequest();
     /**
@@ -15845,12 +17051,10 @@ public final class StorageMessages {
 
     /**
      * <code>.RetrieveChunkResponse retrieveChunkResponse = 16;</code>
-     * @return Whether the retrieveChunkResponse field is set.
      */
     boolean hasRetrieveChunkResponse();
     /**
      * <code>.RetrieveChunkResponse retrieveChunkResponse = 16;</code>
-     * @return The retrieveChunkResponse.
      */
     edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponse getRetrieveChunkResponse();
     /**
@@ -15860,12 +17064,10 @@ public final class StorageMessages {
 
     /**
      * <code>.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;</code>
-     * @return Whether the storeChunkControllerUpdateRequest field is set.
      */
     boolean hasStoreChunkControllerUpdateRequest();
     /**
      * <code>.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;</code>
-     * @return The storeChunkControllerUpdateRequest.
      */
     edu.usfca.cs.dfs.StorageMessages.StoreChunkControllerUpdateRequest getStoreChunkControllerUpdateRequest();
     /**
@@ -15875,12 +17077,10 @@ public final class StorageMessages {
 
     /**
      * <code>.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;</code>
-     * @return Whether the getActiveStorageNodeListRequest field is set.
      */
     boolean hasGetActiveStorageNodeListRequest();
     /**
      * <code>.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;</code>
-     * @return The getActiveStorageNodeListRequest.
      */
     edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListRequest getGetActiveStorageNodeListRequest();
     /**
@@ -15890,18 +17090,42 @@ public final class StorageMessages {
 
     /**
      * <code>.GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;</code>
-     * @return Whether the getActiveStorageNodeListResponse field is set.
      */
     boolean hasGetActiveStorageNodeListResponse();
     /**
      * <code>.GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;</code>
-     * @return The getActiveStorageNodeListResponse.
      */
     edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponse getGetActiveStorageNodeListResponse();
     /**
      * <code>.GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;</code>
      */
     edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponseOrBuilder getGetActiveStorageNodeListResponseOrBuilder();
+
+    /**
+     * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+     */
+    boolean hasRecoverChunkRequest();
+    /**
+     * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest getRecoverChunkRequest();
+    /**
+     * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequestOrBuilder getRecoverChunkRequestOrBuilder();
+
+    /**
+     * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+     */
+    boolean hasRecoverChunkResponse();
+    /**
+     * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse getRecoverChunkResponse();
+    /**
+     * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+     */
+    edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponseOrBuilder getRecoverChunkResponseOrBuilder();
   }
   /**
    * Protobuf type {@code MessageWrapper}
@@ -16148,6 +17372,32 @@ public final class StorageMessages {
 
               break;
             }
+            case 162: {
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.Builder subBuilder = null;
+              if (recoverChunkRequest_ != null) {
+                subBuilder = recoverChunkRequest_.toBuilder();
+              }
+              recoverChunkRequest_ = input.readMessage(edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(recoverChunkRequest_);
+                recoverChunkRequest_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 170: {
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.Builder subBuilder = null;
+              if (recoverChunkResponse_ != null) {
+                subBuilder = recoverChunkResponse_.toBuilder();
+              }
+              recoverChunkResponse_ = input.readMessage(edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(recoverChunkResponse_);
+                recoverChunkResponse_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -16184,7 +17434,6 @@ public final class StorageMessages {
     private int messageType_;
     /**
      * <code>int32 messageType = 1;</code>
-     * @return The messageType.
      */
     public int getMessageType() {
       return messageType_;
@@ -16194,14 +17443,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterRequest storageNodeRegisterRequest_;
     /**
      * <code>.StorageNodeRegisterRequest storageNodeRegisterRequest = 2;</code>
-     * @return Whether the storageNodeRegisterRequest field is set.
      */
     public boolean hasStorageNodeRegisterRequest() {
       return storageNodeRegisterRequest_ != null;
     }
     /**
      * <code>.StorageNodeRegisterRequest storageNodeRegisterRequest = 2;</code>
-     * @return The storageNodeRegisterRequest.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterRequest getStorageNodeRegisterRequest() {
       return storageNodeRegisterRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterRequest.getDefaultInstance() : storageNodeRegisterRequest_;
@@ -16217,14 +17464,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponse_;
     /**
      * <code>.StorageNodeRegisterResponse storageNodeRegisterResponse = 3;</code>
-     * @return Whether the storageNodeRegisterResponse field is set.
      */
     public boolean hasStorageNodeRegisterResponse() {
       return storageNodeRegisterResponse_ != null;
     }
     /**
      * <code>.StorageNodeRegisterResponse storageNodeRegisterResponse = 3;</code>
-     * @return The storageNodeRegisterResponse.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterResponse getStorageNodeRegisterResponse() {
       return storageNodeRegisterResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterResponse.getDefaultInstance() : storageNodeRegisterResponse_;
@@ -16240,14 +17485,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatRequest storageNodeHeartBeatRequest_;
     /**
      * <code>.StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;</code>
-     * @return Whether the storageNodeHeartBeatRequest field is set.
      */
     public boolean hasStorageNodeHeartBeatRequest() {
       return storageNodeHeartBeatRequest_ != null;
     }
     /**
      * <code>.StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;</code>
-     * @return The storageNodeHeartBeatRequest.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatRequest getStorageNodeHeartBeatRequest() {
       return storageNodeHeartBeatRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatRequest.getDefaultInstance() : storageNodeHeartBeatRequest_;
@@ -16263,14 +17506,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatResponse storageNodeHeartBeatResponse_;
     /**
      * <code>.StorageNodeHeartBeatResponse storageNodeHeartBeatResponse = 5;</code>
-     * @return Whether the storageNodeHeartBeatResponse field is set.
      */
     public boolean hasStorageNodeHeartBeatResponse() {
       return storageNodeHeartBeatResponse_ != null;
     }
     /**
      * <code>.StorageNodeHeartBeatResponse storageNodeHeartBeatResponse = 5;</code>
-     * @return The storageNodeHeartBeatResponse.
      */
     public edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatResponse getStorageNodeHeartBeatResponse() {
       return storageNodeHeartBeatResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatResponse.getDefaultInstance() : storageNodeHeartBeatResponse_;
@@ -16286,14 +17527,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksRequest getStorageNodeForChunksRequest_;
     /**
      * <code>.GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;</code>
-     * @return Whether the getStorageNodeForChunksRequest field is set.
      */
     public boolean hasGetStorageNodeForChunksRequest() {
       return getStorageNodeForChunksRequest_ != null;
     }
     /**
      * <code>.GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;</code>
-     * @return The getStorageNodeForChunksRequest.
      */
     public edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksRequest getGetStorageNodeForChunksRequest() {
       return getStorageNodeForChunksRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksRequest.getDefaultInstance() : getStorageNodeForChunksRequest_;
@@ -16309,14 +17548,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse_;
     /**
      * <code>.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;</code>
-     * @return Whether the getStorageNodesForChunksResponse field is set.
      */
     public boolean hasGetStorageNodesForChunksResponse() {
       return getStorageNodesForChunksResponse_ != null;
     }
     /**
      * <code>.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;</code>
-     * @return The getStorageNodesForChunksResponse.
      */
     public edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksResponse getGetStorageNodesForChunksResponse() {
       return getStorageNodesForChunksResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksResponse.getDefaultInstance() : getStorageNodesForChunksResponse_;
@@ -16332,14 +17569,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StoreChunkRequest storeChunkRequest_;
     /**
      * <code>.StoreChunkRequest storeChunkRequest = 11;</code>
-     * @return Whether the storeChunkRequest field is set.
      */
     public boolean hasStoreChunkRequest() {
       return storeChunkRequest_ != null;
     }
     /**
      * <code>.StoreChunkRequest storeChunkRequest = 11;</code>
-     * @return The storeChunkRequest.
      */
     public edu.usfca.cs.dfs.StorageMessages.StoreChunkRequest getStoreChunkRequest() {
       return storeChunkRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.StoreChunkRequest.getDefaultInstance() : storeChunkRequest_;
@@ -16355,14 +17590,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StoreChunkResponse storeChunkResponse_;
     /**
      * <code>.StoreChunkResponse storeChunkResponse = 12;</code>
-     * @return Whether the storeChunkResponse field is set.
      */
     public boolean hasStoreChunkResponse() {
       return storeChunkResponse_ != null;
     }
     /**
      * <code>.StoreChunkResponse storeChunkResponse = 12;</code>
-     * @return The storeChunkResponse.
      */
     public edu.usfca.cs.dfs.StorageMessages.StoreChunkResponse getStoreChunkResponse() {
       return storeChunkResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.StoreChunkResponse.getDefaultInstance() : storeChunkResponse_;
@@ -16378,14 +17611,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.RetrieveFileRequest retrieveFileRequest_;
     /**
      * <code>.RetrieveFileRequest retrieveFileRequest = 13;</code>
-     * @return Whether the retrieveFileRequest field is set.
      */
     public boolean hasRetrieveFileRequest() {
       return retrieveFileRequest_ != null;
     }
     /**
      * <code>.RetrieveFileRequest retrieveFileRequest = 13;</code>
-     * @return The retrieveFileRequest.
      */
     public edu.usfca.cs.dfs.StorageMessages.RetrieveFileRequest getRetrieveFileRequest() {
       return retrieveFileRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.RetrieveFileRequest.getDefaultInstance() : retrieveFileRequest_;
@@ -16401,14 +17632,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse retrieveFileResponse_;
     /**
      * <code>.RetrieveFileResponse retrieveFileResponse = 14;</code>
-     * @return Whether the retrieveFileResponse field is set.
      */
     public boolean hasRetrieveFileResponse() {
       return retrieveFileResponse_ != null;
     }
     /**
      * <code>.RetrieveFileResponse retrieveFileResponse = 14;</code>
-     * @return The retrieveFileResponse.
      */
     public edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse getRetrieveFileResponse() {
       return retrieveFileResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse.getDefaultInstance() : retrieveFileResponse_;
@@ -16424,14 +17653,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.RetrieveChunkRequest retrieveChunkRequest_;
     /**
      * <code>.RetrieveChunkRequest retrieveChunkRequest = 15;</code>
-     * @return Whether the retrieveChunkRequest field is set.
      */
     public boolean hasRetrieveChunkRequest() {
       return retrieveChunkRequest_ != null;
     }
     /**
      * <code>.RetrieveChunkRequest retrieveChunkRequest = 15;</code>
-     * @return The retrieveChunkRequest.
      */
     public edu.usfca.cs.dfs.StorageMessages.RetrieveChunkRequest getRetrieveChunkRequest() {
       return retrieveChunkRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.RetrieveChunkRequest.getDefaultInstance() : retrieveChunkRequest_;
@@ -16447,14 +17674,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponse retrieveChunkResponse_;
     /**
      * <code>.RetrieveChunkResponse retrieveChunkResponse = 16;</code>
-     * @return Whether the retrieveChunkResponse field is set.
      */
     public boolean hasRetrieveChunkResponse() {
       return retrieveChunkResponse_ != null;
     }
     /**
      * <code>.RetrieveChunkResponse retrieveChunkResponse = 16;</code>
-     * @return The retrieveChunkResponse.
      */
     public edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponse getRetrieveChunkResponse() {
       return retrieveChunkResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponse.getDefaultInstance() : retrieveChunkResponse_;
@@ -16470,14 +17695,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest_;
     /**
      * <code>.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;</code>
-     * @return Whether the storeChunkControllerUpdateRequest field is set.
      */
     public boolean hasStoreChunkControllerUpdateRequest() {
       return storeChunkControllerUpdateRequest_ != null;
     }
     /**
      * <code>.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;</code>
-     * @return The storeChunkControllerUpdateRequest.
      */
     public edu.usfca.cs.dfs.StorageMessages.StoreChunkControllerUpdateRequest getStoreChunkControllerUpdateRequest() {
       return storeChunkControllerUpdateRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.StoreChunkControllerUpdateRequest.getDefaultInstance() : storeChunkControllerUpdateRequest_;
@@ -16493,14 +17716,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest_;
     /**
      * <code>.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;</code>
-     * @return Whether the getActiveStorageNodeListRequest field is set.
      */
     public boolean hasGetActiveStorageNodeListRequest() {
       return getActiveStorageNodeListRequest_ != null;
     }
     /**
      * <code>.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;</code>
-     * @return The getActiveStorageNodeListRequest.
      */
     public edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListRequest getGetActiveStorageNodeListRequest() {
       return getActiveStorageNodeListRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListRequest.getDefaultInstance() : getActiveStorageNodeListRequest_;
@@ -16516,14 +17737,12 @@ public final class StorageMessages {
     private edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponse getActiveStorageNodeListResponse_;
     /**
      * <code>.GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;</code>
-     * @return Whether the getActiveStorageNodeListResponse field is set.
      */
     public boolean hasGetActiveStorageNodeListResponse() {
       return getActiveStorageNodeListResponse_ != null;
     }
     /**
      * <code>.GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;</code>
-     * @return The getActiveStorageNodeListResponse.
      */
     public edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponse getGetActiveStorageNodeListResponse() {
       return getActiveStorageNodeListResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponse.getDefaultInstance() : getActiveStorageNodeListResponse_;
@@ -16533,6 +17752,48 @@ public final class StorageMessages {
      */
     public edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponseOrBuilder getGetActiveStorageNodeListResponseOrBuilder() {
       return getGetActiveStorageNodeListResponse();
+    }
+
+    public static final int RECOVERCHUNKREQUEST_FIELD_NUMBER = 20;
+    private edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest recoverChunkRequest_;
+    /**
+     * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+     */
+    public boolean hasRecoverChunkRequest() {
+      return recoverChunkRequest_ != null;
+    }
+    /**
+     * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest getRecoverChunkRequest() {
+      return recoverChunkRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.getDefaultInstance() : recoverChunkRequest_;
+    }
+    /**
+     * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequestOrBuilder getRecoverChunkRequestOrBuilder() {
+      return getRecoverChunkRequest();
+    }
+
+    public static final int RECOVERCHUNKRESPONSE_FIELD_NUMBER = 21;
+    private edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse recoverChunkResponse_;
+    /**
+     * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+     */
+    public boolean hasRecoverChunkResponse() {
+      return recoverChunkResponse_ != null;
+    }
+    /**
+     * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse getRecoverChunkResponse() {
+      return recoverChunkResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.getDefaultInstance() : recoverChunkResponse_;
+    }
+    /**
+     * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+     */
+    public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponseOrBuilder getRecoverChunkResponseOrBuilder() {
+      return getRecoverChunkResponse();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -16596,6 +17857,12 @@ public final class StorageMessages {
       }
       if (getActiveStorageNodeListResponse_ != null) {
         output.writeMessage(19, getGetActiveStorageNodeListResponse());
+      }
+      if (recoverChunkRequest_ != null) {
+        output.writeMessage(20, getRecoverChunkRequest());
+      }
+      if (recoverChunkResponse_ != null) {
+        output.writeMessage(21, getRecoverChunkResponse());
       }
       unknownFields.writeTo(output);
     }
@@ -16669,6 +17936,14 @@ public final class StorageMessages {
       if (getActiveStorageNodeListResponse_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(19, getGetActiveStorageNodeListResponse());
+      }
+      if (recoverChunkRequest_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(20, getRecoverChunkRequest());
+      }
+      if (recoverChunkResponse_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(21, getRecoverChunkResponse());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -16762,6 +18037,16 @@ public final class StorageMessages {
         if (!getGetActiveStorageNodeListResponse()
             .equals(other.getGetActiveStorageNodeListResponse())) return false;
       }
+      if (hasRecoverChunkRequest() != other.hasRecoverChunkRequest()) return false;
+      if (hasRecoverChunkRequest()) {
+        if (!getRecoverChunkRequest()
+            .equals(other.getRecoverChunkRequest())) return false;
+      }
+      if (hasRecoverChunkResponse() != other.hasRecoverChunkResponse()) return false;
+      if (hasRecoverChunkResponse()) {
+        if (!getRecoverChunkResponse()
+            .equals(other.getRecoverChunkResponse())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -16834,6 +18119,14 @@ public final class StorageMessages {
       if (hasGetActiveStorageNodeListResponse()) {
         hash = (37 * hash) + GETACTIVESTORAGENODELISTRESPONSE_FIELD_NUMBER;
         hash = (53 * hash) + getGetActiveStorageNodeListResponse().hashCode();
+      }
+      if (hasRecoverChunkRequest()) {
+        hash = (37 * hash) + RECOVERCHUNKREQUEST_FIELD_NUMBER;
+        hash = (53 * hash) + getRecoverChunkRequest().hashCode();
+      }
+      if (hasRecoverChunkResponse()) {
+        hash = (37 * hash) + RECOVERCHUNKRESPONSE_FIELD_NUMBER;
+        hash = (53 * hash) + getRecoverChunkResponse().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -17060,6 +18353,18 @@ public final class StorageMessages {
           getActiveStorageNodeListResponse_ = null;
           getActiveStorageNodeListResponseBuilder_ = null;
         }
+        if (recoverChunkRequestBuilder_ == null) {
+          recoverChunkRequest_ = null;
+        } else {
+          recoverChunkRequest_ = null;
+          recoverChunkRequestBuilder_ = null;
+        }
+        if (recoverChunkResponseBuilder_ == null) {
+          recoverChunkResponse_ = null;
+        } else {
+          recoverChunkResponse_ = null;
+          recoverChunkResponseBuilder_ = null;
+        }
         return this;
       }
 
@@ -17162,6 +18467,16 @@ public final class StorageMessages {
         } else {
           result.getActiveStorageNodeListResponse_ = getActiveStorageNodeListResponseBuilder_.build();
         }
+        if (recoverChunkRequestBuilder_ == null) {
+          result.recoverChunkRequest_ = recoverChunkRequest_;
+        } else {
+          result.recoverChunkRequest_ = recoverChunkRequestBuilder_.build();
+        }
+        if (recoverChunkResponseBuilder_ == null) {
+          result.recoverChunkResponse_ = recoverChunkResponse_;
+        } else {
+          result.recoverChunkResponse_ = recoverChunkResponseBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -17258,6 +18573,12 @@ public final class StorageMessages {
         if (other.hasGetActiveStorageNodeListResponse()) {
           mergeGetActiveStorageNodeListResponse(other.getGetActiveStorageNodeListResponse());
         }
+        if (other.hasRecoverChunkRequest()) {
+          mergeRecoverChunkRequest(other.getRecoverChunkRequest());
+        }
+        if (other.hasRecoverChunkResponse()) {
+          mergeRecoverChunkResponse(other.getRecoverChunkResponse());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -17290,15 +18611,12 @@ public final class StorageMessages {
       private int messageType_ ;
       /**
        * <code>int32 messageType = 1;</code>
-       * @return The messageType.
        */
       public int getMessageType() {
         return messageType_;
       }
       /**
        * <code>int32 messageType = 1;</code>
-       * @param value The messageType to set.
-       * @return This builder for chaining.
        */
       public Builder setMessageType(int value) {
         
@@ -17308,7 +18626,6 @@ public final class StorageMessages {
       }
       /**
        * <code>int32 messageType = 1;</code>
-       * @return This builder for chaining.
        */
       public Builder clearMessageType() {
         
@@ -17322,14 +18639,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterRequest, edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterRequest.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterRequestOrBuilder> storageNodeRegisterRequestBuilder_;
       /**
        * <code>.StorageNodeRegisterRequest storageNodeRegisterRequest = 2;</code>
-       * @return Whether the storageNodeRegisterRequest field is set.
        */
       public boolean hasStorageNodeRegisterRequest() {
         return storageNodeRegisterRequestBuilder_ != null || storageNodeRegisterRequest_ != null;
       }
       /**
        * <code>.StorageNodeRegisterRequest storageNodeRegisterRequest = 2;</code>
-       * @return The storageNodeRegisterRequest.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterRequest getStorageNodeRegisterRequest() {
         if (storageNodeRegisterRequestBuilder_ == null) {
@@ -17441,14 +18756,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterResponse, edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterResponse.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterResponseOrBuilder> storageNodeRegisterResponseBuilder_;
       /**
        * <code>.StorageNodeRegisterResponse storageNodeRegisterResponse = 3;</code>
-       * @return Whether the storageNodeRegisterResponse field is set.
        */
       public boolean hasStorageNodeRegisterResponse() {
         return storageNodeRegisterResponseBuilder_ != null || storageNodeRegisterResponse_ != null;
       }
       /**
        * <code>.StorageNodeRegisterResponse storageNodeRegisterResponse = 3;</code>
-       * @return The storageNodeRegisterResponse.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNodeRegisterResponse getStorageNodeRegisterResponse() {
         if (storageNodeRegisterResponseBuilder_ == null) {
@@ -17560,14 +18873,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatRequest, edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatRequest.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatRequestOrBuilder> storageNodeHeartBeatRequestBuilder_;
       /**
        * <code>.StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;</code>
-       * @return Whether the storageNodeHeartBeatRequest field is set.
        */
       public boolean hasStorageNodeHeartBeatRequest() {
         return storageNodeHeartBeatRequestBuilder_ != null || storageNodeHeartBeatRequest_ != null;
       }
       /**
        * <code>.StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;</code>
-       * @return The storageNodeHeartBeatRequest.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatRequest getStorageNodeHeartBeatRequest() {
         if (storageNodeHeartBeatRequestBuilder_ == null) {
@@ -17679,14 +18990,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatResponse, edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatResponse.Builder, edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatResponseOrBuilder> storageNodeHeartBeatResponseBuilder_;
       /**
        * <code>.StorageNodeHeartBeatResponse storageNodeHeartBeatResponse = 5;</code>
-       * @return Whether the storageNodeHeartBeatResponse field is set.
        */
       public boolean hasStorageNodeHeartBeatResponse() {
         return storageNodeHeartBeatResponseBuilder_ != null || storageNodeHeartBeatResponse_ != null;
       }
       /**
        * <code>.StorageNodeHeartBeatResponse storageNodeHeartBeatResponse = 5;</code>
-       * @return The storageNodeHeartBeatResponse.
        */
       public edu.usfca.cs.dfs.StorageMessages.StorageNodeHeartBeatResponse getStorageNodeHeartBeatResponse() {
         if (storageNodeHeartBeatResponseBuilder_ == null) {
@@ -17798,14 +19107,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksRequest, edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksRequest.Builder, edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksRequestOrBuilder> getStorageNodeForChunksRequestBuilder_;
       /**
        * <code>.GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;</code>
-       * @return Whether the getStorageNodeForChunksRequest field is set.
        */
       public boolean hasGetStorageNodeForChunksRequest() {
         return getStorageNodeForChunksRequestBuilder_ != null || getStorageNodeForChunksRequest_ != null;
       }
       /**
        * <code>.GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;</code>
-       * @return The getStorageNodeForChunksRequest.
        */
       public edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksRequest getGetStorageNodeForChunksRequest() {
         if (getStorageNodeForChunksRequestBuilder_ == null) {
@@ -17917,14 +19224,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksResponse, edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksResponse.Builder, edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksResponseOrBuilder> getStorageNodesForChunksResponseBuilder_;
       /**
        * <code>.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;</code>
-       * @return Whether the getStorageNodesForChunksResponse field is set.
        */
       public boolean hasGetStorageNodesForChunksResponse() {
         return getStorageNodesForChunksResponseBuilder_ != null || getStorageNodesForChunksResponse_ != null;
       }
       /**
        * <code>.GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;</code>
-       * @return The getStorageNodesForChunksResponse.
        */
       public edu.usfca.cs.dfs.StorageMessages.GetStorageNodesForChunksResponse getGetStorageNodesForChunksResponse() {
         if (getStorageNodesForChunksResponseBuilder_ == null) {
@@ -18036,14 +19341,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StoreChunkRequest, edu.usfca.cs.dfs.StorageMessages.StoreChunkRequest.Builder, edu.usfca.cs.dfs.StorageMessages.StoreChunkRequestOrBuilder> storeChunkRequestBuilder_;
       /**
        * <code>.StoreChunkRequest storeChunkRequest = 11;</code>
-       * @return Whether the storeChunkRequest field is set.
        */
       public boolean hasStoreChunkRequest() {
         return storeChunkRequestBuilder_ != null || storeChunkRequest_ != null;
       }
       /**
        * <code>.StoreChunkRequest storeChunkRequest = 11;</code>
-       * @return The storeChunkRequest.
        */
       public edu.usfca.cs.dfs.StorageMessages.StoreChunkRequest getStoreChunkRequest() {
         if (storeChunkRequestBuilder_ == null) {
@@ -18155,14 +19458,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StoreChunkResponse, edu.usfca.cs.dfs.StorageMessages.StoreChunkResponse.Builder, edu.usfca.cs.dfs.StorageMessages.StoreChunkResponseOrBuilder> storeChunkResponseBuilder_;
       /**
        * <code>.StoreChunkResponse storeChunkResponse = 12;</code>
-       * @return Whether the storeChunkResponse field is set.
        */
       public boolean hasStoreChunkResponse() {
         return storeChunkResponseBuilder_ != null || storeChunkResponse_ != null;
       }
       /**
        * <code>.StoreChunkResponse storeChunkResponse = 12;</code>
-       * @return The storeChunkResponse.
        */
       public edu.usfca.cs.dfs.StorageMessages.StoreChunkResponse getStoreChunkResponse() {
         if (storeChunkResponseBuilder_ == null) {
@@ -18274,14 +19575,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.RetrieveFileRequest, edu.usfca.cs.dfs.StorageMessages.RetrieveFileRequest.Builder, edu.usfca.cs.dfs.StorageMessages.RetrieveFileRequestOrBuilder> retrieveFileRequestBuilder_;
       /**
        * <code>.RetrieveFileRequest retrieveFileRequest = 13;</code>
-       * @return Whether the retrieveFileRequest field is set.
        */
       public boolean hasRetrieveFileRequest() {
         return retrieveFileRequestBuilder_ != null || retrieveFileRequest_ != null;
       }
       /**
        * <code>.RetrieveFileRequest retrieveFileRequest = 13;</code>
-       * @return The retrieveFileRequest.
        */
       public edu.usfca.cs.dfs.StorageMessages.RetrieveFileRequest getRetrieveFileRequest() {
         if (retrieveFileRequestBuilder_ == null) {
@@ -18393,14 +19692,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse, edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse.Builder, edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponseOrBuilder> retrieveFileResponseBuilder_;
       /**
        * <code>.RetrieveFileResponse retrieveFileResponse = 14;</code>
-       * @return Whether the retrieveFileResponse field is set.
        */
       public boolean hasRetrieveFileResponse() {
         return retrieveFileResponseBuilder_ != null || retrieveFileResponse_ != null;
       }
       /**
        * <code>.RetrieveFileResponse retrieveFileResponse = 14;</code>
-       * @return The retrieveFileResponse.
        */
       public edu.usfca.cs.dfs.StorageMessages.RetrieveFileResponse getRetrieveFileResponse() {
         if (retrieveFileResponseBuilder_ == null) {
@@ -18512,14 +19809,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.RetrieveChunkRequest, edu.usfca.cs.dfs.StorageMessages.RetrieveChunkRequest.Builder, edu.usfca.cs.dfs.StorageMessages.RetrieveChunkRequestOrBuilder> retrieveChunkRequestBuilder_;
       /**
        * <code>.RetrieveChunkRequest retrieveChunkRequest = 15;</code>
-       * @return Whether the retrieveChunkRequest field is set.
        */
       public boolean hasRetrieveChunkRequest() {
         return retrieveChunkRequestBuilder_ != null || retrieveChunkRequest_ != null;
       }
       /**
        * <code>.RetrieveChunkRequest retrieveChunkRequest = 15;</code>
-       * @return The retrieveChunkRequest.
        */
       public edu.usfca.cs.dfs.StorageMessages.RetrieveChunkRequest getRetrieveChunkRequest() {
         if (retrieveChunkRequestBuilder_ == null) {
@@ -18631,14 +19926,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponse, edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponse.Builder, edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponseOrBuilder> retrieveChunkResponseBuilder_;
       /**
        * <code>.RetrieveChunkResponse retrieveChunkResponse = 16;</code>
-       * @return Whether the retrieveChunkResponse field is set.
        */
       public boolean hasRetrieveChunkResponse() {
         return retrieveChunkResponseBuilder_ != null || retrieveChunkResponse_ != null;
       }
       /**
        * <code>.RetrieveChunkResponse retrieveChunkResponse = 16;</code>
-       * @return The retrieveChunkResponse.
        */
       public edu.usfca.cs.dfs.StorageMessages.RetrieveChunkResponse getRetrieveChunkResponse() {
         if (retrieveChunkResponseBuilder_ == null) {
@@ -18750,14 +20043,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.StoreChunkControllerUpdateRequest, edu.usfca.cs.dfs.StorageMessages.StoreChunkControllerUpdateRequest.Builder, edu.usfca.cs.dfs.StorageMessages.StoreChunkControllerUpdateRequestOrBuilder> storeChunkControllerUpdateRequestBuilder_;
       /**
        * <code>.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;</code>
-       * @return Whether the storeChunkControllerUpdateRequest field is set.
        */
       public boolean hasStoreChunkControllerUpdateRequest() {
         return storeChunkControllerUpdateRequestBuilder_ != null || storeChunkControllerUpdateRequest_ != null;
       }
       /**
        * <code>.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;</code>
-       * @return The storeChunkControllerUpdateRequest.
        */
       public edu.usfca.cs.dfs.StorageMessages.StoreChunkControllerUpdateRequest getStoreChunkControllerUpdateRequest() {
         if (storeChunkControllerUpdateRequestBuilder_ == null) {
@@ -18869,14 +20160,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListRequest, edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListRequest.Builder, edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListRequestOrBuilder> getActiveStorageNodeListRequestBuilder_;
       /**
        * <code>.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;</code>
-       * @return Whether the getActiveStorageNodeListRequest field is set.
        */
       public boolean hasGetActiveStorageNodeListRequest() {
         return getActiveStorageNodeListRequestBuilder_ != null || getActiveStorageNodeListRequest_ != null;
       }
       /**
        * <code>.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;</code>
-       * @return The getActiveStorageNodeListRequest.
        */
       public edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListRequest getGetActiveStorageNodeListRequest() {
         if (getActiveStorageNodeListRequestBuilder_ == null) {
@@ -18988,14 +20277,12 @@ public final class StorageMessages {
           edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponse, edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponse.Builder, edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponseOrBuilder> getActiveStorageNodeListResponseBuilder_;
       /**
        * <code>.GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;</code>
-       * @return Whether the getActiveStorageNodeListResponse field is set.
        */
       public boolean hasGetActiveStorageNodeListResponse() {
         return getActiveStorageNodeListResponseBuilder_ != null || getActiveStorageNodeListResponse_ != null;
       }
       /**
        * <code>.GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;</code>
-       * @return The getActiveStorageNodeListResponse.
        */
       public edu.usfca.cs.dfs.StorageMessages.GetActiveStorageNodeListResponse getGetActiveStorageNodeListResponse() {
         if (getActiveStorageNodeListResponseBuilder_ == null) {
@@ -19100,6 +20387,240 @@ public final class StorageMessages {
           getActiveStorageNodeListResponse_ = null;
         }
         return getActiveStorageNodeListResponseBuilder_;
+      }
+
+      private edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest recoverChunkRequest_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest, edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.Builder, edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequestOrBuilder> recoverChunkRequestBuilder_;
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      public boolean hasRecoverChunkRequest() {
+        return recoverChunkRequestBuilder_ != null || recoverChunkRequest_ != null;
+      }
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest getRecoverChunkRequest() {
+        if (recoverChunkRequestBuilder_ == null) {
+          return recoverChunkRequest_ == null ? edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.getDefaultInstance() : recoverChunkRequest_;
+        } else {
+          return recoverChunkRequestBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      public Builder setRecoverChunkRequest(edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest value) {
+        if (recoverChunkRequestBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          recoverChunkRequest_ = value;
+          onChanged();
+        } else {
+          recoverChunkRequestBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      public Builder setRecoverChunkRequest(
+          edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.Builder builderForValue) {
+        if (recoverChunkRequestBuilder_ == null) {
+          recoverChunkRequest_ = builderForValue.build();
+          onChanged();
+        } else {
+          recoverChunkRequestBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      public Builder mergeRecoverChunkRequest(edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest value) {
+        if (recoverChunkRequestBuilder_ == null) {
+          if (recoverChunkRequest_ != null) {
+            recoverChunkRequest_ =
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.newBuilder(recoverChunkRequest_).mergeFrom(value).buildPartial();
+          } else {
+            recoverChunkRequest_ = value;
+          }
+          onChanged();
+        } else {
+          recoverChunkRequestBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      public Builder clearRecoverChunkRequest() {
+        if (recoverChunkRequestBuilder_ == null) {
+          recoverChunkRequest_ = null;
+          onChanged();
+        } else {
+          recoverChunkRequest_ = null;
+          recoverChunkRequestBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.Builder getRecoverChunkRequestBuilder() {
+        
+        onChanged();
+        return getRecoverChunkRequestFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequestOrBuilder getRecoverChunkRequestOrBuilder() {
+        if (recoverChunkRequestBuilder_ != null) {
+          return recoverChunkRequestBuilder_.getMessageOrBuilder();
+        } else {
+          return recoverChunkRequest_ == null ?
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.getDefaultInstance() : recoverChunkRequest_;
+        }
+      }
+      /**
+       * <code>.RecoverChunkRequest recoverChunkRequest = 20;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest, edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.Builder, edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequestOrBuilder> 
+          getRecoverChunkRequestFieldBuilder() {
+        if (recoverChunkRequestBuilder_ == null) {
+          recoverChunkRequestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest, edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequest.Builder, edu.usfca.cs.dfs.StorageMessages.RecoverChunkRequestOrBuilder>(
+                  getRecoverChunkRequest(),
+                  getParentForChildren(),
+                  isClean());
+          recoverChunkRequest_ = null;
+        }
+        return recoverChunkRequestBuilder_;
+      }
+
+      private edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse recoverChunkResponse_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse, edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.Builder, edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponseOrBuilder> recoverChunkResponseBuilder_;
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      public boolean hasRecoverChunkResponse() {
+        return recoverChunkResponseBuilder_ != null || recoverChunkResponse_ != null;
+      }
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse getRecoverChunkResponse() {
+        if (recoverChunkResponseBuilder_ == null) {
+          return recoverChunkResponse_ == null ? edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.getDefaultInstance() : recoverChunkResponse_;
+        } else {
+          return recoverChunkResponseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      public Builder setRecoverChunkResponse(edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse value) {
+        if (recoverChunkResponseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          recoverChunkResponse_ = value;
+          onChanged();
+        } else {
+          recoverChunkResponseBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      public Builder setRecoverChunkResponse(
+          edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.Builder builderForValue) {
+        if (recoverChunkResponseBuilder_ == null) {
+          recoverChunkResponse_ = builderForValue.build();
+          onChanged();
+        } else {
+          recoverChunkResponseBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      public Builder mergeRecoverChunkResponse(edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse value) {
+        if (recoverChunkResponseBuilder_ == null) {
+          if (recoverChunkResponse_ != null) {
+            recoverChunkResponse_ =
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.newBuilder(recoverChunkResponse_).mergeFrom(value).buildPartial();
+          } else {
+            recoverChunkResponse_ = value;
+          }
+          onChanged();
+        } else {
+          recoverChunkResponseBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      public Builder clearRecoverChunkResponse() {
+        if (recoverChunkResponseBuilder_ == null) {
+          recoverChunkResponse_ = null;
+          onChanged();
+        } else {
+          recoverChunkResponse_ = null;
+          recoverChunkResponseBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.Builder getRecoverChunkResponseBuilder() {
+        
+        onChanged();
+        return getRecoverChunkResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      public edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponseOrBuilder getRecoverChunkResponseOrBuilder() {
+        if (recoverChunkResponseBuilder_ != null) {
+          return recoverChunkResponseBuilder_.getMessageOrBuilder();
+        } else {
+          return recoverChunkResponse_ == null ?
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.getDefaultInstance() : recoverChunkResponse_;
+        }
+      }
+      /**
+       * <code>.RecoverChunkResponse recoverChunkResponse = 21;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse, edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.Builder, edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponseOrBuilder> 
+          getRecoverChunkResponseFieldBuilder() {
+        if (recoverChunkResponseBuilder_ == null) {
+          recoverChunkResponseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse, edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponse.Builder, edu.usfca.cs.dfs.StorageMessages.RecoverChunkResponseOrBuilder>(
+                  getRecoverChunkResponse(),
+                  getParentForChildren(),
+                  isClean());
+          recoverChunkResponse_ = null;
+        }
+        return recoverChunkResponseBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -19245,6 +20766,16 @@ public final class StorageMessages {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_RetrieveChunkResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_RecoverChunkRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_RecoverChunkRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_RecoverChunkResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_RecoverChunkResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_GetActiveStorageNodeListRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -19309,35 +20840,41 @@ public final class StorageMessages {
       "onse\022$\n\rchunkMappings\030\001 \003(\0132\r.ChunkMappi" +
       "ng\"-\n\024RetrieveChunkRequest\022\025\n\005chunk\030\001 \001(" +
       "\0132\006.Chunk\".\n\025RetrieveChunkResponse\022\025\n\005ch" +
-      "unk\030\001 \001(\0132\006.Chunk\"!\n\037GetActiveStorageNod" +
-      "eListRequest\"L\n GetActiveStorageNodeList" +
-      "Response\022(\n\022activeStorageNodes\030\001 \003(\0132\014.S" +
-      "torageNode\"\343\007\n\016MessageWrapper\022\023\n\013message" +
-      "Type\030\001 \001(\005\022?\n\032storageNodeRegisterRequest" +
-      "\030\002 \001(\0132\033.StorageNodeRegisterRequest\022A\n\033s" +
-      "torageNodeRegisterResponse\030\003 \001(\0132\034.Stora" +
-      "geNodeRegisterResponse\022A\n\033storageNodeHea" +
-      "rtBeatRequest\030\004 \001(\0132\034.StorageNodeHeartBe" +
-      "atRequest\022C\n\034storageNodeHeartBeatRespons" +
-      "e\030\005 \001(\0132\035.StorageNodeHeartBeatResponse\022H" +
-      "\n\036getStorageNodeForChunksRequest\030\t \001(\0132 " +
-      ".GetStorageNodesForChunksRequest\022K\n getS" +
-      "torageNodesForChunksResponse\030\n \001(\0132!.Get" +
-      "StorageNodesForChunksResponse\022-\n\021storeCh" +
-      "unkRequest\030\013 \001(\0132\022.StoreChunkRequest\022/\n\022" +
-      "storeChunkResponse\030\014 \001(\0132\023.StoreChunkRes" +
-      "ponse\0221\n\023retrieveFileRequest\030\r \001(\0132\024.Ret" +
-      "rieveFileRequest\0223\n\024retrieveFileResponse" +
-      "\030\016 \001(\0132\025.RetrieveFileResponse\0223\n\024retriev" +
-      "eChunkRequest\030\017 \001(\0132\025.RetrieveChunkReque" +
-      "st\0225\n\025retrieveChunkResponse\030\020 \001(\0132\026.Retr" +
-      "ieveChunkResponse\022M\n!storeChunkControlle" +
-      "rUpdateRequest\030\021 \001(\0132\".StoreChunkControl" +
-      "lerUpdateRequest\022I\n\037getActiveStorageNode" +
-      "ListRequest\030\022 \001(\0132 .GetActiveStorageNode" +
-      "ListRequest\022K\n getActiveStorageNodeListR" +
-      "esponse\030\023 \001(\0132!.GetActiveStorageNodeList" +
-      "ResponseB\022\n\020edu.usfca.cs.dfsb\006proto3"
+      "unk\030\001 \001(\0132\006.Chunk\"C\n\023RecoverChunkRequest" +
+      "\022\025\n\rstorageNodeId\030\001 \001(\t\022\025\n\005chunk\030\002 \001(\0132\006" +
+      ".Chunk\"D\n\024RecoverChunkResponse\022\025\n\rstorag" +
+      "eNodeId\030\001 \001(\t\022\025\n\005chunk\030\002 \001(\0132\006.Chunk\"!\n\037" +
+      "GetActiveStorageNodeListRequest\"L\n GetAc" +
+      "tiveStorageNodeListResponse\022(\n\022activeSto" +
+      "rageNodes\030\001 \003(\0132\014.StorageNode\"\313\010\n\016Messag" +
+      "eWrapper\022\023\n\013messageType\030\001 \001(\005\022?\n\032storage" +
+      "NodeRegisterRequest\030\002 \001(\0132\033.StorageNodeR" +
+      "egisterRequest\022A\n\033storageNodeRegisterRes" +
+      "ponse\030\003 \001(\0132\034.StorageNodeRegisterRespons" +
+      "e\022A\n\033storageNodeHeartBeatRequest\030\004 \001(\0132\034" +
+      ".StorageNodeHeartBeatRequest\022C\n\034storageN" +
+      "odeHeartBeatResponse\030\005 \001(\0132\035.StorageNode" +
+      "HeartBeatResponse\022H\n\036getStorageNodeForCh" +
+      "unksRequest\030\t \001(\0132 .GetStorageNodesForCh" +
+      "unksRequest\022K\n getStorageNodesForChunksR" +
+      "esponse\030\n \001(\0132!.GetStorageNodesForChunks" +
+      "Response\022-\n\021storeChunkRequest\030\013 \001(\0132\022.St" +
+      "oreChunkRequest\022/\n\022storeChunkResponse\030\014 " +
+      "\001(\0132\023.StoreChunkResponse\0221\n\023retrieveFile" +
+      "Request\030\r \001(\0132\024.RetrieveFileRequest\0223\n\024r" +
+      "etrieveFileResponse\030\016 \001(\0132\025.RetrieveFile" +
+      "Response\0223\n\024retrieveChunkRequest\030\017 \001(\0132\025" +
+      ".RetrieveChunkRequest\0225\n\025retrieveChunkRe" +
+      "sponse\030\020 \001(\0132\026.RetrieveChunkResponse\022M\n!" +
+      "storeChunkControllerUpdateRequest\030\021 \001(\0132" +
+      "\".StoreChunkControllerUpdateRequest\022I\n\037g" +
+      "etActiveStorageNodeListRequest\030\022 \001(\0132 .G" +
+      "etActiveStorageNodeListRequest\022K\n getAct" +
+      "iveStorageNodeListResponse\030\023 \001(\0132!.GetAc" +
+      "tiveStorageNodeListResponse\0221\n\023recoverCh" +
+      "unkRequest\030\024 \001(\0132\024.RecoverChunkRequest\0223" +
+      "\n\024recoverChunkResponse\030\025 \001(\0132\025.RecoverCh" +
+      "unkResponseB\022\n\020edu.usfca.cs.dfsb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19451,24 +20988,36 @@ public final class StorageMessages {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RetrieveChunkResponse_descriptor,
         new java.lang.String[] { "Chunk", });
-    internal_static_GetActiveStorageNodeListRequest_descriptor =
+    internal_static_RecoverChunkRequest_descriptor =
       getDescriptor().getMessageTypes().get(18);
+    internal_static_RecoverChunkRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_RecoverChunkRequest_descriptor,
+        new java.lang.String[] { "StorageNodeId", "Chunk", });
+    internal_static_RecoverChunkResponse_descriptor =
+      getDescriptor().getMessageTypes().get(19);
+    internal_static_RecoverChunkResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_RecoverChunkResponse_descriptor,
+        new java.lang.String[] { "StorageNodeId", "Chunk", });
+    internal_static_GetActiveStorageNodeListRequest_descriptor =
+      getDescriptor().getMessageTypes().get(20);
     internal_static_GetActiveStorageNodeListRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_GetActiveStorageNodeListRequest_descriptor,
         new java.lang.String[] { });
     internal_static_GetActiveStorageNodeListResponse_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_GetActiveStorageNodeListResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_GetActiveStorageNodeListResponse_descriptor,
         new java.lang.String[] { "ActiveStorageNodes", });
     internal_static_MessageWrapper_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_MessageWrapper_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_MessageWrapper_descriptor,
-        new java.lang.String[] { "MessageType", "StorageNodeRegisterRequest", "StorageNodeRegisterResponse", "StorageNodeHeartBeatRequest", "StorageNodeHeartBeatResponse", "GetStorageNodeForChunksRequest", "GetStorageNodesForChunksResponse", "StoreChunkRequest", "StoreChunkResponse", "RetrieveFileRequest", "RetrieveFileResponse", "RetrieveChunkRequest", "RetrieveChunkResponse", "StoreChunkControllerUpdateRequest", "GetActiveStorageNodeListRequest", "GetActiveStorageNodeListResponse", });
+        new java.lang.String[] { "MessageType", "StorageNodeRegisterRequest", "StorageNodeRegisterResponse", "StorageNodeHeartBeatRequest", "StorageNodeHeartBeatResponse", "GetStorageNodeForChunksRequest", "GetStorageNodesForChunksResponse", "StoreChunkRequest", "StoreChunkResponse", "RetrieveFileRequest", "RetrieveFileResponse", "RetrieveChunkRequest", "RetrieveChunkResponse", "StoreChunkControllerUpdateRequest", "GetActiveStorageNodeListRequest", "GetActiveStorageNodeListResponse", "RecoverChunkRequest", "RecoverChunkResponse", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

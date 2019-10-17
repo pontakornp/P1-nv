@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,6 +34,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+
+import javax.naming.ldap.Control;
 
 public class StorageNode {
 
@@ -238,17 +241,6 @@ public class StorageNode {
 		thread.start();
 	}
 
-	private boolean isFileCorrupted(byte[] chunkData, String originalCheckSum) {
-		// call checksum method
-		String currentCheckSum = CheckSum.checkSum(chunkData);
-		// return true if the checksum matches else return false
-		if (currentCheckSum.equals(originalCheckSum)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	// To store chunk in a file,
 	// 1. calculate Shannon Entropy of the files which is the maximum compression
 	// if maximum compression is greater than 0.6, then compress the chunk data
@@ -413,7 +405,7 @@ public class StorageNode {
 
 	/**
 	 * store chunks in all of the storage node's replicas
-	 * @param chunk
+	 * @param storeChunkRequest
 	 */
 	public boolean storeChunkOnReplica(StorageMessages.StoreChunkRequest storeChunkRequest) {
 		StorageMessages.MessageWrapper message = 
@@ -499,6 +491,112 @@ public class StorageNode {
 				return null;
 			}
 		}
+	}
+
+
+	private boolean isFileCorrupted(byte[] chunkData, String originalCheckSum) {
+		// call checksum method
+		String currentCheckSum = CheckSum.checkSum(chunkData);
+		// return true if the checksum matches else return false
+		if (currentCheckSum.equals(originalCheckSum)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public synchronized void getChunk(String storageNodeAddr, int storageNodePort, String fileName, int chunkNumber, String storageNodeId) {
+		try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+			MessagePipeline pipeline = new MessagePipeline();
+
+			logger.info("Get chunk from storage node: " + storageNodeAddr + String.valueOf(storageNodePort));
+			Bootstrap bootstrap = new Bootstrap()
+					.group(workerGroup)
+					.channel(NioSocketChannel.class)
+					.option(ChannelOption.SO_KEEPALIVE, true)
+					.handler(pipeline);
+
+			ChannelFuture cf = bootstrap.connect(storageNodeAddr, storageNodePort);
+			cf.syncUninterruptibly();
+
+			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRecoverChunkRequest(fileName, chunkNumber, storageNodeId);
+
+			Channel chan = cf.channel();
+			ChannelFuture write = chan.writeAndFlush(msgWrapper);
+			logger.info("Get chunk from storage node");
+			chan.closeFuture().sync();
+			workerGroup.shutdownGracefully();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Get Chunk from storage node failed. Storage Node connection establishment failed");
+		}
+	}
+
+	public synchronized void recoverChunk(String fileName, int chunkNumber, String recoverStorageNodeId) {
+		File basePath = new File(StorageNode.storageNodeDirectoryPath);
+		File filePath = null;
+		// if it's a primary, recover the chunk from the replica with subfolder same as the primary node id
+		if(this.storageNodeId == recoverStorageNodeId) {
+			for(StorageMessages.ReplicaNode replicaNode: replicaStorageNodes) {
+				// contact replica with address and port to get the chunk from it
+				//form recover chunk request
+				String addr = replicaNode.getStorageNodeAddr();
+				int port = replicaNode.getStorageNodePort();
+				getChunk(addr, port, fileName, chunkNumber, recoverStorageNodeId);
+			}
+		} else {
+			// if it's a replica, recover the chunk from the its primary with storage node id and subfolder as the replica id
+			// contact controller to get the address and port of the storage
+			Controller controller = Controller.getInstance();
+			// call a method in controller to get the storage node object
+		}
+	}
+
+	public synchronized StorageMessages.MessageWrapper retrieveRecoverChunk(String fileName, int chunkNumber, String storageNodeId) {
+		File basePath = new File(StorageNode.storageNodeDirectoryPath);
+		File filePath = null;
+
+		// look for subdirectory name storageNodeId
+		File subdirectory = new File(basePath.getAbsolutePath() + "/" + storageNodeId);
+		String file_key = fileName + "_" + chunkNumber;
+		filePath = new File(subdirectory.getAbsolutePath(), file_key);
+		if(filePath.exists()) {
+			logger.info("chunk to be recovered is found");
+			try {
+				byte[] chunkData = Files.readAllBytes(Paths.get(filePath.getAbsolutePath()));
+				String metaPath = filePath.getAbsolutePath()+".meta";
+				ChunkMetaData chunkMetaData = new ChunkMetaData();
+				chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
+				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData);
+				return msgWrapper;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return null;
+	}
+
+	public synchronized void storeRecoverChunk(StorageMessages.Chunk chunkMsg, String storageNodeId) {
+
+		try {
+
+			String outputFileName = chunkMsg.getFileName() + "_" + chunkMsg.getChunkId();
+			File dir = new File(StorageNode.storageNodeDirectoryPath + "/" + storageNodeId + "/", outputFileName);
+			File outputFile = new File(dir.toString(), outputFileName);
+			FileOutputStream outputStream = new FileOutputStream(outputFile);
+			outputStream.write(chunkMsg.getData().toByteArray());
+			outputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	// list chunks and file names
+	public void listChunksAndFileNames() {
+
 	}
 
 	public void start() throws IOException, InterruptedException {
