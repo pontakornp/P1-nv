@@ -124,63 +124,61 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			}
 			ctx.close();
     	}else if(messageType == 8){
-			logger.info("Retrieve File Request: Controller receives retrieve file request from client to get storage nodes that may contains the file ");
-			StorageMessages.RetrieveFileRequest retrieveFileRequest = msg.getRetrieveFileRequest();
-			logger.info(retrieveFileRequest.toString());
-			StorageMessages.Chunk chunk = retrieveFileRequest.getChunk();
+    		StorageMessages.RetrieveFileChunkMappingRequest retrieveFileChunkMappingRequest = msg.getRetrieveFileChunkMappingRequest();
+			logger.info("Retrieve File Request: Controller receives retrieve file request from client to get storage nodes that may contains the file");
+			logger.info(retrieveFileChunkMappingRequest.toString());
+			
+			StorageMessages.Chunk chunk = retrieveFileChunkMappingRequest.getChunk();
 			String fileName = chunk.getFileName();
 			int maxChunkNumber = chunk.getMaxChunkNumber();
+			boolean isZero = retrieveFileChunkMappingRequest.getIsZero();
+			
 			Controller controller = Controller.getInstance();
 			List<StorageMessages.ChunkMapping> chunkMappings = controller.getNodesForRetrieveFile(fileName, maxChunkNumber);
 			if(chunkMappings != null) {
-				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileResponse(chunkMappings);
+				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveFileChunkMappingResponse(chunkMappings, isZero);
 				ChannelFuture future = ctx.writeAndFlush(msgWrapper);
+				future.addListener(ChannelFutureListener.CLOSE);
 			} else {
 				logger.error("There are one or more chunk that could not be found on any storage node, stopping retreive");
 				throw new Exception("One or more chunks does not even have one replica on storage nodes");
 			}
 			ctx.close();
 		}else if(messageType == 9) {
+    		StorageMessages.RetrieveFileChunkMappingResponse retrieveFileResponse = msg.getRetrieveFileChunkMappingResponse();
     		logger.info("Retrieve File Response: Client receives storage nodes mappings from Controller");
-    		StorageMessages.RetrieveFileResponse retrieveFileResponse = msg.getRetrieveFileResponse();
     		logger.info(retrieveFileResponse.toString());
     		List<StorageMessages.ChunkMapping> chunkMappings =  retrieveFileResponse.getChunkMappingsList();
+    		boolean isZero = retrieveFileResponse.getIsZero();
     		
     		if(chunkMappings.size()== 0) {
     			logger.error("File with this name is not available on any storage nodes");
     			ctx.close();
     		}else {
-    			Client.retrieveFile(chunkMappings);
+    			Client.retrieveFile(chunkMappings, isZero);
+    			ctx.close();
     		}
-    		ctx.close();
-    		// client retrieve file from storage nodes chunk by chunk
 		}else if(messageType == 10) {
 			logger.info("Retrieve Chunk Request: Storage Node receive request from client");
 			StorageMessages.RetrieveChunkRequest retrieveChunkRequest = msg.getRetrieveChunkRequest();
-			StorageMessages.Chunk chunk = retrieveChunkRequest.getChunk();
-			String fileName = chunk.getFileName();
-			int chunkId = chunk.getChunkId();
-			// return the chunk to the client
+			logger.info(retrieveChunkRequest);
+			
 			StorageNode storageNode = StorageNode.getInstance();
-			// construct retrieve chunk response storage message
-			MessageWrapper msgWrapper = storageNode.retrieveChunk(fileName, chunkId);
+			StorageMessages.MessageWrapper msgWrapper = storageNode.retrieveChunkFromStorageNode(retrieveChunkRequest);
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			future.addListener(ChannelFutureListener.CLOSE);
 		}else if(messageType == 11) {
     		logger.info("Retrieve Chunk Response: Client receive chunk from storage node");
     		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = msg.getRetrieveChunkResponse();
-    		//TODO: Update chunk metadata on client
-    		//TODO: Required for retries and raise errors
+    		boolean isZero = retrieveChunkResponse.getIsZero();
     		StorageMessages.Chunk chunkMsg = retrieveChunkResponse.getChunk();
-    		//store the chunk
-			// if chunk is null, it means chunk does not exist
+
 			if(chunkMsg != null) {
-				Client.updateFileWithChunkData(chunkMsg);
+				Client.updateFileWithChunkData(chunkMsg, isZero);
 			}else {
 				logger.error("Chunk doesnt exist on this storage node. False positive detected");
 			}
 			ctx.close();
-			// merge and write it to file later
 		}else if(messageType == 12) {
     		logger.info("Save Chunk Update request received on Controller");
     		StorageMessages.StoreChunkControllerUpdateRequest storageChunkControllerUpdateRequest 
@@ -192,12 +190,6 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     		controller.updateChunkSaveonController(storageNode, chunk);
     		logger.info("Save chunk update request handled in controller. Updated metadata");
     		ctx.close();
-		}else if(messageType==13) {
-			logger.info("HeartBeat Response received on StorageNode");
-			StorageMessages.StorageNodeHeartbeat storageNodeHeartBeat = msg.getStorageNodeHeartBeatResponse().getStorageNodeHeartbeat();
-			StorageMessages.StorageNode storageNodeMsg = storageNodeHeartBeat.getStorageNode();
-			StorageNode storageNode = StorageNode.getInstance();
-			storageNode.setReplicaStorageNodes(storageNodeMsg.getReplicaNodesList());
 		}else if (messageType==14) {
 			logger.info("Retrieve Chunk to Recover Request: Storage Node receive request from another storage node");
 			StorageMessages.RecoverChunkRequest recoverChunkRequest = msg.getRecoverChunkRequest();
@@ -225,8 +217,6 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = msg.getGetActiveStorageNodeListRequest();
 			Controller controller = Controller.getInstance();
 			controller.getActiveStorageNodes();
-
-
     		// return the requested storageNode object to the storageNode
 			StorageMessages.StorageNode storageNodeMsg;
 			StorageNode storageNode = StorageNode.getInstance();

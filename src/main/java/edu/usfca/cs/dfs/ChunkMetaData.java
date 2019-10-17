@@ -39,6 +39,7 @@ public class ChunkMetaData {
         File file = new File(filePath);
         if (!file.exists()) {
             System.out.println("Meta file not found at given path : "+ filePath);
+            return false;
         }
         System.out.println("Meta file found at given path : "+ filePath);
 

@@ -247,79 +247,59 @@ public class HDFSMessagesBuilder {
                 .build();
 	    return msgWrapper;
     }
-    
 
-    public static StorageMessages.MessageWrapper constructAllStorageNodeRequest() {
-        return null;
-    }
-
-    public static StorageMessages.MessageWrapper constructAllStorageNodeResponse() {
-        return null;
-    }
-
-    public static StorageMessages.MessageWrapper constructAllStorageNodeAck() {
-        return null;
-    }
-
-    public static StorageMessages.MessageWrapper constructRetrieveFileRequest(String fileName, int maxChunkNumber) {
+    public static StorageMessages.MessageWrapper constructRetrieveFileChunkMappingRequest(String fileName, int maxChunkNumber, boolean isZero) {
 		StorageMessages.Chunk chunkMsg = StorageMessages.Chunk.newBuilder()
 				.setFileName(fileName)
 				.setMaxChunkNumber(maxChunkNumber)
 				.build();
-		StorageMessages.RetrieveFileRequest retrieveFileRequest = StorageMessages.RetrieveFileRequest.newBuilder()
+		StorageMessages.RetrieveFileChunkMappingRequest retrieveFileRequest 
+			= StorageMessages.RetrieveFileChunkMappingRequest.newBuilder()
 				.setChunk(chunkMsg)
+				.setIsZero(isZero)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
 				.setMessageType(8)
-				.setRetrieveFileRequest(retrieveFileRequest)
+				.setRetrieveFileChunkMappingRequest(retrieveFileRequest)
 				.build();
         return msgWrapper;
     }
     
-    public static StorageMessages.MessageWrapper constructRetrieveFileResponse(List<StorageMessages.ChunkMapping> chunkMappings) {
-		StorageMessages.RetrieveFileResponse retrieveFileResponse = StorageMessages.RetrieveFileResponse.newBuilder()
+    public static StorageMessages.MessageWrapper constructRetrieveFileChunkMappingResponse(
+    		List<StorageMessages.ChunkMapping> chunkMappings, boolean isZero) {
+		StorageMessages.RetrieveFileChunkMappingResponse retrieveFileResponse 
+			= StorageMessages.RetrieveFileChunkMappingResponse.newBuilder()
 				.addAllChunkMappings(chunkMappings)
+				.setIsZero(isZero)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
 				.setMessageType(9)
-				.setRetrieveFileResponse(retrieveFileResponse)
+				.setRetrieveFileChunkMappingResponse(retrieveFileResponse)
 				.build();
 		return msgWrapper;
 	}
 
-    public static synchronized StorageMessages.MessageWrapper constructRetrieveChunkRequest(String fileName, int chunkId) {
-		StorageMessages.Chunk chunkMsg = StorageMessages.Chunk.newBuilder()
-				.setFileName(fileName)
-				.setChunkId(chunkId)
-				.build();
+    public static synchronized StorageMessages.MessageWrapper constructRetrieveChunkRequest (
+    		StorageMessages.Chunk chunk, boolean isZero) {
 		StorageMessages.RetrieveChunkRequest retrieveChunkRequest = StorageMessages.RetrieveChunkRequest.newBuilder()
-				.setChunk(chunkMsg)
+				.setChunk(chunk)
+				.setIsZero(isZero)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
 				.setMessageType(10)
 				.setRetrieveChunkRequest(retrieveChunkRequest)
 				.build();
+		
+		logger.info(msgWrapper.toString());
 		return msgWrapper;
     }
-
-	public static synchronized StorageMessages.MessageWrapper constructRetrieveChunkResponse(StorageMessages.Chunk chunk) {
-		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = StorageMessages.RetrieveChunkResponse.newBuilder()
-				.setChunk(chunk)
-				.build();
-
-		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-				.setMessageType(11)
-				.setRetrieveChunkResponse(retrieveChunkResponse)
-				.build();
-		return msgWrapper;
-	}
 
     public static synchronized StorageMessages.MessageWrapper constructRetrieveChunkAck() {
         return null;
     }
 
 
-    public static synchronized  StorageMessages.MessageWrapper constructChunkFromFile(ChunkMetaData chunkMetaData, byte[] data) {
+    public static synchronized  StorageMessages.MessageWrapper constructChunkFromFile(ChunkMetaData chunkMetaData, byte[] data, boolean isZero) {
 		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
 				.setFileName(chunkMetaData.fileName)
 				.setChunkId(chunkMetaData.chunkId)
@@ -330,6 +310,7 @@ public class HDFSMessagesBuilder {
 				.build();
 		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = StorageMessages.RetrieveChunkResponse.newBuilder()
 				.setChunk(chunk)
+				.setIsZero(isZero)
 				.build();
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
 				.setRetrieveChunkResponse(retrieveChunkResponse)

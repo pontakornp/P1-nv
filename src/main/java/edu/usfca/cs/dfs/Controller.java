@@ -340,8 +340,6 @@ public class Controller {
 		ArrayList<StorageMessages.StorageNode> storageNodeList = new ArrayList<StorageMessages.StorageNode>();
 		for (Map.Entry<String, BloomFilter> storageNodeBloomFilter : this.bloomFilterMap.entrySet()) {
 			StorageMessages.StorageNode storageNode = this.activeStorageNodes.get(storageNodeBloomFilter.getKey());
-			System.out.println("Iterating bloom filter for storage node" + storageNode.getStorageNodeId());
-			System.out.println("Current capacity of storage node: " + +storageNode.getAvailableStorageCapacity());
 			if(storageNodeBloomFilter.getValue().getBloomKey(bloomFilterKey.getBytes())) {
 				storageNodeList.add(storageNode);
 			}
@@ -350,6 +348,9 @@ public class Controller {
 		if(storageNodeList.isEmpty()) {
 			return false;
 		}
+		logger.info("Identified storage nodes containing the chunk" + bloomFilterKey);
+		logger.info(storageNodeList.toString());
+		
 		StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
 				.setFileName(fileName)
 				.setChunkId(chunkNumber)

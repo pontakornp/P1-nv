@@ -28,6 +28,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -468,22 +470,34 @@ public class StorageNode {
 	}
 
 	// retrieve chunk from a file
-	public synchronized StorageMessages.MessageWrapper retrieveChunk(String fileName, int chunkNumber) {
-		String file_key = fileName + '_' + chunkNumber;
-		// Finds file location in base path
+	public synchronized StorageMessages.MessageWrapper retrieveChunkFromStorageNode(StorageMessages.RetrieveChunkRequest retrieveChunkRequest) {
+		
+		StorageMessages.Chunk chunk = retrieveChunkRequest.getChunk();
+		boolean isZero = retrieveChunkRequest.getIsZero();
+		
+		logger.info("Retrieve Chunk Request: Storage Node receive request from client");
+		logger.info(chunk.toString());
+		
+		String fileName = chunk.getFileName();
+		int chunkId = chunk.getChunkId();
+		String file_key = fileName + '_' + chunkId;
+		
 		File basePath = new File(this.storageNodeDirectoryPath);
 		File filePath = null;
 		for(File subdirectory: basePath.listFiles()) {
+			logger.info(subdirectory.getAbsolutePath());
 			if(subdirectory.isDirectory()) {
-				filePath = new File(subdirectory.getAbsolutePath(), file_key);
-				if(filePath.exists()) {
+				File newFilePath = new File(subdirectory.getAbsolutePath(), file_key);
+				logger.info(newFilePath.getAbsolutePath());
+				if(newFilePath.exists()) {
 					logger.info("File existence detected for chunk retreiveal on Node with storage id : " + this.storageNodeId);
+					filePath = newFilePath;
+					break;
 				}
-				break;
 			}
 		}
 		
-		if (filePath ==null) {
+		if (filePath == null) {
 			logger.info("False positive detected for file retreival. No file found on storage node");
 			return null;
 		}else {
@@ -498,7 +512,8 @@ public class StorageNode {
 				if (chunkMetaData.isCompressed) {
 					chunkData = CompressDecompress.decompress(chunkData);
 				}
-				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData);
+				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData, isZero);
+				logger.info("Chunk data message constructed at storage node. Sending initiated to client");
 				return msgWrapper;
 			} catch (IOException e) {
 				logger.error("File not exist");
@@ -619,7 +634,7 @@ public class StorageNode {
 				String metaPath = filePath.getAbsolutePath()+".meta";
 				ChunkMetaData chunkMetaData = new ChunkMetaData();
 				chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
-				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData);
+				StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructChunkFromFile(chunkMetaData, chunkData, false);
 				return msgWrapper;
 			} catch (IOException e) {
 				e.printStackTrace();

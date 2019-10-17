@@ -57,11 +57,32 @@ message ChunkMapping {
 
 message GetStorageNodesForChunksRequest {
 	repeated Chunk chunkList = 1;
+	bool isZero = 2;
 }
 
 message GetStorageNodesForChunksResponse {
 	repeated ChunkMapping chunkMappings = 1;
+	bool isZero = 2;
 }
+
+message GetChunkZeroNodesRequest {
+	Chunk chunk = 1;
+}
+
+message GetChunkZeroNodesResponse {
+	repeated StorageNode storageNodeObjs = 1;
+}
+
+message GetMaxChunkFromChunkZeroRequest {
+	string fileName = 1;
+	StorageNode storageNode = 2;
+}
+
+message GetMaxChunkFromChunkZeroResponse {
+	string fileName = 1;
+	StorageNode storageNode = 2;
+}
+
 
 message StoreChunkRequest {
     Chunk chunk = 1;
@@ -84,20 +105,24 @@ message StoreChunkResponse {
 	bool isSuccess = 5;
 }
 
-message RetrieveFileRequest {
+message RetrieveFileChunkMappingRequest {
 	Chunk chunk = 1;
+	bool isZero = 2;
 }
 
-message RetrieveFileResponse {
+message RetrieveFileChunkMappingResponse {
 	repeated ChunkMapping chunkMappings = 1;
+	bool isZero = 2;
 }
 
 message RetrieveChunkRequest {
     Chunk chunk = 1;
+    bool isZero = 2;
 }
 
 message RetrieveChunkResponse {
     Chunk chunk = 1;
+    bool isZero = 2;
 }
 
 message RecoverChunkRequest {
@@ -124,16 +149,21 @@ message MessageWrapper {
     StorageNodeRegisterRequest storageNodeRegisterRequest = 2;
     StorageNodeRegisterResponse storageNodeRegisterResponse = 3;
     StorageNodeHeartBeatRequest storageNodeHeartBeatRequest = 4;
-    StorageNodeHeartBeatResponse storageNodeHeartBeatResponse = 5;
-    GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 9;
-    GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 10;
-    StoreChunkRequest storeChunkRequest = 11;
-    StoreChunkResponse storeChunkResponse = 12;
-    RetrieveFileRequest retrieveFileRequest = 13;
-    RetrieveFileResponse retrieveFileResponse = 14;
-    RetrieveChunkRequest retrieveChunkRequest = 15;
-    RetrieveChunkResponse retrieveChunkResponse = 16;
+    GetStorageNodesForChunksRequest getStorageNodeForChunksRequest = 5;
+    GetStorageNodesForChunksResponse getStorageNodesForChunksResponse = 6;
+    StoreChunkRequest storeChunkRequest = 7;
+    StoreChunkResponse storeChunkResponse = 8;
+    RetrieveFileChunkMappingRequest retrieveFileChunkMappingRequest = 9;
+    RetrieveFileChunkMappingResponse retrieveFileChunkMappingResponse = 10;
+    RetrieveChunkRequest retrieveChunkRequest = 11;
+    RetrieveChunkResponse retrieveChunkResponse = 12;
+    
     StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;
+    
+    
+    
+    
+    
     GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;
     GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;
     RecoverChunkRequest recoverChunkRequest = 20;
