@@ -299,15 +299,9 @@ public class Controller {
 		// key = chunk, value = list of storage nodes
 		logger.info("Client gets nodes for retrieve file from client");
 		List<StorageMessages.ChunkMapping> chunkMappingList = new ArrayList<StorageMessages.ChunkMapping>();
-		if (maxChunkNumber == 0) {
-			if (!getChunkMappingForRetreive(fileName, 0, chunkMappingList)) {
+		for(int i = 0; i < maxChunkNumber; i++) {
+			if (!getChunkMappingForRetreive(fileName, i, chunkMappingList)) {
 				return null;
-			}
-		} else {
-			for(int i = 1; i < maxChunkNumber; i++) {
-				if (!getChunkMappingForRetreive(fileName, i, chunkMappingList)) {
-					return null;
-				}
 			}
 		}
 		return chunkMappingList;

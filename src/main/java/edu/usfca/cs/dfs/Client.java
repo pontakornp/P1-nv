@@ -155,20 +155,20 @@ public class Client {
 		int chunkSize = chunk.getChunkSize();
 		long fileSize = chunk.getFileSize();
 		byte[] data = chunk.getData().toByteArray();
+		logger.info("Writing to file for parameters: fileName: " + 
+				fileName +  " chunkid: " + chunkId + " chunksize: " + chunkSize + " Filesize:  " + fileSize);
 		
 		File basePath = new File(Client.fileDestinationPath);
 		if(!basePath.exists()) {
 			basePath.mkdirs();
 		}
 		File outputFilePath = new File(Client.fileDestinationPath, fileName);
-		logger.info(chunk.toString());
 		logger.info(outputFilePath.getAbsolutePath());
 		try {
 			if(!outputFilePath.exists()) {
 				outputFilePath.createNewFile();
 			}
 			RandomAccessFile aFile = new RandomAccessFile(outputFilePath, "rw");
-			aFile.setLength(fileSize);
 			aFile.seek(chunkId*chunkSize);
 			aFile.write(data);
 			aFile.close();
@@ -249,11 +249,14 @@ public class Client {
 		if(chunkId == 0) {
 			// request to controller to get the rest of the chunks
 			if(!outputFile.exists() && maxChunkNumber > 1) {
+				Client.writeToFile(chunk);
+				Client.addChunkToChunkMap(fileName, chunkId, chunk);
 				Client.retrieveFileRequestToController(fileName, maxChunkNumber);
 			}
+		}else {
+			Client.writeToFile(chunk);
+			Client.addChunkToChunkMap(fileName, chunkId, chunk);
 		}
-		Client.writeToFile(chunk);
-		Client.addChunkToChunkMap(fileName, chunkId, chunk);
     }
     
 
@@ -376,7 +379,7 @@ public class Client {
      * fileName, chunkId, chunksize
      */
     public void getFile(String fileName) {
-		retrieveFileRequestToController(fileName, 0);
+		retrieveFileRequestToController(fileName, 1);
     }
 
     public static void main(String[] args) throws IOException {

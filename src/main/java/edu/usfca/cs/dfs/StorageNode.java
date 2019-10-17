@@ -522,9 +522,10 @@ public class StorageNode {
 		}else {
 			String metaPath = filePath + ".meta";
 			try {
-				byte[] chunkData = Files.readAllBytes(Paths.get(metaPath));
 				ChunkMetaData chunkMetaData = new ChunkMetaData();
 				chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
+				
+				byte[] chunkData = Files.readAllBytes(Paths.get(filePath.getAbsolutePath()));
 				//if chunk is compressed, need to decompress the byte array data before returning it
 				// else return the byte array data right away
 				if (chunkMetaData.isCompressed) {

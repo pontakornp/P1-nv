@@ -140,6 +140,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     	}else if(messageType == 8){
 			logger.info("Retrieve File Request: Controller receives retrieve file request from client to get storage nodes that may contains the file ");
 			StorageMessages.RetrieveFileRequest retrieveFileRequest = msg.getRetrieveFileRequest();
+			logger.info(retrieveFileRequest.toString());
 			StorageMessages.Chunk chunk = retrieveFileRequest.getChunk();
 			String fileName = chunk.getFileName();
 			int maxChunkNumber = chunk.getMaxChunkNumber();
