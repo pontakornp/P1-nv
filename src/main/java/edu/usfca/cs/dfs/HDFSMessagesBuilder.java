@@ -347,4 +347,46 @@ public class HDFSMessagesBuilder {
 				.build();
 		return msgWrapper;
 	}
+
+	public static synchronized StorageMessages.MessageWrapper constructRecoverChunkRequest(String fileName, int chunkId, String storageNodeId) {
+		StorageMessages.Chunk chunkMsg = StorageMessages.Chunk.newBuilder()
+				.setFileName(fileName)
+				.setChunkId(chunkId)
+				.build();
+		StorageMessages.RecoverChunkRequest recoverChunkRequest= StorageMessages.RecoverChunkRequest.newBuilder()
+				.setChunk(chunkMsg)
+				.setStorageNodeId(storageNodeId)
+				.build();
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setMessageType(14)
+				.setRecoverChunkRequest(recoverChunkRequest)
+				.build();
+		return msgWrapper;
+	}
+
+	public static synchronized StorageMessages.MessageWrapper constructRecoverChunkResponse(StorageMessages.Chunk chunk, String storageNodeId) {
+		StorageMessages.RecoverChunkResponse recoverChunkResponse = StorageMessages.RecoverChunkResponse.newBuilder()
+				.setChunk(chunk)
+				.setStorageNodeId(storageNodeId)
+				.build();
+
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setMessageType(15)
+				.setRecoverChunkResponse(recoverChunkResponse)
+				.build();
+		return msgWrapper;
+	}
+
+	public static synchronized StorageMessages.MessageWrapper constructGetNodesFromController(StorageMessages.Chunk chunk, String storageNodeId) {
+		StorageMessages.RecoverChunkResponse recoverChunkResponse = StorageMessages.RecoverChunkResponse.newBuilder()
+				.setChunk(chunk)
+				.setStorageNodeId(storageNodeId)
+				.build();
+
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setMessageType(15)
+				.setRecoverChunkResponse(recoverChunkResponse)
+				.build();
+		return msgWrapper;
+	}
 }

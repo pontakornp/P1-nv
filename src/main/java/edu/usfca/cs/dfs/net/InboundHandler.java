@@ -212,6 +212,42 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.StorageNode storageNodeMsg = storageNodeHeartBeat.getStorageNode();
 			StorageNode storageNode = StorageNode.getInstance();
 			storageNode.setReplicaStorageNodes(storageNodeMsg.getReplicaNodesList());
+		}else if (messageType==14) {
+			logger.info("Retrieve Chunk to Recover Request: Storage Node receive request from another storage node");
+			StorageMessages.RecoverChunkRequest recoverChunkRequest = msg.getRecoverChunkRequest();
+			StorageMessages.Chunk chunk = recoverChunkRequest.getChunk();
+			String fileName = chunk.getFileName();
+			int chunkId = chunk.getChunkId();
+			String storageNodeId = recoverChunkRequest.getStorageNodeId();
+			// return the chunk to the storage node that request the chunk
+			StorageNode storageNode = StorageNode.getInstance();
+			// construct retrieve chunk response storage message
+			MessageWrapper msgWrapper = storageNode.retrieveRecoverChunk(fileName, chunkId, storageNodeId);
+			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
+			future.addListener(ChannelFutureListener.CLOSE);
+		}else if (messageType==15) {
+			logger.info("Retrieve Chunk to Recover Response: Storage receive chunk to be recovered from storage node");
+			StorageMessages.RecoverChunkResponse recoverChunkResponse = msg.getRecoverChunkResponse();
+			StorageMessages.Chunk chunk = recoverChunkResponse.getChunk();
+			String storageNodeId = recoverChunkResponse.getStorageNodeId();
+			ctx.close();
+			StorageNode storageNode = StorageNode.getInstance();
+			storageNode.storeRecoverChunk(chunk, storageNodeId);
+		} else if (messageType==16) {
+    		logger.info("Controller gets request to return the storageNode object");
+
+    		// return the requested storageNode object to the storageNode
+			StorageMessages.StorageNode storageNodeMsg;
+			StorageMessages.Chunk
+
+			StorageNode storageNode = StorageNode.getInstance();
+			storageNode.getChunk(addr, port, fileName, chunkNumber, recoverStorageNodeId);
+
+		} else if (messageType==17) {
+    		logger.info("StorageNode gets storage node object to recover chunk from controller");
+
+
+    		// call another storage node in messageType == 15
 		}
     }
 
