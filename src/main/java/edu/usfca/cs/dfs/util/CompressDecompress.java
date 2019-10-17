@@ -9,6 +9,7 @@ import java.util.zip.Inflater;
 public class CompressDecompress {
     // Reference: https://dzone.com/articles/how-compress-and-uncompress
     public static byte[] compress(byte[] data) {
+    	data = data.clone();
         byte[] output = null;
         try {
             Deflater deflater = new Deflater();
@@ -32,6 +33,7 @@ public class CompressDecompress {
     // Reference: https://dzone.com/articles/how-compress-and-uncompress
     public static byte[] decompress(byte[] data) {
         byte[] output = null;
+        data = data.clone();
         try {
             Inflater inflater = new Inflater();
             inflater.setInput(data);

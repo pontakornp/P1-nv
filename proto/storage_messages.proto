@@ -100,6 +100,14 @@ message RetrieveChunkResponse {
     Chunk chunk = 1;
 }
 
+message GetActiveStorageNodeListRequest {
+
+}
+
+message GetActiveStorageNodeListResponse {
+	repeated StorageNode activeStorageNodes = 1;
+}
+
 message MessageWrapper {
     int32 messageType = 1;
     StorageNodeRegisterRequest storageNodeRegisterRequest = 2;
@@ -115,4 +123,6 @@ message MessageWrapper {
     RetrieveChunkRequest retrieveChunkRequest = 15;
     RetrieveChunkResponse retrieveChunkResponse = 16;
     StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;
+    GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;
+    GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;
 }

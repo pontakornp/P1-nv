@@ -46,7 +46,7 @@ public class Controller {
 		return this.bloomFilterMap;
 	}
 	
-	public ConcurrentHashMap<String, StorageMessages.StorageNode> getActiveStorageNodes(){
+	public ConcurrentHashMap<String, StorageMessages.StorageNode> getActiveStorageNodesMap(){
 		return this.activeStorageNodes;
 	}
 
@@ -102,6 +102,15 @@ public class Controller {
 		for (Map.Entry<String, StorageMessages.StorageNode> activeStorageNode : this.activeStorageNodes.entrySet()) {
 			logger.info(activeStorageNode.toString());
 		}
+	}
+	
+	public synchronized List<StorageMessages.StorageNode> getActiveStorageNodes() {
+		List<StorageMessages.StorageNode> storageNodeList = new ArrayList<StorageMessages.StorageNode>();
+		for(StorageMessages.StorageNode activeStorageNode : this.activeStorageNodes.values()) {
+			storageNodeList.add(activeStorageNode);
+		}
+		
+		return storageNodeList;
 	}
 	
 	/* This will update the replication nodes for storage nodes 

@@ -105,8 +105,31 @@ public class Client {
 		}
     }
     
-    public static void getMaxChuckFromChunk0() {
-    	
+    public static void getActiveNodeList() {
+    	try {
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+	        MessagePipeline pipeline = new MessagePipeline();
+	        Bootstrap bootstrap = new Bootstrap()
+	            .group(workerGroup)
+	            .channel(NioSocketChannel.class)
+	            .option(ChannelOption.SO_KEEPALIVE, true)
+	            .handler(pipeline);
+	        
+	        ChannelFuture cf = bootstrap.connect(Client.controllerNodeAddr, Client.controllerNodePort);
+	        cf.syncUninterruptibly();
+	
+	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetActiveStorageNodeListRequest();
+	        Channel chan = cf.channel();
+	        ChannelFuture write = chan.write(msgWrapper);
+	        chan.flush();
+	        write.syncUninterruptibly();
+	        logger.info("Get Active Nodes request sent to controller");
+	        chan.closeFuture().sync();
+	        workerGroup.shutdownGracefully();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("File Existence Check failed. Controller connection establishment failed");
+		}
     }
     
 
@@ -377,7 +400,7 @@ public class Client {
      * to save for each chunk. Opens a channel to controller with 
      * fileName, chunkId, chunksize
      */
-    public void getFile(String fileName) {
+    public synchronized void getFile(String fileName) {
 		retrieveFileRequestToController(fileName, 1);
     }
 
@@ -400,6 +423,8 @@ public class Client {
             	File file = new File(absoluteFilePath);
             	String fileName = file.getName();
             	client.getFile(fileName);
+            }else if(operation.equals("STATS")) {
+            	Client.getActiveNodeList();
             }else {
             	System.out.println("ERROR: Operation not supported");
             }

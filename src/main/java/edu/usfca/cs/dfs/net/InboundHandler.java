@@ -212,6 +212,19 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.StorageNode storageNodeMsg = storageNodeHeartBeat.getStorageNode();
 			StorageNode storageNode = StorageNode.getInstance();
 			storageNode.setReplicaStorageNodes(storageNodeMsg.getReplicaNodesList());
+		}else if(messageType==18) {
+			logger.info("Request for getting active node list received on controller");
+			Controller controller = Controller.getInstance();
+			StorageMessages.MessageWrapper msgWrapper 
+				= HDFSMessagesBuilder.constructGetActiveStorageNodeListResponse(controller.getActiveStorageNodes());
+
+			ctx.writeAndFlush(msgWrapper);
+			ctx.close();
+		}else if(messageType==19) {
+			logger.info("Active List of Storage Nodes received from controller!!!");
+			List<StorageMessages.StorageNode> activeStorageList = msg.getGetActiveStorageNodeListResponse().getActiveStorageNodesList();
+			System.out.println(activeStorageList);
+			ctx.close();
 		}
     }
 
