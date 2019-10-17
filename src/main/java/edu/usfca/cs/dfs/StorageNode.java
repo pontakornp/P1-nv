@@ -693,7 +693,7 @@ public class StorageNode {
             b.group(bossGroup, workerGroup)
               .channel(NioServerSocketChannel.class)
               .childHandler(pipeline)
-              .option(ChannelOption.SO_BACKLOG, 128)
+              .option(ChannelOption.SO_BACKLOG, 1024)
               .childOption(ChannelOption.SO_KEEPALIVE, true);
  
             ChannelFuture f = b.bind(this.storageNodePort).sync();
@@ -719,7 +719,7 @@ public class StorageNode {
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
 		try {
-			//storageNode.handleHeartBeats();
+			storageNode.handleHeartBeats();
 			storageNode.start();
 		}catch (Exception e){
 			logger.error("Unable to start storage node. Address already in use");

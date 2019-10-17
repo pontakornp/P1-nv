@@ -464,7 +464,7 @@ public class Controller {
             b.group(bossGroup, workerGroup)
               .channel(NioServerSocketChannel.class)
               .childHandler(pipeline)
-              .option(ChannelOption.SO_BACKLOG, 128)
+              .option(ChannelOption.SO_BACKLOG, 2048)
               .childOption(ChannelOption.SO_KEEPALIVE, true);
  
             ChannelFuture f = b.bind(this.controllerNodePort).sync();
@@ -489,7 +489,7 @@ public class Controller {
 		Controller controllerNode = Controller.getInstance();
 		controllerNode.setVariables(config);
 		try {
-			//controllerNode.handleInactiveNodes();
+			controllerNode.handleInactiveNodes();
 			controllerNode.start();
 		}catch (Exception e){
 			logger.error("Unable to start controller node. Address already in use");
