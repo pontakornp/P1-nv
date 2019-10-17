@@ -383,17 +383,22 @@ public class HDFSMessagesBuilder {
 				.setStorageNodeId(storageNodeId)
 				.build();
 
+		StorageMessages.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest
+				= StorageMessages.GetActiveStorageNodeListRequest.newBuilder().build();
+
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-				.setMessageType(15)
+				.setMessageType(16)
 				.setRecoverChunkResponse(recoverChunkResponse)
+				.setGetActiveStorageNodeListRequest(getActiveStorageNodeListRequest)
+
 				.build();
 		return msgWrapper;
 	}
 
     public static synchronized StorageMessages.MessageWrapper constructGetActiveStorageNodeListRequest(){
-    	StorageMessages.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest 
+    	StorageMessages.GetActiveStorageNodeListRequest getActiveStorageNodeListRequest
     		= StorageMessages.GetActiveStorageNodeListRequest.newBuilder().build();
-    	
+
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
 				.setGetActiveStorageNodeListRequest(getActiveStorageNodeListRequest)
 				.setMessageType(18)
@@ -414,5 +419,7 @@ public class HDFSMessagesBuilder {
 				.build();
 		return msgWrapper;
     }
+
+
 
 }
