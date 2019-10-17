@@ -360,7 +360,7 @@ public class Controller {
 	private static void detectInactiveNodes(Controller controller) {
 		for (Map.Entry<String, Timestamp> storageNodeTimestamp : controller.timeStamps.entrySet()) {
 			if(Controller.getCurrentTimeStamp().getTime()-storageNodeTimestamp.getValue().getTime()>=Controller.MAX_STORAGE_TIME_INACTIVITY){
-				System.out.println("Identified StorageNode  inactivity detected for StorageNodeId: "+  storageNodeTimestamp.getKey());
+				logger.info("Identified StorageNode  inactivity detected for StorageNodeId: "+  storageNodeTimestamp.getKey());
 				controller.timeStamps.remove(storageNodeTimestamp.getKey());
 				// TODO: Need to handle recovery of node here
 				controller.activeStorageNodes.remove(storageNodeTimestamp.getKey());
@@ -419,7 +419,7 @@ public class Controller {
 		Controller controllerNode = Controller.getInstance();
 		controllerNode.setVariables(config);
 		try {
-			//controllerNode.handleInactiveNodes();
+			controllerNode.handleInactiveNodes();
 			controllerNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start controller node");

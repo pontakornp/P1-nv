@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +27,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 public class Client {
 	
 	static Logger logger = LogManager.getLogger(Client.class);
-	private int chunkSize; // This is chunk size in bytes
+	private static int chunkSize; // This is chunk size in bytes
 	private static String controllerNodeAddr;
 	private static Integer controllerNodePort;
 	private static String fileDestinationPath;
@@ -169,7 +168,7 @@ public class Client {
 				outputFilePath.createNewFile();
 			}
 			RandomAccessFile aFile = new RandomAccessFile(outputFilePath, "rw");
-			aFile.seek(chunkId*chunkSize);
+			aFile.seek(chunkId*Client.chunkSize);
 			aFile.write(data);
 			aFile.close();
 		} catch (IOException e) {
