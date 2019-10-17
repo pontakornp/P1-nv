@@ -126,15 +126,14 @@ message RetrieveChunkResponse {
 }
 
 message RecoverChunkRequest {
-    string storageNodeId = 1;
+    StorageNode storageNode = 1;
     Chunk chunk = 2;
 }
 
 message RecoverChunkResponse {
-    string storageNodeId = 1;
+   	StorageNode storageNode = 1;
     Chunk chunk = 2;
 }
-
 
 message GetActiveStorageNodeListRequest {
 

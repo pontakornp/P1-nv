@@ -194,23 +194,22 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			logger.info("Retrieve Chunk to Recover Request: Storage Node receive request from another storage node");
 			StorageMessages.RecoverChunkRequest recoverChunkRequest = msg.getRecoverChunkRequest();
 			StorageMessages.Chunk chunk = recoverChunkRequest.getChunk();
-			String fileName = chunk.getFileName();
-			int chunkId = chunk.getChunkId();
-			String storageNodeId = recoverChunkRequest.getStorageNodeId();
+			StorageMessages.StorageNode destStorageNode = recoverChunkRequest.getStorageNode();
+			
 			// return the chunk to the storage node that request the chunk
 			StorageNode storageNode = StorageNode.getInstance();
 			// construct retrieve chunk response storage message
-			MessageWrapper msgWrapper = storageNode.retrieveRecoverChunk(fileName, chunkId, storageNodeId);
+			MessageWrapper msgWrapper = storageNode.retrieveRecoverChunk(chunk, destStorageNode);
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			future.addListener(ChannelFutureListener.CLOSE);
 		}else if (messageType==15) {
 			logger.info("Retrieve Chunk to Recover Response: Storage receive chunk to be recovered from storage node");
 			StorageMessages.RecoverChunkResponse recoverChunkResponse = msg.getRecoverChunkResponse();
 			StorageMessages.Chunk chunk = recoverChunkResponse.getChunk();
-			String storageNodeId = recoverChunkResponse.getStorageNodeId();
-			ctx.close();
+			StorageMessages.StorageNode destStorageNode = recoverChunkResponse.getStorageNode();
 			StorageNode storageNode = StorageNode.getInstance();
-			storageNode.storeRecoverChunk(chunk, storageNodeId);
+			storageNode.storeRecoverChunk(chunk, destStorageNode);
+			ctx.close();
 		} else if (messageType==16) {
     		logger.info("Controller gets request to return the storageNode object");
 			StorageMessages.RecoverChunkResponse recoverChunkResponse = msg.getRecoverChunkResponse();
