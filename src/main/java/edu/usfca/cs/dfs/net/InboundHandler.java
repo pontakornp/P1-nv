@@ -60,14 +60,10 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     public void channelRead0(ChannelHandlerContext ctx, StorageMessages.MessageWrapper msg) throws Exception {
     	int messageType = msg.getMessageType();
     	if(messageType == 1){
-			logger.info("Received Storage Node Registration Message");
             StorageMessages.StorageNode storageNode = msg.getStorageNodeRegisterRequest().getStorageNode();
     		Controller controller = Controller.getInstance();
-    		storageNode = controller.addStorageNode(storageNode);
-    		MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeResponse(storageNode);
-    		logger.info("Sending Storage Node Registration Response Message");
-    		ChannelFuture future = ctx.writeAndFlush(msgWrapper);
-    		future.addListener(ChannelFutureListener.CLOSE);
+    		controller.addStorageNode(storageNode);
+    		ctx.close();
     	}else if(messageType == 2){
 			logger.info("Received Storage Node Registration Response Message");
     		StorageMessages.StorageNodeRegisterResponse storageNodeRegisterResponse = msg.getStorageNodeRegisterResponse();

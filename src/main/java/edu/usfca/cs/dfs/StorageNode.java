@@ -10,9 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,15 +34,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import javax.naming.ldap.Control;
-
 public class StorageNode {
 
 	static Logger logger = LogManager.getLogger(StorageNode.class);
 	
 	private String storageNodeId;
 	private String storageNodeAddr;
-	private static String storageNodeDirectoryPath; // storageNodeAddr + storageNodeId + '/'
+	private String storageNodeDirectoryPath;
 	private int storageNodePort;
 	private long availableStorageCapacity;
 	private long maxStorageCapacity;
@@ -55,7 +51,7 @@ public class StorageNode {
 	
 	private static StorageNode storageNodeInstance = null; 
 
-	public StorageNode() {
+	private StorageNode() {
 		
 	}
 	
@@ -75,6 +71,14 @@ public class StorageNode {
 	
 	public int getStorageNodePort() {
 		return this.storageNodePort;
+	}
+	
+	public String getControllerNodeAddr() {
+		return this.controllerNodeAddr;
+	}
+	
+	public int getControllerNodePort() {
+		return this.controllerNodePort;
 	}
 	
 	public long getAvailableStorageCapacity() {
@@ -102,7 +106,7 @@ public class StorageNode {
 	}
 
 	public void setStorageNodeDirectoryPath(String storageNodeDirectoryPath) {
-		StorageNode.storageNodeDirectoryPath = storageNodeDirectoryPath;
+		this.storageNodeDirectoryPath = storageNodeDirectoryPath;
 	}
 
 	public void setStorageNodePort(int storageNodePort) {
@@ -125,17 +129,11 @@ public class StorageNode {
 		this.controllerNodePort = controllerNodePort;
 	}
 
-	public static void setStorageNodeInstance(StorageNode storageNodeInstance) {
-		StorageNode.storageNodeInstance = storageNodeInstance;
-	}
-
-
-	
 	private void setVariables(Config config) {
 		this.storageNodeId = UUID.randomUUID().toString();
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
-		StorageNode.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
+		this.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
 		this.maxStorageCapacity = config.getMaxStorageCapacity();
 		this.availableStorageCapacity = this.maxStorageCapacity;
 		this.replicaStorageNodes = new ArrayList<StorageMessages.ReplicaNode>();
@@ -159,32 +157,39 @@ public class StorageNode {
 	 * @request parameters : None
 	 * @return type: None
 	 */
-	public void registerNode() {
-		try {
-			EventLoopGroup workerGroup = new NioEventLoopGroup();
-	        MessagePipeline pipeline = new MessagePipeline();
-	        
-	        logger.info("Registration initiated to controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
-	        Bootstrap bootstrap = new Bootstrap()
-	            .group(workerGroup)
-	            .channel(NioSocketChannel.class)
-	            .option(ChannelOption.SO_KEEPALIVE, true)
-	            .handler(pipeline);
-	        
-	        ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
-	        cf.syncUninterruptibly();
-	
-	        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeRequest(StorageNode.getInstance());
-	
-	        Channel chan = cf.channel();
-	        ChannelFuture write = chan.writeAndFlush(msgWrapper);
-	        logger.info("Registration message sent to controller");
-	        chan.closeFuture().sync();
-	        workerGroup.shutdownGracefully();
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Registration of storage node failed. Controller connection establishment failed");
-		}
+	public synchronized void registerNode() {
+		StorageNode storageNode = StorageNode.getInstance();
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					EventLoopGroup workerGroup = new NioEventLoopGroup();
+			        MessagePipeline pipeline = new MessagePipeline();
+			        
+			        logger.info("Registration initiated to controller: " + 
+			        		storageNode.getControllerNodeAddr() + String.valueOf(storageNode.getControllerNodePort()));
+			        Bootstrap bootstrap = new Bootstrap()
+			            .group(workerGroup)
+			            .channel(NioSocketChannel.class)
+			            .option(ChannelOption.SO_KEEPALIVE, true)
+			            .handler(pipeline);
+			        
+			        ChannelFuture cf = bootstrap.connect(storageNode.getControllerNodeAddr(), storageNode.getControllerNodePort());
+			        cf.syncUninterruptibly();
+			
+			        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeRequest(StorageNode.getInstance());
+			
+			        Channel chan = cf.channel();
+			        chan.writeAndFlush(msgWrapper);
+			        logger.info("Registration message sent to controller");
+			        chan.closeFuture().sync();
+			        workerGroup.shutdownGracefully();
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error("Registration of storage node failed. Controller connection establishment failed");
+				}
+			}
+		};
+		thread.start();
 	}
 	
 	/*
@@ -271,11 +276,11 @@ public class StorageNode {
 		File dir = null;
 		if(isNewChunk && !isPreviousVersion) {
 			if(isClientInitiated) {
-				dir = new File(StorageNode.storageNodeDirectoryPath, this.storageNodeId);
+				dir = new File(this.storageNodeDirectoryPath, this.storageNodeId);
 				isPrimaryNode = true;
 			}else {
 				isPrimaryNode = false;
-				dir = new File(StorageNode.storageNodeDirectoryPath, previousStorageNode.getStorageNodeId());
+				dir = new File(this.storageNodeDirectoryPath, previousStorageNode.getStorageNodeId());
 			}
 			if (!dir.exists()) {
 				dir.mkdirs();
@@ -284,7 +289,7 @@ public class StorageNode {
 		}else {
 			// This is the case for false positives or multiple versions
 			// Finds previous file location in base path
-			File basePath = new File(StorageNode.storageNodeDirectoryPath);
+			File basePath = new File(this.storageNodeDirectoryPath);
 			for(File subdirectory: basePath.listFiles()) {
 				if(subdirectory.isDirectory()) {
 					File oldVersionFile = new File(subdirectory.getAbsolutePath(), outputFileName);
@@ -458,7 +463,7 @@ public class StorageNode {
 	public synchronized StorageMessages.MessageWrapper retrieveChunk(String fileName, int chunkNumber) {
 		String file_key = fileName + '_' + chunkNumber;
 		// Finds file location in base path
-		File basePath = new File(StorageNode.storageNodeDirectoryPath);
+		File basePath = new File(this.storageNodeDirectoryPath);
 		File filePath = null;
 		for(File subdirectory: basePath.listFiles()) {
 			if(subdirectory.isDirectory()) {
@@ -535,7 +540,7 @@ public class StorageNode {
 	}
 
 	public synchronized void recoverChunk(String fileName, int chunkNumber, String recoverStorageNodeId) {
-		File basePath = new File(StorageNode.storageNodeDirectoryPath);
+		File basePath = new File(this.storageNodeDirectoryPath);
 		File filePath = null;
 		// if it's a primary, recover the chunk from the replica with subfolder same as the primary node id
 		if(this.storageNodeId == recoverStorageNodeId) {
@@ -592,7 +597,7 @@ public class StorageNode {
 	}
 
 	public synchronized StorageMessages.MessageWrapper retrieveRecoverChunk(String fileName, int chunkNumber, String storageNodeId) {
-		File basePath = new File(StorageNode.storageNodeDirectoryPath);
+		File basePath = new File(this.storageNodeDirectoryPath);
 		File filePath = null;
 
 		// look for subdirectory name storageNodeId
@@ -621,7 +626,7 @@ public class StorageNode {
 		try {
 
 			String outputFileName = chunkMsg.getFileName() + "_" + chunkMsg.getChunkId();
-			File dir = new File(StorageNode.storageNodeDirectoryPath + "/" + storageNodeId + "/", outputFileName);
+			File dir = new File(this.storageNodeDirectoryPath + "/" + storageNodeId + "/", outputFileName);
 			File outputFile = new File(dir.toString(), outputFileName);
 			FileOutputStream outputStream = new FileOutputStream(outputFile);
 			outputStream.write(chunkMsg.getData().toByteArray());
@@ -673,7 +678,7 @@ public class StorageNode {
 		StorageNode storageNode = StorageNode.getInstance();
 		storageNode.setVariables(config);
 		try {
-			storageNode.handleHeartBeats();
+			//storageNode.handleHeartBeats();
 			storageNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start storage node");

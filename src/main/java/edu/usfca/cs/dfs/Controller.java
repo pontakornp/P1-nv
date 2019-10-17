@@ -14,14 +14,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.usfca.cs.dfs.StorageMessages.MessageWrapper;
 import edu.usfca.cs.dfs.config.Config;
 import edu.usfca.cs.dfs.net.MessagePipeline;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class Controller {
 	static Logger logger = LogManager.getLogger(Controller.class);
@@ -79,26 +83,25 @@ public class Controller {
 	 * This will add the node metadata to activeStorageNodes
 	 * Takes the Storage 
 	 */
-	public synchronized StorageMessages.StorageNode addStorageNode(StorageMessages.StorageNode storageNode) {
+	public synchronized void addStorageNode(StorageMessages.StorageNode storageNode) {
 		String storageNodeId = storageNode.getStorageNodeId();
 		logger.info("Storage Node Received on controller for registration"
 				+ storageNodeId +  " StorageNode Size: " + storageNode.getAvailableStorageCapacity());
+		
 		if (!this.activeStorageNodes.containsKey(storageNodeId)) {
 			this.activeStorageNodes.put(storageNodeId, storageNode);
 			this.bloomFilterMap.put(storageNodeId, new BloomFilter(Controller.BLOOM_FILTER_SIZE, Controller.BLOOM_HASH_COUNT));
 			this.timeStamps.put(storageNodeId, Controller.getCurrentTimeStamp());
-			this.getReplicaNodesByMaxAvailableSize();
 			logger.info("Storage Node registered with controller");
 		}else {
 			logger.error("Storage Node already registered with controller");
 		}
-		storageNode = this.activeStorageNodes.get(storageNode.getStorageNodeId());
-		logger.info("Current state after registration");
-		this.printStorageNodes();
-		return storageNode;
+		
+		this.updateReplicaNodesByMaxAvailableSize();
 	}
 	
 	public void printStorageNodes() {
+		logger.info("Current State of Storage Nodes");
 		for (Map.Entry<String, StorageMessages.StorageNode> activeStorageNode : this.activeStorageNodes.entrySet()) {
 			logger.info(activeStorageNode.toString());
 		}
@@ -113,41 +116,51 @@ public class Controller {
 		return storageNodeList;
 	}
 	
-	/* This will update the replication nodes for storage nodes 
-	 * This will select other registered nodes as replicas for current node
-	 * Implemented a priority queue which compares(desc) by available storage capacity of node
+	/*
+	 * Updates the replica nodes of existing nodes
+	 * Generates a max priority queue for storage nodes based on available storage capacity
+	 * Adds replica nodes for storage nodes which have replica count less than max replica count 
 	 */
-	private void getReplicaNodesByMaxAvailableSize() {
+	
+	private List<StorageMessages.StorageNode> getUpdatedNodeList(){
+		List<StorageMessages.StorageNode> updatedNodeList = new  ArrayList<StorageMessages.StorageNode>();
+		
 		if(this.activeStorageNodes.values().size()>1) {
 			int maxStorageNodesCount = this.activeStorageNodes.values().size()-1;
 			int maxReplicas = Math.min(maxStorageNodesCount, Controller.MAX_REPLICAS);
 			HashMap<String, ArrayList<String>> existingReplicaMap = new HashMap<String, ArrayList<String>>();
 			
+			PriorityQueue<StorageMessages.StorageNode> completeNodeListPQ 
+				= new PriorityQueue<StorageMessages.StorageNode>(maxStorageNodesCount, new Comparator<StorageMessages.StorageNode>() {
+					@Override 
+					public int compare(StorageMessages.StorageNode p1, StorageMessages.StorageNode p2) {
+			            return (int)p2.getAvailableStorageCapacity() - (int)p1.getAvailableStorageCapacity(); // Descending
+			        }
+				});
+			
+			for (StorageMessages.StorageNode existingStorageNode : this.activeStorageNodes.values()) {
+				completeNodeListPQ.add(existingStorageNode);
+				
+				ArrayList<String> existingReplicaNodeIdList = new ArrayList<String>();
+				for(StorageMessages.ReplicaNode replicaNode: existingStorageNode.getReplicaNodesList()) {
+					existingReplicaNodeIdList.add(replicaNode.getStorageNodeId());
+				}
+				existingReplicaMap.put(existingStorageNode.getStorageNodeId(), existingReplicaNodeIdList);
+			}
+			
 			for (StorageMessages.StorageNode activeStorageNode : this.activeStorageNodes.values()) {
+				String storageNodeId = activeStorageNode.getStorageNodeId();
+				
 				if(activeStorageNode.getReplicaNodesCount()<=maxReplicas) {
-					PriorityQueue<StorageMessages.StorageNode> completeNodeListPQ 
-						= new PriorityQueue<StorageMessages.StorageNode>(maxStorageNodesCount, new Comparator<StorageMessages.StorageNode>() {
-							@Override 
-							public int compare(StorageMessages.StorageNode p1, StorageMessages.StorageNode p2) {
-					            return (int)p2.getAvailableStorageCapacity() - (int)p1.getAvailableStorageCapacity(); // Descending
-					        }
-						});
-					
-					for (StorageMessages.StorageNode existingStorageNode : this.activeStorageNodes.values()) {
-						completeNodeListPQ.add(existingStorageNode);
-						ArrayList<String> existingReplicaNodeIdList = new ArrayList<String>();
-						for(StorageMessages.ReplicaNode replicaNode: existingStorageNode.getReplicaNodesList()) {
-							existingReplicaNodeIdList.add(replicaNode.getStorageNodeId());
-						}
-						existingReplicaMap.put(existingStorageNode.getStorageNodeId(), existingReplicaNodeIdList);
-					}
-					
 					ArrayList<StorageMessages.ReplicaNode> outputNodeList = new ArrayList<StorageMessages.ReplicaNode>();
-					for(int i=0; i<maxReplicas-existingReplicaMap.get(activeStorageNode.getStorageNodeId()).size(); i++) {
+					ArrayList<StorageMessages.StorageNode> usedNodeList = new ArrayList<StorageMessages.StorageNode>();
+					
+					for(int i=0; i<maxReplicas-existingReplicaMap.get(storageNodeId).size(); i++) {
+						
 						StorageMessages.StorageNode currentNode = completeNodeListPQ.peek();
-						while(activeStorageNode.getStorageNodeId() == currentNode.getStorageNodeId()
-								|| existingReplicaMap.get(activeStorageNode.getStorageNodeId()).contains(currentNode.getStorageNodeId())){
-							completeNodeListPQ.remove();
+						while(storageNodeId == currentNode.getStorageNodeId()
+								|| existingReplicaMap.get(storageNodeId).contains(currentNode.getStorageNodeId())){
+							usedNodeList.add(completeNodeListPQ.remove());
 							currentNode = completeNodeListPQ.peek();
 						}
 						logger.info("Storage Node: " + currentNode.getStorageNodeId() + " added as replica for " + activeStorageNode.getStorageNodeId());
@@ -160,11 +173,64 @@ public class Controller {
 							.build();
 						outputNodeList.add(replicaNodeMsg);
 					}
+					
+					// Re-add nodes which were removed from node list
+					for(StorageMessages.StorageNode usedNode: usedNodeList) {
+						completeNodeListPQ.add(usedNode);
+					}
+					
 					activeStorageNode = activeStorageNode.toBuilder().addAllReplicaNodes(outputNodeList).build();
-					this.activeStorageNodes.put(activeStorageNode.getStorageNodeId(), activeStorageNode);
+					// TODO: Send a updateReplicaNodeRequest to storageNode Here
+					
+					this.activeStorageNodes.put(storageNodeId, activeStorageNode);
+					updatedNodeList.add(activeStorageNode);
 				}
 			}
 		}
+		this.printStorageNodes();
+		return updatedNodeList;
+	}
+	
+	/* This will update the replication nodes for storage nodes 
+	 * This will select other registered nodes as replicas for current node
+	 * Implemented a priority queue which compares(desc) by available storage capacity of node
+	 */
+	private void updateReplicaNodesByMaxAvailableSize() {
+		List<StorageMessages.StorageNode> updatedNodeList =  this.getUpdatedNodeList();
+		
+		Thread thread = new Thread() {
+			public void run() {
+				for(StorageMessages.StorageNode updatedNode: updatedNodeList) {
+					try {
+						EventLoopGroup workerGroup = new NioEventLoopGroup();
+				        MessagePipeline pipeline = new MessagePipeline();
+				        
+				        logger.info("Update replica node initiated from controller to  storage node : " + 
+				        		updatedNode.getStorageNodeAddr() + String.valueOf(updatedNode.getStorageNodePort()));
+				        Bootstrap bootstrap = new Bootstrap()
+				            .group(workerGroup)
+				            .channel(NioSocketChannel.class)
+				            .option(ChannelOption.SO_KEEPALIVE, true)
+				            .handler(pipeline);
+				        
+				        ChannelFuture cf = bootstrap.connect(updatedNode.getStorageNodeAddr(), updatedNode.getStorageNodePort());
+				        cf.syncUninterruptibly();
+				
+				        MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRegisterNodeResponse(updatedNode);
+				
+				        Channel chan = cf.channel();
+				        chan.writeAndFlush(msgWrapper);
+				        logger.info("Update replica node initiated from controller to storage Node");
+				        chan.closeFuture().sync();
+				        workerGroup.shutdownGracefully();
+					} catch (Exception e) {
+						e.printStackTrace();
+						logger.error("Update replica node initiated from controller to storage Node failed. Storage node connection establishment failed");
+					}
+				}
+			}
+		};
+		thread.start();
 	}
 	
 	/*
@@ -428,7 +494,7 @@ public class Controller {
 		Controller controllerNode = Controller.getInstance();
 		controllerNode.setVariables(config);
 		try {
-			controllerNode.handleInactiveNodes();
+			//controllerNode.handleInactiveNodes();
 			controllerNode.start();
 		}catch (Exception e){
 			System.out.println("Unable to start controller node");
