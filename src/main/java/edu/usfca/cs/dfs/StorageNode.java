@@ -479,9 +479,11 @@ public class StorageNode {
 		String fileName = chunk.getFileName();
 		int chunkId = chunk.getChunkId();
 		String file_key = fileName + '_' + chunkId;
+		String meta_file_key = file_key + ".meta";
 		
 		File basePath = new File(this.storageNodeDirectoryPath);
 		File filePath = null;
+		File metaFilePath = null;
 		for(File subdirectory: basePath.listFiles()) {
 			logger.info(subdirectory.getAbsolutePath());
 			if(subdirectory.isDirectory()) {
@@ -490,34 +492,46 @@ public class StorageNode {
 				if(newFilePath.exists()) {
 					logger.info("File existence detected for chunk retreiveal on Node with storage id : " + this.storageNodeId);
 					filePath = newFilePath;
+					metaFilePath = new File(subdirectory.getAbsolutePath(), meta_file_key);
+					break;
+				}
+				File newMetaFilePath = new File(subdirectory.getAbsolutePath(), meta_file_key);
+				if(newMetaFilePath.exists()) {
+					logger.info("Meta File existence detected for chunk retreiveal on Node with storage id : " + this.storageNodeId);
+					metaFilePath = newMetaFilePath;
 					break;
 				}
 			}
 		}
 		
-		if (filePath == null) {
+		if (filePath == null && metaFilePath == null) {
 			logger.info("False positive detected for file retreival. No file found on storage node");
 			return null;
 		}else {
-			String metaPath = filePath + ".meta";
 			try {
 				ChunkMetaData chunkMetaData = new ChunkMetaData();
-				chunkMetaData.setChunkMetaDataWithFilePath(metaPath);
-				
-				byte[] chunkData = Files.readAllBytes(Paths.get(filePath.getAbsolutePath()));
-				String chunkChecksum = CheckSum.checkSum(chunkData);
-				
-				if(!chunkChecksum.equals(chunkMetaData.getCheckSum())) {
-					logger.error("File Chunk corrupted. Retreiving from Replica Node");
-					//TODO: Handle Recovery of chunk
+				logger.info(metaFilePath);
+				chunkMetaData.setChunkMetaDataWithFilePath(metaFilePath.getAbsolutePath());
+				if(filePath==null){
+					filePath = new File(metaFilePath.getAbsolutePath().replace(".meta", ""));
+					logger.error("File Chunk deleted. Retreiving from Replica Node");
 					String destStorageNodeId = filePath.getParentFile().getName();
 					synchronized(this) {
 						recoverChunk(fileName, chunkId, filePath.getAbsolutePath(), destStorageNodeId);
 					}
-				}else {
-					logger.info("File Chunk not corrupted. Retreiving from node");
+				}else if(filePath!=null) {
+					byte[] chunkData = Files.readAllBytes(Paths.get(filePath.getAbsolutePath()));
+					String chunkChecksum = CheckSum.checkSum(chunkData);
+					
+					if(!chunkChecksum.equals(chunkMetaData.getCheckSum())) {
+						logger.error("File Chunk corrupted. Retreiving from Replica Node");
+						String destStorageNodeId = filePath.getParentFile().getName();
+						synchronized(this) {
+							recoverChunk(fileName, chunkId, filePath.getAbsolutePath(), destStorageNodeId);
+						}
+					}
 				}
-				
+				byte[] chunkData = Files.readAllBytes(Paths.get(filePath.getAbsolutePath()));
 				//if chunk is compressed, need to decompress the byte array data before returning it
 				// else return the byte array data right away
 				if (chunkMetaData.isCompressed) {

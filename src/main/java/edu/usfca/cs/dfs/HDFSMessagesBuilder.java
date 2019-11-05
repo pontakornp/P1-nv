@@ -308,14 +308,17 @@ public class HDFSMessagesBuilder {
 				.setChecksum(chunkMetaData.checkSum)
 				.setData(ByteString.copyFrom(data))
 				.build();
+		
 		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = StorageMessages.RetrieveChunkResponse.newBuilder()
 				.setChunk(chunk)
 				.setIsZero(isZero)
 				.build();
+		
 		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
-				.setRetrieveChunkResponse(retrieveChunkResponse)
 				.setMessageType(11)
+				.setRetrieveChunkResponse(retrieveChunkResponse)
 				.build();
+		
 		return msgWrapper;
 	}
 

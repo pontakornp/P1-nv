@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,7 +34,7 @@ public class Client {
 	private static String fileDestinationPath;
 	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMapPut = new ConcurrentHashMap<String, StorageMessages.Chunk>();
 	private static ConcurrentHashMap<String, Boolean> chunkMapGet = new ConcurrentHashMap<String, Boolean>();
-	private static ConcurrentHashMap<String, StorageMessages.Chunk> chunkMap = new ConcurrentHashMap<String, StorageMessages.Chunk>();
+	public static ConcurrentHashMap<String, List<StorageMessages.StorageNode>> chunkMappings= new ConcurrentHashMap<String, List<StorageMessages.StorageNode>>();
 	private static Client clientInstance;
 	private static int MAX_REPLICAS = 2;
 
@@ -228,7 +229,7 @@ public class Client {
 		Client.retrieveFileChunksMappings(fileName, 1, true);
     }
     
-    // This makes a request to controller for getting list of storage nodes containing chunkzero
+    // This makes a request to controller for getting list of storage nodes containing chunk zero
     public static void retrieveFileChunksMappings(String fileName, int maxChunkNumber, boolean isZero) {
         try {
             EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -252,21 +253,62 @@ public class Client {
             write.syncUninterruptibly();
             chan.closeFuture().sync();
             workerGroup.shutdownGracefully();
-            logger.info("Retrieve File Chunks request processed by controller");
+            logger.info("Retrieve File Chunks mappings request processed by controller");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("File Existence Check failed. Controller connection establishment failed");
         }
-    }
-    
+        
+        for(int i=0;i<maxChunkNumber; i++ ) {
+        	String chunkKey = fileName + "_" + String.valueOf(i) + "_" + String.valueOf(isZero);
+        	if(Client.chunkMappings.containsKey(chunkKey)) {
+        		logger.error("Client chunk mapping contains chunk mapping with key: " + chunkKey);
+        		List<StorageMessages.StorageNode> storageNodeList = Client.chunkMappings.get(chunkKey);
+    			StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
+    					.setFileName(fileName)
+    					.setChunkId(i)
+    					.build();
+    			
+    			String fileKey = chunk.getFileName() + "_" + chunk.getChunkId();
+    			Client.chunkMapGet.put(fileKey, false);
+    			for(StorageMessages.StorageNode storageNode: storageNodeList) {
+    				if(!Client.chunkMapGet.get(fileKey)) {
+    					try {
+    						EventLoopGroup workerGroup = new NioEventLoopGroup();
+    						MessagePipeline pipeline = new MessagePipeline();
+    						logger.info("Retrieve Chunk " + fileKey +  " initiated to storageNode: " + 
+    								storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort()));
+    						Bootstrap bootstrap = new Bootstrap()
+    								.group(workerGroup)
+    								.channel(NioSocketChannel.class)
+    								.option(ChannelOption.SO_KEEPALIVE, true)
+    								.handler(pipeline);
 
-    public static void retrieveFile(List<StorageMessages.ChunkMapping> chunkMappings, boolean isZero) {
-		for(StorageMessages.ChunkMapping chunkMapping: chunkMappings) {
-			List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
-			StorageMessages.Chunk chunk = chunkMapping.getChunk();
-			Client.retrieveChunk(storageNodeList, chunk, isZero);
+    						ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
+    						cf.syncUninterruptibly();
+    						
+    						StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkRequest(chunk, isZero);
+    						
+    						Channel chan = cf.channel();
+    			            ChannelFuture write = chan.write(msgWrapper);
+    			            chan.flush();
+    			            write.syncUninterruptibly();
+    			            chan.closeFuture().sync();
+    			            workerGroup.shutdownGracefully();
+    						logger.info("Retrieve Chunk completed at storageNode");
+    					} catch (Exception e) {
+    						e.printStackTrace();
+    						logger.error("Retrieve Chunk failed. Storage node connection establishment failed");
+    					}
+    				}
+    			}
+        	}else {
+        		logger.error("Client chunk mapping doesnot contain chunk mapping with key: " + chunkKey);
+        	}
 		}
-	}
+        Client.chunkMappings.clear();
+    }
+
 	/**
 	 * Client contacts storage nodes to get each chunk one by one, and store the chunk in the chunk mapping data structure
 	 * @param storageNodeList
@@ -274,43 +316,7 @@ public class Client {
 	 * @param chunkId
 	 */
 	public static void retrieveChunk(List<StorageMessages.StorageNode> storageNodeList, StorageMessages.Chunk chunk, boolean isZero) {
-		String fileKey = chunk.getFileName() + "_" + chunk.getChunkId();
-		Client.chunkMapGet.put(fileKey, false);
-		for(StorageMessages.StorageNode storageNode: storageNodeList) {
-			if(!Client.chunkMapGet.get(fileKey)) {
-				try {
-					EventLoopGroup workerGroup = new NioEventLoopGroup();
-					MessagePipeline pipeline = new MessagePipeline();
-					logger.info("Retrieve Chunk initiated to storageNode: " + 
-							storageNode.getStorageNodeAddr() + "/:" + String.valueOf(storageNode.getStorageNodePort()));
-					Bootstrap bootstrap = new Bootstrap()
-							.group(workerGroup)
-							.channel(NioSocketChannel.class)
-							.option(ChannelOption.SO_KEEPALIVE, true)
-							.handler(pipeline);
-
-					ChannelFuture cf = bootstrap.connect(storageNode.getStorageNodeAddr(), storageNode.getStorageNodePort());
-					cf.syncUninterruptibly();
-					
-					StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRetrieveChunkRequest(chunk, isZero);
-					
-					Channel chan = cf.channel();
-					ChannelFuture write = chan.write(msgWrapper);
-					chan.flush();
-					write.syncUninterruptibly();
-					chan.closeFuture().sync();
-					workerGroup.shutdownGracefully();
-					logger.info("Retrieve Chunk completed at storageNode");
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error("Retrieve Chunk failed. Storage node connection establishment failed");
-				}
-			}
-		}
-	}
-
-	public static void addChunkToChunkMap(String fileName, int chunkId, StorageMessages.Chunk chunkMsg) {
-		Client.chunkMap.put(fileName + "_" + chunkId, chunkMsg);
+		
 	}
 
 	public static void writeToFile(StorageMessages.Chunk chunk) {
@@ -339,6 +345,15 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error("Fail to write file");
+		}
+	}
+	
+	public static void storeTempChunkMappings(List<StorageMessages.ChunkMapping> chunkMappings, boolean isZero) {
+		for (StorageMessages.ChunkMapping chunkMapping: chunkMappings) {
+			String chunk_key = chunkMapping.getChunk().getFileName() 
+					+ "_" + chunkMapping.getChunk().getChunkId() + "_"  + String.valueOf(isZero);
+			List<StorageMessages.StorageNode> storageNodeList = chunkMapping.getStorageNodeObjsList();
+			Client.chunkMappings.put(chunk_key, storageNodeList);
 		}
 	}
     

@@ -155,7 +155,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
     			logger.error("File with this name is not available on any storage nodes");
     			ctx.close();
     		}else {
-    			Client.retrieveFile(chunkMappings, isZero);
+    			Client.storeTempChunkMappings(chunkMappings, isZero);
     			ctx.close();
     		}
 		}else if(messageType == 10) {
@@ -167,6 +167,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			StorageMessages.MessageWrapper msgWrapper = storageNode.retrieveChunkFromStorageNode(retrieveChunkRequest);
 			ChannelFuture future = ctx.writeAndFlush(msgWrapper);
 			future.addListener(ChannelFutureListener.CLOSE);
+			logger.info("Retreive chunk response message type: " + msgWrapper.getMessageType());
 		}else if(messageType == 11) {
     		logger.info("Retrieve Chunk Response: Client receive chunk from storage node");
     		StorageMessages.RetrieveChunkResponse retrieveChunkResponse = msg.getRetrieveChunkResponse();
@@ -241,6 +242,8 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			System.out.println(activeStorageList);
 			ctx.close();
 
+		}else {
+			logger.info(messageType + ": New message type detected in pipeline");
 		}
     }
 
