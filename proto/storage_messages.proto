@@ -143,6 +143,15 @@ message GetActiveStorageNodeListResponse {
 	repeated StorageNode activeStorageNodes = 1;
 }
 
+message RecoverReplicasFromNodeRequest {
+	StorageNode storageNode = 1;
+}
+
+message RecoverPrimaryFromNodeRequest {
+	StorageNode failedNode = 1;
+	StorageNode replaceNode = 2;
+}
+
 message MessageWrapper {
     int32 messageType = 1;
     StorageNodeRegisterRequest storageNodeRegisterRequest = 2;
@@ -156,15 +165,11 @@ message MessageWrapper {
     RetrieveFileChunkMappingResponse retrieveFileChunkMappingResponse = 10;
     RetrieveChunkRequest retrieveChunkRequest = 11;
     RetrieveChunkResponse retrieveChunkResponse = 12;
-    
     StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequest = 17;
-    
-    
-    
-    
-    
     GetActiveStorageNodeListRequest getActiveStorageNodeListRequest = 18;
     GetActiveStorageNodeListResponse getActiveStorageNodeListResponse = 19;
     RecoverChunkRequest recoverChunkRequest = 20;
     RecoverChunkResponse recoverChunkResponse = 21;
+    RecoverReplicasFromNodeRequest recoverReplicasFromNodeRequest = 22;
+    RecoverPrimaryFromNodeRequest recoverPrimaryFromNodeRequest = 23;
 }

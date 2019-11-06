@@ -233,6 +233,7 @@ public class HDFSMessagesBuilder {
 			.setStorageNodePort(storageNode.getStorageNodePort())
 			.setAvailableStorageCapacity(storageNode.getAvailableStorageCapacity())
 			.setMaxStorageCapacity(storageNode.getMaxStorageCapacity())
+			.addAllReplicaNodes(storageNode.getReplicaStorageNodes())
 			.build();
     	
         StorageMessages.StoreChunkControllerUpdateRequest storeChunkControllerUpdateRequestMsg 
@@ -415,7 +416,34 @@ public class HDFSMessagesBuilder {
 				.build();
 		return msgWrapper;
     }
-
-
-
+    
+    public static synchronized StorageMessages.MessageWrapper constructRecoverReplicasFromNodeRequest(StorageMessages.StorageNode storageNode){
+    	
+    	StorageMessages.RecoverReplicasFromNodeRequest recoverReplicaFromNodeRequest 
+    		= StorageMessages.RecoverReplicasFromNodeRequest.newBuilder()
+    		.setStorageNode(storageNode)
+    		.build();
+    	
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setRecoverReplicasFromNodeRequest(recoverReplicaFromNodeRequest)
+				.setMessageType(20)
+				.build();
+		return msgWrapper;
+    }
+    
+    public static synchronized StorageMessages.MessageWrapper constructRecoverPrimaryFromNodeRequest(
+    		StorageMessages.StorageNode failedNode, StorageMessages.StorageNode replacedNode){
+    	
+    	StorageMessages.RecoverPrimaryFromNodeRequest recoverPrimaryFromNodeRequest 
+    		= StorageMessages.RecoverPrimaryFromNodeRequest.newBuilder()
+    		.setFailedNode(failedNode)
+    		.setReplaceNode(replacedNode)
+    		.build();
+    	
+		StorageMessages.MessageWrapper msgWrapper = StorageMessages.MessageWrapper.newBuilder()
+				.setRecoverPrimaryFromNodeRequest(recoverPrimaryFromNodeRequest)
+				.setMessageType(21)
+				.build();
+		return msgWrapper;
+    }
 }

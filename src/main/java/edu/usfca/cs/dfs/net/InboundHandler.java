@@ -243,7 +243,22 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 			System.out.println(activeStorageList);
 			ctx.close();
 
-		}else {
+		}else if(messageType==20) {
+			logger.info("Recover all primary chunks of a node received at storage node!!!");
+			StorageMessages.StorageNode destinationStorageNode = msg.getRecoverReplicasFromNodeRequest().getStorageNode();
+			StorageNode storageNode = StorageNode.getInstance();
+			storageNode.storeAllPrimaryChunksonReplica(destinationStorageNode);
+			ctx.close();
+		}else if(messageType==21) {
+			logger.info("Recover all replica chunks of a node received at storage node!!!");
+			StorageMessages.StorageNode failedStorageNode = msg.getRecoverPrimaryFromNodeRequest().getFailedNode();
+			StorageMessages.StorageNode replacedStorageNode = msg.getRecoverPrimaryFromNodeRequest().getReplaceNode();
+			
+			StorageNode storageNode = StorageNode.getInstance();
+			storageNode.storeAllReplicaChunksonNewReplica(failedStorageNode, replacedStorageNode);
+			ctx.close();
+		}
+		else {
 			logger.info(messageType + ": New message type detected in pipeline");
 		}
     }

@@ -2,12 +2,12 @@ package edu.usfca.cs.dfs;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Writer;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -434,6 +434,125 @@ public class StorageNode {
 		}
 		
 	}
+	
+	public void storeAllPrimaryChunksonReplica(StorageMessages.StorageNode replicaNode) {
+		File primaryFolder = new File(this.storageNodeDirectoryPath, this.storageNodeId);
+		File[] listOfPrimaryChunks = primaryFolder.listFiles(new FilenameFilter() {
+		    @Override
+		    public boolean accept(File dir, String name) {
+		        return name.endsWith(".meta");
+		    }
+		});
+		for (int i = 0; i < listOfPrimaryChunks.length; i++) {
+			if (listOfPrimaryChunks[i].isFile()) {
+			    logger.info("Primary Chunk: " + listOfPrimaryChunks[i].getName() + " found on storage node");
+			    ChunkMetaData chunkMetaData = new ChunkMetaData();
+			    String metaFilePath = listOfPrimaryChunks[i].getAbsolutePath();
+			    String filePath = metaFilePath.replace(".meta", "");
+				chunkMetaData.setChunkMetaDataWithFilePath(metaFilePath);
+				byte[] chunkData;
+				try {
+					chunkData = Files.readAllBytes(Paths.get(filePath));
+					StorageMessages.Chunk chunk 
+						= StorageMessages.Chunk.newBuilder()
+						.setFileName(chunkMetaData.getFileName())
+						.setChunkId(chunkMetaData.getchunkId())
+						.setChecksum(chunkMetaData.getCheckSum())
+						.setFileSize(chunkMetaData.getFileSize())
+						.setChunkId(chunkMetaData.getchunkId())
+						.setMaxChunkNumber(chunkMetaData.getMaxchunkId())
+						.setData(ByteString.copyFrom(chunkData))
+						.build();
+					
+					StorageMessages.StorageNode storageNode 
+						= StorageMessages.StorageNode.newBuilder()
+						.setStorageNodeId(this.storageNodeId)
+						.setStorageNodeAddr(this.storageNodeAddr)
+						.setStorageNodePort(this.storageNodePort)
+						.setMaxStorageCapacity(this.maxStorageCapacity)
+						.setAvailableStorageCapacity(this.availableStorageCapacity)
+						.build();
+					
+					StorageMessages.MessageWrapper message = 
+							HDFSMessagesBuilder.constructStoreChunkRequest(
+									chunk, storageNode, false, false, true);
+					
+					StorageMessages.ReplicaNode destinationNode 
+						= StorageMessages.ReplicaNode.newBuilder()
+						.setStorageNodeAddr(replicaNode.getStorageNodeAddr())
+						.setStorageNodeId(replicaNode.getStorageNodeId())
+						.setStorageNodePort(replicaNode.getStorageNodePort())
+						.build();
+					
+					this.storeChunkOnReplicaHelper(message, destinationNode);
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void storeAllReplicaChunksonNewReplica(StorageMessages.StorageNode failedNode, StorageMessages.StorageNode replacedNode) {
+		File replicaFolder = new File(this.storageNodeDirectoryPath, failedNode.getStorageNodeId());
+		File[] listOfReplicaMetaChunks = replicaFolder.listFiles(new FilenameFilter() {
+		    @Override
+		    public boolean accept(File dir, String name) {
+		        return name.endsWith(".meta");
+		    }
+		});
+		for (int i = 0; i < listOfReplicaMetaChunks.length; i++) {
+			if (listOfReplicaMetaChunks[i].isFile()) {
+			    ChunkMetaData chunkMetaData = new ChunkMetaData();
+			    String metaFilePath = listOfReplicaMetaChunks[i].getAbsolutePath();
+			    String filePath = metaFilePath.replace(".meta", "");
+			    logger.info("Replica Chunk: " + filePath + " found on storage node");
+				chunkMetaData.setChunkMetaDataWithFilePath(metaFilePath);
+				byte[] chunkData;
+				try {
+					chunkData = Files.readAllBytes(Paths.get(filePath));
+					StorageMessages.Chunk chunk 
+						= StorageMessages.Chunk.newBuilder()
+						.setFileName(chunkMetaData.getFileName())
+						.setChunkId(chunkMetaData.getchunkId())
+						.setChecksum(chunkMetaData.getCheckSum())
+						.setFileSize(chunkMetaData.getFileSize())
+						.setChunkId(chunkMetaData.getchunkId())
+						.setMaxChunkNumber(chunkMetaData.getMaxchunkId())
+						.setData(ByteString.copyFrom(chunkData))
+						.build();
+					
+					StorageMessages.StorageNode storageNode 
+						= StorageMessages.StorageNode.newBuilder()
+						.setStorageNodeId(this.storageNodeId)
+						.setStorageNodeAddr(this.storageNodeAddr)
+						.setStorageNodePort(this.storageNodePort)
+						.setMaxStorageCapacity(this.maxStorageCapacity)
+						.setAvailableStorageCapacity(this.availableStorageCapacity)
+						.build();
+					
+					StorageMessages.MessageWrapper message = 
+							HDFSMessagesBuilder.constructStoreChunkRequest(
+									chunk, storageNode, false, false, true);
+					
+					StorageMessages.ReplicaNode destinationNode 
+						= StorageMessages.ReplicaNode.newBuilder()
+						.setStorageNodeAddr(replacedNode.getStorageNodeAddr())
+						.setStorageNodeId(replacedNode.getStorageNodeId())
+						.setStorageNodePort(replacedNode.getStorageNodePort())
+						.build();
+						
+					this.storeChunkOnReplicaHelper(message, destinationNode);
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 
 	/**
 	 * store chunks in all of the storage node's replicas
