@@ -194,6 +194,7 @@ extends SimpleChannelInboundHandler<StorageMessages.MessageWrapper> {
 		}else if (messageType==14) {
 			logger.info("Retrieve Chunk to Recover Request: Storage Node receive request from another storage node");
 			StorageMessages.RecoverChunkRequest recoverChunkRequest = msg.getRecoverChunkRequest();
+			logger.info(recoverChunkRequest);
 			StorageMessages.Chunk chunk = recoverChunkRequest.getChunk();
 			StorageMessages.StorageNode destStorageNode = recoverChunkRequest.getStorageNode();
 			

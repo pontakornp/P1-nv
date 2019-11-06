@@ -16,12 +16,16 @@ public class ChunkMetaData {
     public String checkSum;
     public boolean isCompressed;
     public boolean isPrimary;
+    public String primaryNodeAddr;
+    public int primaryNodePort;
 
     public ChunkMetaData() {
 
     }
 
-    public ChunkMetaData(String fileName, long fileSize, int chunkId, int chunkSize, int maxChunkId, String checkSum, boolean isCompressed) {
+    public ChunkMetaData(String fileName, long fileSize, int chunkId, 
+    		int chunkSize, int maxChunkId, String checkSum, boolean isCompressed, String primaryNodeAddr,
+    		int primaryNodePort) {
     	this.fileName = fileName;
     	this.fileSize = fileSize;
     	this.chunkId = chunkId;
@@ -29,6 +33,8 @@ public class ChunkMetaData {
     	this.maxChunkId = maxChunkId;
     	this.checkSum = checkSum;
         this.isCompressed = isCompressed;
+        this.primaryNodeAddr = primaryNodeAddr;
+        this.primaryNodePort = primaryNodePort;
     }
 
     public void setChunkMetaDataWithFilePath(String filePath) {
@@ -54,6 +60,8 @@ public class ChunkMetaData {
             this.maxChunkId = chunkMetaData.maxChunkId;
             this.checkSum = chunkMetaData.checkSum;
             this.isCompressed = chunkMetaData.isCompressed;
+            this.primaryNodeAddr = chunkMetaData.primaryNodeAddr;
+            this.primaryNodePort = chunkMetaData.primaryNodePort;
         } catch(IOException ioe) {
             ioe.printStackTrace();
             System.out.println("Please try again with correct meta data file.");
@@ -117,4 +125,21 @@ public class ChunkMetaData {
     public void setPrimary(boolean isPrimary) {
         this.isPrimary = isPrimary;
     }
+    
+    public String getPrimaryNodeAddr() {
+        return this.primaryNodeAddr;
+    }
+
+    public void setPrimaryNodeAddr(String primaryNodeAddr) {
+        this.primaryNodeAddr = primaryNodeAddr;
+    }
+    
+    public int getPrimaryNodePort() {
+        return this.primaryNodePort;
+    }
+
+    public void setPrimaryNodePort(int primaryNodePort) {
+        this.primaryNodePort = primaryNodePort;
+    }
+    
 }

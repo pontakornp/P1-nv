@@ -1,12 +1,13 @@
 package edu.usfca.cs.dfs;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Writer;
+import java.nio.file.FileStore;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +135,19 @@ public class StorageNode {
 		this.storageNodeAddr = config.getStorageNodeAddr();
 		this.storageNodePort = config.getStorageNodePort();
 		this.storageNodeDirectoryPath = config.getStorageNodeDirectoryPath() + storageNodeId + '/';
-		this.maxStorageCapacity = config.getMaxStorageCapacity();
+		File dir = new File(storageNodeDirectoryPath);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		try {
+			FileStore store = Files.getFileStore(Paths.get(storageNodeDirectoryPath));
+			this.maxStorageCapacity = Math.min(config.getMaxStorageCapacity(), store.getUsableSpace());
+		}catch (IOException e) {
+			e.printStackTrace();
+			logger.error("Unable to calculate disk space for the storage node directory path");
+			this.maxStorageCapacity = config.getMaxStorageCapacity();
+			
+		}
 		this.availableStorageCapacity = this.maxStorageCapacity;
 		this.replicaStorageNodes = new ArrayList<StorageMessages.ReplicaNode>();
 		
@@ -267,6 +280,9 @@ public class StorageNode {
 		boolean isPrimaryNode = false;
 		boolean isPreviousVersion = storeChunkRequest.getFileExists();
 		boolean isCompressed = false;
+		String primaryNodeAddress = null;
+		int primaryNodePort = 0;
+		
 		
 		StringBuilder filePathBuilder = new StringBuilder(); 
 		filePathBuilder.append(fileName);
@@ -303,9 +319,13 @@ public class StorageNode {
 			if(isClientInitiated) {
 				dir = new File(this.storageNodeDirectoryPath, this.storageNodeId);
 				isPrimaryNode = true;
+				primaryNodeAddress = this.storageNodeAddr;
+				primaryNodePort = this.storageNodePort;
 			}else {
 				isPrimaryNode = false;
 				dir = new File(this.storageNodeDirectoryPath, previousStorageNode.getStorageNodeId());
+				primaryNodeAddress = previousStorageNode.getStorageNodeAddr();
+				primaryNodePort = previousStorageNode.getStorageNodePort();
 			}
 			if (!dir.exists()) {
 				dir.mkdirs();
@@ -343,7 +363,7 @@ public class StorageNode {
 				ChunkMetaData chunkMetaData = new ChunkMetaData(
 					chunk.getFileName(), chunk.getFileSize(), 
 					chunk.getChunkId(), chunk.getChunkSize(),
-					chunk.getMaxChunkNumber(), checksum, isCompressed);
+					chunk.getMaxChunkNumber(), checksum, isCompressed, primaryNodeAddress, primaryNodePort);
 				
 				Gson gson = new Gson();
 				Writer writer = new FileWriter(metaoutputFile);
@@ -512,12 +532,15 @@ public class StorageNode {
 				ChunkMetaData chunkMetaData = new ChunkMetaData();
 				logger.info(metaFilePath);
 				chunkMetaData.setChunkMetaDataWithFilePath(metaFilePath.getAbsolutePath());
+				String destStorageNodeAddress = chunkMetaData.getPrimaryNodeAddr();
+				int destStorageNodePort = chunkMetaData.getPrimaryNodePort();
 				if(filePath==null){
 					filePath = new File(metaFilePath.getAbsolutePath().replace(".meta", ""));
 					logger.error("File Chunk deleted. Retreiving from Replica Node");
 					String destStorageNodeId = filePath.getParentFile().getName();
 					synchronized(this) {
-						recoverChunk(fileName, chunkId, filePath.getAbsolutePath(), destStorageNodeId);
+						recoverChunk(fileName, chunkId, filePath.getAbsolutePath(), 
+								destStorageNodeId, destStorageNodeAddress, destStorageNodePort);
 					}
 				}else if(filePath!=null) {
 					byte[] chunkData = Files.readAllBytes(Paths.get(filePath.getAbsolutePath()));
@@ -527,7 +550,8 @@ public class StorageNode {
 						logger.error("File Chunk corrupted. Retreiving from Replica Node");
 						String destStorageNodeId = filePath.getParentFile().getName();
 						synchronized(this) {
-							recoverChunk(fileName, chunkId, filePath.getAbsolutePath(), destStorageNodeId);
+							recoverChunk(fileName, chunkId, filePath.getAbsolutePath(), 
+									destStorageNodeId, destStorageNodeAddress, destStorageNodePort);
 						}
 					}
 				}
@@ -547,80 +571,44 @@ public class StorageNode {
 		}
 	}
 
-	public void recoverChunk(String fileName, int chunkNumber, String fileAbsPath, String destStorageNodeId) {
+	public void recoverChunk(String fileName, int chunkNumber, String fileAbsPath, 
+			String destStorageNodeId, String destStorageNodeAddress, int destStorageNodePort) {
 		StorageNode storageNode = StorageNode.getInstance();
 		// if it's a primary, recover the chunk from the replica with subfolder same as the primary node id
 		// contact replica with address and port to get the chunk from it
 		//form recover chunk request
 		logger.info("Current Node Id: "+ storageNode.getStorageNodeId() + "Failure chunk Node" + destStorageNodeId);
 		if(storageNode.getStorageNodeId().equals(destStorageNodeId)) {
+			logger.info("Chunk failed is a primary chunk. Contacting replica to retrieve the chunk");
 			for(StorageMessages.ReplicaNode replicaNode: storageNode.getReplicaStorageNodes()) {
-				getChunkRequest(fileName, chunkNumber, fileAbsPath, replicaNode);
+				getChunkRequest(fileName, chunkNumber, fileAbsPath, storageNode, replicaNode.getStorageNodeAddr(), replicaNode.getStorageNodePort());
 			}
 		} else {
-			logger.info("Contacting controller to get failure chunk node details");
+			logger.info("Chunk failed is a replica chunk. Contacting primary to retrieve the chunk");
+			storageNode.setStorageNodeId(destStorageNodeId);
+			storageNode.setStorageNodeAddr(destStorageNodeAddress);
+			storageNode.setControllerNodePort(destStorageNodePort);
+			getChunkRequest(fileName, chunkNumber, fileAbsPath, storageNode, destStorageNodeAddress, destStorageNodePort);
 		}
-//					// if it's a replica, recover the chunk from the its primary with storage node id and subfolder as the replica id
-//					// contact controller to get the address and port of the storage
-//					Controller controller = Controller.getInstance();
-//					// call a method in controller to get the storage node object
-//					List<StorageMessages.StorageNode> activateStorageNodes = controller.getActiveStorageNodes();
-//					for(StorageMessages.StorageNode storageNode: activateStorageNodes) {
-//						if(storageNode.getStorageNodeId().equals(recoverStorageNodeId)) {
-//							try {
-//								EventLoopGroup workerGroup = new NioEventLoopGroup();
-//								MessagePipeline pipeline = new MessagePipeline();
-//
-//								logger.info("Registration initiated to controller: " + this.controllerNodeAddr + String.valueOf(this.controllerNodePort));
-//								Bootstrap bootstrap = new Bootstrap()
-//										.group(workerGroup)
-//										.channel(NioSocketChannel.class)
-//										.option(ChannelOption.SO_KEEPALIVE, true)
-//										.handler(pipeline);
-//
-//								ChannelFuture cf = bootstrap.connect(this.controllerNodeAddr, this.controllerNodePort);
-//								cf.syncUninterruptibly();
-//
-//								StorageMessages.Chunk chunk = StorageMessages.Chunk.newBuilder()
-//										.setChunkId(chunkNumber)
-//										.setFileName(fileName)
-//										.build();
-//
-//								StorageMessages.MessageWrapper msgWrapper = HDFSMessagesBuilder.constructGetNodesFromController(chunk, storageNodeId);
-//
-//								Channel chan = cf.channel();
-//								ChannelFuture write = chan.writeAndFlush(msgWrapper);
-//								logger.info("Request controller for active nodes");
-//								chan.closeFuture().sync();
-//								workerGroup.shutdownGracefully();
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//								logger.error("Fail to request to controller");
-//							}
-//
-//						}
-//					}
 	}
 	
 	
-	public void getChunkRequest(String fileName, int chunkNumber, String filePath, StorageMessages.ReplicaNode replicaNode) {
+	public void getChunkRequest(String fileName, int chunkNumber, String filePath, StorageNode destStorageNode, String replicaNodeAddress, int replicaNodePort) {
 		
 		try {
 			EventLoopGroup workerGroup = new NioEventLoopGroup();
 			MessagePipeline pipeline = new MessagePipeline();
 
-			logger.info("Recover chunk from other replica node: " + 
-					replicaNode.getStorageNodeAddr() + String.valueOf(replicaNode.getStorageNodePort()));
+			logger.info("Recover chunk from other replica node: " + replicaNodeAddress + String.valueOf(replicaNodePort));
 			Bootstrap bootstrap = new Bootstrap()
 					.group(workerGroup)
 					.channel(NioSocketChannel.class)
 					.option(ChannelOption.SO_KEEPALIVE, true)
 					.handler(pipeline);
 
-			ChannelFuture cf = bootstrap.connect(replicaNode.getStorageNodeAddr(), replicaNode.getStorageNodePort());
+			ChannelFuture cf = bootstrap.connect(replicaNodeAddress, replicaNodePort);
 			cf.syncUninterruptibly();
-			StorageNode storageNode = StorageNode.getInstance();
-			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRecoverChunkRequest(fileName, chunkNumber, filePath, storageNode);
+			MessageWrapper msgWrapper = HDFSMessagesBuilder.constructRecoverChunkRequest(fileName, chunkNumber, filePath, destStorageNode);
 
 			Channel chan = cf.channel();
 			ChannelFuture write = chan.writeAndFlush(msgWrapper);
