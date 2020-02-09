@@ -1,4 +1,4 @@
-# Project 1: Distributed File System With Probabilistic Routing #
+# Distributed File System With Probabilistic Routing #
 
 See the project spec here: https://www.cs.usfca.edu/~mmalensek/cs677/assignments/project-1.html
 
